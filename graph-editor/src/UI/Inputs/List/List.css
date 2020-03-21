@@ -5,7 +5,7 @@
 }
 
 .list-add {
-    background-color: #444;
+    background-color: var(--ui-heading);
     display: block;
     width: 30px;
     text-align: center;
@@ -20,7 +20,7 @@
 }
 
 .list-items {
-    border: 1px #444 solid;
+    border: 1px var(--ui-heading) solid;
     border-bottom-left-radius: 5px;
     overflow: hidden;
 }

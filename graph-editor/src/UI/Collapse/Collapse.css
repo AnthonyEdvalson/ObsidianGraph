@@ -1,8 +1,7 @@
 .Collapse {
     height: 100%;
     display: block;
-    width: 22px;
-    color: #bbb;
+    width: 25px;
     transition: all ease-out 0.1s;
 }
 
@@ -13,7 +12,7 @@
 }
 
 .Collapse:hover {
-    background-color: #ffffff20;
+    background-color: #ffffff10;
 }
 
 .Collapse.collapse-open::after {

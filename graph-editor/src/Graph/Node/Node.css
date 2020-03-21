@@ -2,26 +2,26 @@
 .Node {
   position: absolute;
   width: var(--node-width);
-  background-color: #333;
+  background-color: #28323e;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 0 4px #333;
+  box-shadow: 0 0 0 4px #212a35;
   min-height: var(--node-preview-height);
   cursor: default;
   z-index: 100;
 }
 
 .Node.node-error {
-  box-shadow: 0 0 0 4px #691f1f;
+  box-shadow: 0 0 0 4px #752a17;
 }
 
 .Node.node-selected {
-  box-shadow: 0 0 0 7px #fff;
+  box-shadow: 0 0 0 6px #ccc;
 }
 
 .Node.node-selected.node-error {
-  box-shadow: 0 0 0 7px #faa;
+  box-shadow: 0 0 0 7px #b63d28;
 }
 
 .node-preview {
@@ -29,8 +29,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #444;
-  color: #ccc;
   font-family: 'Courier New', Courier, monospace;
   position: absolute;
   padding: 4px;
@@ -38,7 +36,7 @@
 }
 
 .Node.node-error .node-preview {
-  background-color: #521616;
+  background-color: #521d16;
 }
 
 .node-info {
@@ -63,7 +61,7 @@
 .node-ports-in,
 .node-ports-out {
   z-index: 10;
-  background-color: #333333b3;
+  background-color: #212a35a0;
   border-radius: var(--port-width);
   margin: var(--port-width) 0;
 }

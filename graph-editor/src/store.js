@@ -232,6 +232,15 @@ function DELETE_SELECTION(state, action) {
     return newState;
 }
 
+function LOAD_GRAPH(state, action) {
+    let newState = {
+        ...state,
+        ...action.data
+    };
+
+    return newState;
+}
+
 function lookupReducer(state, action, lookup) {
     if (action.type in lookup)
         return lookup[action.type](state, action);
@@ -240,7 +249,7 @@ function lookupReducer(state, action, lookup) {
 }
 
 function stateReducer(state, action) {
-    let newState = lookupReducer(state, action, {START_NEW_LINK, END_NEW_LINK, CHANGE_SELECTION, MOVE_NODE, DELETE_SELECTION, SET_SELECT});
+    let newState = lookupReducer(state, action, {START_NEW_LINK, END_NEW_LINK, CHANGE_SELECTION, MOVE_NODE, DELETE_SELECTION, SET_SELECT, LOAD_GRAPH});
     return {
         ...newState,
         nodes: lookupReducer(newState.nodes, action, {NEW_NODE}),

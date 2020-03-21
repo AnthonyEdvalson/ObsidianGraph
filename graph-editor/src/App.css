@@ -1,9 +1,19 @@
 .App {
-  color: #aaa;
+  color: #8ec2d5;
   font-size: 12px;
-  background-color: #586068;
   width: 100%;
   height: 100%;
+  position: relative;
+  --menu-height: 30px
+}
+
+.app-body {
+  position: absolute;
+  background-color: #14191f;
+  left: 0;
+  right: 0;
+  top: var(--menu-height);
+  bottom: 0;
   display: flex;
   flex-direction: row;
 }

@@ -1,5 +1,5 @@
 .Button {
-    background-color: #555;
+    background-color: var(--ui-heading);
     color: inherit;
     border: 1px solid #222;
     border-radius: 3px;
@@ -7,13 +7,13 @@
     display: block;
     flex-grow: 0;
     flex-shrink: 0;
-    min-height: 22px;
-    min-width: 22px;
-    color: #ccc;
-    margin-left: 5px;;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
 }
 
 .Button:hover {
-    background-color: #666;
+    background-color: #ffffff20;
     box-shadow: 1px 1px #00000030
 }

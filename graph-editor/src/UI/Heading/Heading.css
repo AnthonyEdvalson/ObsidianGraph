@@ -1,7 +1,6 @@
 .Heading {
     font-weight: 600;
-    color: #fff;
-    background-color: #444;
+    background-color: var(--ui-heading);
     margin-bottom: 0;
     height: 22px;
     display: block;
@@ -23,7 +22,6 @@
     text-align: center;
     width: 22px;
     height: 22px;
-    color: #bbb;
     transition: all ease-out 0.1s;
     padding-top: 3px;
     cursor: pointer;
@@ -33,7 +31,7 @@
     float: right;
 }
 
-.Heading .heading-action:hover,
+/*.Heading .heading-action:hover,
 .Heading .heading-action-right:hover {
-    background-color: #555;
-}
+    background-color: #;
+}*/

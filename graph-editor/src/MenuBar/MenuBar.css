@@ -1,0 +1,65 @@
+.MenuBar {
+    display: block;
+    width: 100%;
+    height: var(--menu-height);
+    background-color: #181818;
+    color: ccc;
+    font-size: 14px;
+}
+
+.MenuItem {
+    display: inline-block;
+    height: 100%;
+}
+
+.menu-item-label {
+    display: block;
+    min-width: 30px;
+    padding: 5px 8px;
+    text-align: center;
+    cursor: pointer;
+    height: 100%;
+}
+
+.menu-item-label:hover {
+    background-color: #ffffff10;
+}
+
+.MenuOption {
+    display: block;
+    cursor: pointer;
+    padding: 5px 8px 5px 20px;
+}
+
+.MenuOption>span {
+    display: inline-block;
+    width: 120px;
+}
+
+.MenuOption>small {
+    opacity: 0.5;
+    font-size: inherit;
+    float: right;
+}
+
+.MenuOption:hover {
+    background-color: #ffffff10;
+}
+
+.menu-dropdown {
+    position: fixed;
+    display: none;
+    z-index: 100000;
+    background-color: #181818;
+    padding: 1px;
+}
+
+.MenuItem:hover .menu-dropdown,
+.MenuItem .menu-dropdown:hover {
+    display: block;
+}
+
+.menu-sep {
+    border-bottom: #999 solid 1px;
+    margin: 4px;
+}

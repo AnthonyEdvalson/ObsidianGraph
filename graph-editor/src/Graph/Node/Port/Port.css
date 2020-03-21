@@ -7,7 +7,7 @@
 
 .port-ring {
   background-color: #f0f;
-  box-shadow: 0 0 0 3px #555 inset;
+  box-shadow: 0 0 0 3px #212a35b0 inset;
   width: var(--port-width);
   height: var(--port-width);
   border-radius: 50%;
