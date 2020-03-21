@@ -1,0 +1,28 @@
+{
+  "nodes": {
+    "base": {
+      "code": "base",
+      "inputs": {}
+    },
+    "table": {
+      "code": "table",
+      "inputs": {"base": "base"}
+    },
+    "t1": {
+      "code": "t1",
+      "inputs": {"table": "table"}
+    },
+    "t2": {
+      "code": "t2",
+      "inputs": {"table": "table"}
+    },
+    "control": {
+      "code": "control",
+      "inputs": {"t1": "t1", "t2": "t2", "req": "req"}
+    },
+    "get graph": {
+      "code": "get-graph",
+      "inputs": {}
+    }
+  }
+}

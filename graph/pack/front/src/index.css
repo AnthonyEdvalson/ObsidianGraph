@@ -1,0 +1,9 @@
+.Graph {
+    border: 1px solid black;
+    margin: 3px;
+}
+
+.Subitem {
+    border: 1px solid red;
+    margin: 1px;
+}

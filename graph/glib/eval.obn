@@ -1,0 +1,24 @@
+{
+  "nodes": {
+    "Exec": {
+      "type": "py",
+      "module": "exec",
+      "inputs": [
+        {
+          "label": "command",
+          "type": "data",
+          "other": "Editor"
+        }
+      ]
+    },
+    "Editor": {
+      "type": "editor",
+      "fields": {
+        "command": {
+          "type": "text"
+        }
+      }
+    }
+  },
+  "out": "Exec"
+}

@@ -1,0 +1,5 @@
+{
+    "plugins": [
+        "./scripts/babel-project-relative.js"
+    ]
+}
