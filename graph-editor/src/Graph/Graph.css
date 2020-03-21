@@ -1,0 +1,25 @@
+
+.Graph {
+  position: relative;
+  height: 100%;
+  flex-grow: 1;
+  overflow: scroll;
+
+  --node-width: 280px;
+  --port-width: 20px;
+  --node-preview-height: calc(var(--node-width) / 1.6);
+
+  --py-bright: #f1a821;
+  --js-bright: #f16321;
+  --io-bright: #ccc;
+  --data-bright: #b49876;
+  --graph-bright: #c21d1d;
+  --edit-bright: #259bf5;
+
+  --py-dim: #b97a04;
+  --js-dim: #ad5024;
+  --io-dim: #838383;
+  --data-dim: #866d4f;
+  --graph-dim: #991c1c;
+  --edit-dim: #1273bc;
+}

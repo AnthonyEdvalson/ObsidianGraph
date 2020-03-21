@@ -1,0 +1,39 @@
+.Heading {
+    font-weight: 600;
+    color: #fff;
+    background-color: #444;
+    margin-bottom: 0;
+    height: 22px;
+    display: block;
+}
+
+.Heading>* {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.Heading>.Label {
+    padding-top: 3px;
+}
+
+.Heading .heading-action,
+.Heading .heading-action-right {
+    height: 100%;
+    display: inline-block;
+    text-align: center;
+    width: 22px;
+    height: 22px;
+    color: #bbb;
+    transition: all ease-out 0.1s;
+    padding-top: 3px;
+    cursor: pointer;
+}
+
+.Heading .heading-action-right {
+    float: right;
+}
+
+.Heading .heading-action:hover,
+.Heading .heading-action-right:hover {
+    background-color: #555;
+}

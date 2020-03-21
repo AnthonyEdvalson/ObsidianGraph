@@ -1,0 +1,61 @@
+.Toolbar {
+    background-color: #282828;
+    height: 30px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 10000;
+}
+
+.ToolbarNodeButton {
+    display: inline-block;
+    height: 100%;
+    width: 70px;
+    text-align: center;
+    padding-top: 6px;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background-color: var(--io-dim);
+    transition: background-color 0.2s ease-out;
+    cursor: pointer;
+}
+.ToolbarNodeButton:hover {
+    background-color: var(--io-bright);
+}
+
+.ToolbarNodeButton.py {
+    background-color: var(--py-dim);
+}
+.ToolbarNodeButton.py:hover {
+    background-color: var(--py-bright);
+}
+
+.ToolbarNodeButton.js {
+    background-color: var(--js-dim);
+}
+.ToolbarNodeButton.js:hover {
+    background-color: var(--js-bright);
+}
+
+.ToolbarNodeButton.data {
+    background-color: var(--data-dim);
+}
+.ToolbarNodeButton.data:hover {
+    background-color: var(--data-bright);
+}
+
+.ToolbarNodeButton.edit {
+    background-color: var(--edit-dim);
+}
+.ToolbarNodeButton.edit:hover {
+    background-color: var(--edit-bright);
+}
+
+.ToolbarNodeButton.disabled,
+.ToolbarNodeButton.disabled:hover {
+    background-color: var(--io-dim);
+    opacity: 0.5;
+    cursor: default;
+}

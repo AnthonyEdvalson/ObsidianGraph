@@ -1,0 +1,27 @@
+.Link {
+    position: absolute;
+    z-index: 50;
+    stroke: #ffffff;
+}
+
+.Link {
+    pointer-events: none;
+}
+
+.Link > * {
+    pointer-events: all;
+}
+
+.node-py .Link path {
+    stroke: var(--py-bright);
+}
+.node-out .Link path,
+.node-in .Link path {
+    stroke: var(--io-bright);
+}
+.node-js .Link path {
+    stroke: var(--js-bright);
+}
+.node-data .Link path {
+    stroke: var(--data-bright);
+}
