@@ -3,6 +3,11 @@ const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
 
 
+function newGraph(state, dispatch) {
+    dispatch({type: "SET_MODAL_OPEN", name: "newGraph", open: true})
+}
+
+
 function open(state, dispatch) {
     dialog.showOpenDialog({
         filters: [{name: "Obsidian Node Files", extensions: ["obn"]}],
@@ -23,14 +28,14 @@ function open(state, dispatch) {
 
 function save(state, dispatch) {
     let data = JSON.stringify({
-        graph: state.graph,
-        nodes: state.nodes,
-        ports: state.ports,
-        links: state.links
+        meta: state.graph.meta,
+        nodes: state.graph.nodes,
+        ports: state.graph.ports,
+        links: state.graph.links
     });
 
     dialog.showSaveDialog({
-        defaultPath: state.graph.name + ".obn",
+        defaultPath: state.graph.meta.name + ".obn",
         filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
     }).then(result => {
         console.log(result)
@@ -48,7 +53,7 @@ function transformImportedGraph(graph, path) {
         inputs:[], 
         output: null, 
         schema: null,
-        name: graph.graph.name
+        name: graph.meta.name
     };
 
     for (let node of Object.values(graph.nodes)) {
@@ -90,6 +95,7 @@ function importNode(state, dispatch) {
 }
 
 export default {
+    new: newGraph,
     open,
     save,
     undo: () => {},

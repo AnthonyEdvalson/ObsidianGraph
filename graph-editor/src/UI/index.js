@@ -14,7 +14,7 @@ import PortsEditor from './PortsEditor';
 import Space from './Space';
 import TextArea from './Inputs/TextArea';
 import TextInput from './Inputs/TextInput';
-
+import Modal from './Modal';
 
 
 export default {
@@ -33,4 +33,5 @@ export default {
     Space,
     TextArea,
     TextInput,
+    Modal
 };

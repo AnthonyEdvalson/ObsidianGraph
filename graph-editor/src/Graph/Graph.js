@@ -9,7 +9,7 @@ import Toolbar from './Toolbar';
 function Graph(props) {
   const graphRef = useRef(null);
   const dispatch = useDispatch();
-  const graph = useSelector(state => state);
+  const graph = useSelector(state => state.graph);
 
   function handleMouseDown(e) {
     if (e.button === 0)
@@ -31,17 +31,17 @@ function Graph(props) {
       ));
   }
 
-  function downHandler({key}) {
-    console.log(key);
-    if (key === "Delete" || key === "Backspace") {
-      dispatch({type: "DELETE_SELECTION"});
-    }
-  }
-
   useEffect(() => {
+    function downHandler({key}) {
+      console.log(key);
+      if (key === "Delete" || key === "Backspace") {
+        dispatch({type: "DELETE_SELECTION"});
+      }
+    }
+
     window.addEventListener('keydown', downHandler);
     return () => {window.removeEventListener('keydown', downHandler)};
-  }, []);
+  }, [dispatch]);
 
 
   return (

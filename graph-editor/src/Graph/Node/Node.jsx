@@ -37,8 +37,8 @@ function useKeyStore(defaultValue={}) {
 function Node(props) {
     const key = props.k;
 
-    const data = useSelector(state => state.nodes[key]);
-    const selection = useSelector(state => state.selection);
+    const data = useSelector(state => state.graph.nodes[key]);
+    const selection = useSelector(state => state.graph.selection);
 
     let {x, y, name, type, inputs, output, preview} = data;
     let hasError = preview.state === "error";

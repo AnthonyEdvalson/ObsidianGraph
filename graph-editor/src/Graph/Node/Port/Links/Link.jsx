@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './Link.css';
 
 function Link(props) {
     let key = props.k;
     let dispatch = useDispatch();
-    let selection = useSelector(state => state.selection);
+    let selection = useSelector(state => state.graph.selection);
     let selected = selection.some(item => item.type === "link" && item.key === key);
 
     if (props.x1 === null || props.x2 === null)
