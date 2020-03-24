@@ -18,13 +18,16 @@ function Port(props) {
     const handleMouseDown = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        dispatch({type: "START_NEW_LINK", port: key, inout});
+        if (e.shiftKey)
+            dispatch({type: "RELINK", port: key, inout});
+        else
+            dispatch({type: "START_LINK", port: key, inout});
     }
 
     const handleMouseUp = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        dispatch({type: "END_NEW_LINK", port: key, inout});
+        dispatch({type: "END_LINK", port: key, inout});
     }
 
     return (

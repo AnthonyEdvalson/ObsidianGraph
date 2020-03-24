@@ -4,8 +4,8 @@
     -o-appearance: none;
     appearance: none;
 
-    border: 1px solid #666;
-    background-color: #282828;
+    border: 1px solid #323f4d;
+    background-color: #00000030;
     border-radius: 3px;
     outline: none;
     transition-duration: 0.1s;
@@ -23,11 +23,11 @@
 }
 
 .Checkbox > input:hover {
-    background-color: #333;
+    background-color: #00000010;
 }
 
 .Checkbox > input:active {
-    background-color: #222;
+    background-color: #00000050;
 }
 
 .Checkbox svg {
@@ -36,7 +36,7 @@
     right: 0;
     left: 0;
     stroke-width: 4;
-    stroke: #ccc;
+    stroke: #bcdeeb;
     stroke-miterlimit: 10;
     pointer-events: none;
 }

@@ -43,6 +43,7 @@ function Node(props) {
     let {x, y, name, type, inputs, output, preview} = data;
     let hasError = preview.state === "error";
     let [portRefs, setRef] = useKeyStore();
+    let selected = selection.some(item => item.type === "node" && item.key === key);
 
     const dispatch = useDispatch();
 
@@ -53,14 +54,14 @@ function Node(props) {
     }, [setRef]);
 
     const handleMouseDown = useCallback((e) => {
-        dispatch({type: "SET_SELECT", node: key});
+        dispatch({type: "SET_SELECTION", items: [{type: "node", key}]});
         dragHandleMouseDown(e);
     }, [dragHandleMouseDown, dispatch, key]);
 
     let className = `Node node-${type}`;
     if (hasError)
         className += " node-error";
-    if (selection === key)
+    if (selected)
         className += " node-selected"
 
     return (

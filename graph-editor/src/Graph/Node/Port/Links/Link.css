@@ -1,27 +1,25 @@
-.Link {
+.Links {
     position: absolute;
     z-index: 50;
-    stroke: #ffffff;
 }
 
-.Link {
+.Link .link-interact {
+    pointer-events: stroke;
+    stroke-width: 12px;
+    stroke: transparent;
+    transition: stroke 0.1s ease-out;
+}
+
+.Link .link-visible {
     pointer-events: none;
+    stroke-width: 5px;
+    transition: stroke 0.1s ease-out, stroke-width 0.1s ease-out;
 }
 
-.Link > * {
-    pointer-events: all;
+.Link.link-selected .link-interact {
+    stroke: #ddd;
 }
 
-.node-py .Link path {
-    stroke: var(--py-bright);
-}
-.node-out .Link path,
-.node-in .Link path {
-    stroke: var(--io-bright);
-}
-.node-js .Link path {
-    stroke: var(--js-bright);
-}
-.node-data .Link path {
-    stroke: var(--data-bright);
+.Link.link-selected .link-visible {
+    stroke-width: 7px;
 }

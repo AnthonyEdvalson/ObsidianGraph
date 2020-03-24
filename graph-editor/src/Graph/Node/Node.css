@@ -10,6 +10,7 @@
   min-height: var(--node-preview-height);
   cursor: default;
   z-index: 100;
+  transition: box-shadow 0.1s ease-out;
 }
 
 .Node.node-error {

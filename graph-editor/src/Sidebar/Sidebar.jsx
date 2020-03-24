@@ -1,30 +1,46 @@
 import React from 'react';
 import './Sidebar.css';
 import NodeSidebar from './Comp/NodeSidebar/Node';
+import GraphSidebar from './Comp/GraphSidebar';
 import { useSelector } from 'react-redux';
 
 function Sidebar(props) {
-    let node = useSelector(state => {
-        let nodes = state.nodes;
-        let select = state.selection;
-        if (select in nodes)
-            return nodes[select];
-        
-        return null;
+    let selected = useSelector(state => {
+        let item = state.selection.length === 1 ? state.selection[0] : {};
+
+        if (item.type === "node")
+            return {type: "node", data: state.nodes[item.key], nodeKey: item.key};
+
+        if (item.type === "graph")
+            return {type: "graph", data: state.graph};
+
+        return {type: null, data: null};
     });
 
     let content = null;
 
-    if (node) {
+    if (selected.type === "node") {
+        let node = selected.data;
         content = (
             <>
                 <div className="side-head">
                     <h1>{node.name}</h1>
-                    <small>{node.type}</small>
+                    <small>NODE: {node.type.toUpperCase()}</small>
                 </div>
-                <div className="side-body">
-                    <NodeSidebar data={node}/>
+                <NodeSidebar data={node} nodeKey={selected.nodeKey} />
+            </>
+        );
+    }
+    else if (selected.type === "graph") {
+        let graph = selected.data;
+
+        content = (
+            <>
+                <div className="side-head">
+                    <h1>{graph.name}</h1>
+                    <small>{graph.description}</small>
                 </div>
+                <GraphSidebar data={graph}/>
             </>
         );
     }

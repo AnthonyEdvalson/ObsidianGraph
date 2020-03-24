@@ -7,12 +7,12 @@ function Links() {
     let ports = useSelector(state => state.ports);
 
     return (
-        <svg className="Link" width={2000} height={2000}>
+        <svg className="Links" width={2000} height={2000}>
             {
                 Object.entries(links).map(([sink, source]) => {
                     let p1 = ports[sink];
                     let p2 = ports[source];
-                    return <Link x1={p1.x-300} y1={p1.y} x2={p2.x-300} y2={p2.y} key={sink}></Link>
+                    return <Link x1={p1.x-300} y1={p1.y} x2={p2.x-300} y2={p2.y} key={sink} k={sink}></Link>
                 })
             }
         </svg>

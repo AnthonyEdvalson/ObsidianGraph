@@ -17,7 +17,7 @@ function Checkbox(props) {
         <InputWrapper {...props}>
             <div className="Checkbox ui-line-elem">
                 <input type="checkbox" checked={form.data} onChange={handleChange}/>
-                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path class="check" fill="none" d="M3.0 12.0l5.0 5.0 12.0 -12.0"/></svg>
+                <svg className="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 22"><path className="check" fill="none" d="M3.0 12.0l5.0 5.0 12.0 -12.0"/></svg>
             </div>
         </InputWrapper>
     );

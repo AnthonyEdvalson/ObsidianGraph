@@ -1,4 +1,5 @@
 import { createStore } from 'redux';
+import { readlink } from 'fs';
 
 function uuid4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => {
@@ -9,6 +10,14 @@ function uuid4() {
 
 const init = {
     state: "loading",
+    graph: {
+        name: "Default",
+        author: "",
+        category: "",
+        description: "This is the default app for Obsidian, it is loaded on startup for testing purposes",
+        hideInLibrary: false,
+        tags: ""
+    },
     nodes: {
         A: {
             type: "in",
@@ -66,7 +75,7 @@ const init = {
         port: null,
         inout: null
     },
-    selection: null
+    selection: []
 }
 
 
@@ -92,16 +101,21 @@ function NEW_NODE(state, action) {
     let type = action.nodeType;
 
     let data = {
-        py: {name: "Python", inputs: [{key: uuid4(), label: "input", type: "py"}], module: ""},
-        js: {name: "JavaScript", inputs: [{key: uuid4(), label: "input", type: "js"}], path: ""},
+        py: {name: "Python", inputs: [{label: "input", type: "py"}], module: ""},
+        js: {name: "JavaScript", inputs: [{label: "input", type: "js"}], path: ""},
         data: {name: "Data", content: ""},
-        in: {name: "Input", output: {key: uuid4(), label: "value", type: "data"}},
-        out: {name: "Output", inputs: [{key: uuid4(), label: "value", type: "data"}], output: null},
-        edit: {name: "Editor", output: {key: uuid4(), label: "data", type: "data"}, schema: ""}
+        in: {name: "Input", output: {label: "value", type: "data"}},
+        out: {name: "Output", inputs: [{label: "value", type: "data"}], output: null},
+        edit: {name: "Editor", output: {label: "data", type: "data"}, schema: ""},
+        graph: action.data
     }[type];
 
-    let newState = {...state};
-    newState[uuid4()] = {
+    let newState = {
+        ...state, 
+        nodes:{ ...state.nodes } 
+    };
+
+    let newNode = {
         type,
         name: "New Node",
         x: 0,
@@ -111,9 +125,21 @@ function NEW_NODE(state, action) {
             data: null
         },
         inputs: [],
-        output: {key: uuid4(), label: "out", type: type},
+        output: {label: "out", type: type},
         ...data
     }
+
+    for (let input of newNode.inputs) {
+        input.key = uuid4();
+        newState.ports[input.key] = {x: 0, y: 0};
+    }
+
+    if (newNode.output) {
+        newNode.output.key = uuid4();
+        newState.ports[newNode.output.key] = {x: 0, y: 0};
+    }
+
+    newState.nodes[uuid4()] = newNode;
     return newState;
 };
 
@@ -127,26 +153,56 @@ function MOVE_PORT(state, action) {
     return newState;
 }
 
-function SET_SELECT(state, action) {
+function SET_SELECTION(state, action) {
     let newState = {
         ...state,
-        selection: action.node
     };
+
+    newState.selection = action.items;
 
     return newState;
 }
 
-function START_NEW_LINK(state, action) {
+function START_LINK(state, action) {
     return {
         ...state,
         newLink: {
-            port: action.port,
+            ports: [action.port],
             inout: action.inout
         }
     }
 }
 
-function END_NEW_LINK(state, action) {
+function RELINK(state, action) {
+    let newState = { 
+        ...state,
+        links: { ...state.links }
+    };
+
+    let ports = [];
+
+    if (action.inout === "in") {
+        ports.push(newState.links[action.port]);
+        if (action.port in newState.links)
+            newState = DELETE_LINK(newState, {sink: action.port});
+    }
+    else {
+        let links = Object.entries(newState.links).filter(([sink, source]) => source === action.port);
+        for (let [sink, source] of links) {
+            ports.push(sink);
+            newState = DELETE_LINK(newState, {sink});
+        }
+    }
+
+    newState.newLink = {
+        ports,
+        inout: action.inout === "in" ? "out" : "in"
+    }
+
+    return newState;
+}
+
+function END_LINK(state, action) {
     if (!state.newLink)
         return state;
 
@@ -156,33 +212,50 @@ function END_NEW_LINK(state, action) {
     if (inout1 === inout2)
         return state;
 
-    let source = inout1 === "in" ? action.port : state.newLink.port;
-    let sink = inout1 === "in" ? state.newLink.port : action.port;
-    
     let newState = {
         ...state,
         links: {...state.links},
         newLink: null
     }
 
-    if (newState.links[sink] === source)
-        delete newState.links[sink];
-    else
-        newState.links[sink] = source;
+    let sources = (inout1 === "in") ? [action.port] : state.newLink.ports;
+    let sinks   = (inout1 === "in") ? state.newLink.ports : [action.port];
+    console.log({sources, sinks})
+    for (let sink of sinks)
+        for (let source of sources)
+            newState.links[sink] = source;
 
     return newState;
 }
 
 function CHANGE_SELECTION(state, action) {
     let newState = {
-        ...state,
-        nodes: { ...state.nodes }
+        ...state
     }
 
-    let select = newState.selection;
+    let select = newState.selection[0];
 
-    let oldNode = newState.nodes[select];
-    newState.nodes[select] = action.change(oldNode);
+    if (select.type === "node") {
+        newState.nodes = {...newState.nodes};
+        let oldNode = newState.nodes[select.key];
+        newState.nodes[select.key] = action.change(oldNode);
+    }
+    else if (select.type === "graph") {
+        newState.graph = {...newState.graph};
+        let oldGraph = newState.graph;
+        newState.graph = action.change(oldGraph);
+    }
+
+    return newState;
+}
+
+function DELETE_LINK(state, action) {
+    let newState = {
+        ...state,
+        links: { ...state.links }
+    };
+
+    delete newState.links[action.sink];
 
     return newState;
 }
@@ -203,7 +276,7 @@ function DELETE_PORT(state, action) {
 
     for (let [sink, source] of Object.entries(newState.links)) {
         if (source === key || sink === key)
-            delete newState.links[sink];
+            newState = DELETE_LINK(newState, {sink});
     }
 
     delete newState.ports[key];
@@ -211,23 +284,42 @@ function DELETE_PORT(state, action) {
     return newState;
 }
 
-function DELETE_SELECTION(state, action) {
-    let target = state.nodes[state.selection];
-
-    let newState = state;
-    if (target.output)
-        newState = DELETE_PORT(newState, {key: target.output.key});
-    for (let input of target.inputs) {
-        newState = DELETE_PORT(newState, {key: input.key});
-    }
-
-    newState = {
-        ...newState,
-        nodes: {...newState.nodes}
+function ADD_PORT(state, action) {
+    let newState = {
+        ...state,
+        nodes: { ...state.nodes },
+        ports: { ...state.ports }
     };
 
-    delete newState.nodes[newState.selection];
-    newState.selection = null;
+    let key = uuid4();
+    newState.nodes[action.node].inputs.push({key, label: "Port", type: "data"});
+    newState.ports[key] = {x: 0, y: 0};
+
+    return newState;
+}
+
+function DELETE_SELECTION(state, action) {
+    let newState = {...state};
+
+    for (let item of state.selection) {
+        if (item.type === "node") {
+            let target = state.nodes[item.key];
+            
+            if (target.output)
+                newState = DELETE_PORT(newState, {key: target.output.key});
+            for (let input of target.inputs)
+                newState = DELETE_PORT(newState, {key: input.key});
+    
+            newState.nodes = {...newState.nodes};
+            delete newState.nodes[item.key];
+        }
+        if (item.type === "link") {
+            newState.links = {...newState.links};
+            newState = DELETE_LINK(newState, {sink: item.key});
+        }
+    }
+
+    newState.selection = [];
 
     return newState;
 }
@@ -249,10 +341,10 @@ function lookupReducer(state, action, lookup) {
 }
 
 function stateReducer(state, action) {
-    let newState = lookupReducer(state, action, {START_NEW_LINK, END_NEW_LINK, CHANGE_SELECTION, MOVE_NODE, DELETE_SELECTION, SET_SELECT, LOAD_GRAPH});
+    let newState = lookupReducer(state, action, {RELINK, START_LINK, END_LINK, CHANGE_SELECTION, MOVE_NODE, DELETE_SELECTION, SET_SELECTION, LOAD_GRAPH, ADD_PORT, NEW_NODE});
     return {
         ...newState,
-        nodes: lookupReducer(newState.nodes, action, {NEW_NODE}),
+        nodes: lookupReducer(newState.nodes, action, {}),
         ports: lookupReducer(newState.ports, action, {MOVE_PORT}),
     };
 }
@@ -264,50 +356,8 @@ function rootReducer(state=init, action) {
     return newState;
 }
 
+
 const store = createStore(rootReducer);
 
-// DATA STRUCTURE
-/*
-
-{
-    graph: {
-        state: success,
-        data: {
-            nodes: {
-                node_key: {
-                    type: js
-                    name: node_name
-                    x: 0,
-                    y: 0,
-                    preview: {
-                        state: success,
-                        data: ...
-                    } ,
-                    inputs: [
-                        {key: port_key}
-                    ]
-                },
-                ...
-            },
-            ports: {
-                port_key: {x: 0, y: 0},
-                ...
-            },
-            links: {
-                sink_port_key: source_node_key,
-                ...
-            ],
-            newLink: { // null if not linking
-                port: port_key,
-                inout: "in" or "out"
-            }
-        }
-    },
-    selection: {
-        node: node_key // can be other things in the future
-    }
-}
-
-*/
 
 export default store;

@@ -1,20 +1,20 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import './Graph.css';
 import Links from './Node/Port/Links';
 import Node from './Node';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Toolbar from './Toolbar';
 
 
 function Graph(props) {
   const graphRef = useRef(null);
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const graph = useSelector(state => state);
 
-  /*const handleMouseDown = useCallback((e) => {
-    if (e.button === 2)
-      dispatch({type: "NEW_NODE", key: uuid4()});
-  }, [dispatch]);*/
+  function handleMouseDown(e) {
+    if (e.button === 0)
+      dispatch({type: "SET_SELECTION", items: [{type: "graph"}]})
+  }
 
   let content = null;
 
@@ -30,8 +30,22 @@ function Graph(props) {
         />
       ));
   }
+
+  function downHandler({key}) {
+    console.log(key);
+    if (key === "Delete" || key === "Backspace") {
+      dispatch({type: "DELETE_SELECTION"});
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', downHandler);
+    return () => {window.removeEventListener('keydown', downHandler)};
+  }, []);
+
+
   return (
-    <div className="Graph" /*onMouseDown={handleMouseDown}*/ ref={graphRef}>
+    <div className="Graph" onMouseDown={handleMouseDown} ref={graphRef}>
       <Toolbar />
       <div className="graph-body">
         {content}

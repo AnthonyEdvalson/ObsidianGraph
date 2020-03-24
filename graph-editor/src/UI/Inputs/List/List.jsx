@@ -8,17 +8,17 @@ function ListEdit(props) {
     let key = props.k;
     let form = useForm(key);
 
-    const handleAdd = (e) => {
+    const handleAdd = props.handleAdd || ((e) => {
         form.handleChange(prevState => ([...prevState, props.defaultFactory()]));
-    };
+    });
 
-    const handleDelete = (k) => {
+    const handleDelete = props.handleChange || ((k) => {
         form.handleChange(prevState => {
             let newData = [...prevState];
             newData.splice(k, 1);
             return newData;
         });
-    }
+    });
 
     const handleUp = (k) => {
         form.handleChange(prevState => {

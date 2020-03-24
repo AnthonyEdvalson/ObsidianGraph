@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './MenuBar.css';
 import Actions from './Actions';
@@ -46,6 +46,12 @@ function MenuBar() {
                 {name: "Redo", shortcut: "Ctrl+Y", action: "redo"},
                 null
             ]
+        },
+        {
+            name: "Graph",
+            options: [
+                {name: "Import...", shortcut: "Ctrl+Alt+O", action: "importNode"}
+            ]
         }
     ];
 
@@ -53,14 +59,14 @@ function MenuBar() {
         <div className="MenuBar">
             {
                 layout.map(item => 
-                    <MenuItem label={item.name}>
+                    <MenuItem key={item.name} label={item.name}>
                         {
-                            item.options.map(option => 
+                            item.options.map((option, i) => 
                                 option ? 
-                                    (<MenuOption action={option.action} shortcut={option.shortcut} state={state} dispatch={dispatch}>
+                                    (<MenuOption key={option.name} action={option.action} shortcut={option.shortcut} state={state} dispatch={dispatch}>
                                         {option.name}
                                     </MenuOption>)
-                                : <div className="menu-sep" />
+                                : <div key={i} className="menu-sep" />
                             )
                         }
                     </MenuItem>
