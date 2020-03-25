@@ -6,6 +6,7 @@ function Node() {
     return (
         <UI.Foldout label="Graph Properties">
             <UI.TextInput k="path" />
+            <UI.Schema k="schema" dk="parameters" />
         </UI.Foldout>
     );
 }

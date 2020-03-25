@@ -9,7 +9,8 @@ function ListEdit(props) {
     let form = useForm(key);
 
     const handleAdd = props.handleAdd || ((e) => {
-        form.handleChange(prevState => ([...prevState, props.defaultFactory()]));
+        if (props.defaultFactory)
+            form.handleChange(prevState => ([...prevState, props.defaultFactory()]));
     });
 
     const handleDelete = props.handleChange || ((k) => {

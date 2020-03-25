@@ -15,6 +15,7 @@ import Space from './Space';
 import TextArea from './Inputs/TextArea';
 import TextInput from './Inputs/TextInput';
 import Modal from './Modal';
+import Schema from './Schema';
 
 
 export default {
@@ -33,5 +34,6 @@ export default {
     Space,
     TextArea,
     TextInput,
-    Modal
+    Modal,
+    Schema
 };

@@ -1,6 +1,7 @@
 // ES5 imports used to fix conflict between electron and browserify
 const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
+const { getDefaultParams } = require("../UI/Schema");
 
 
 function newGraph(state, dispatch) {
@@ -32,7 +33,7 @@ function save(state, dispatch) {
         nodes: state.graph.nodes,
         ports: state.graph.ports,
         links: state.graph.links
-    });
+    }, null, 2);
 
     dialog.showSaveDialog({
         defaultPath: state.graph.meta.name + ".obn",
@@ -46,10 +47,10 @@ function save(state, dispatch) {
 }
 
 
-function transformImportedGraph(graph, path) {
+function transformImportedGraph(graph, path) {    
     let data = {
-        path, 
-        parameters: {}, 
+        path,
+        parameters: null,
         inputs:[], 
         output: null, 
         schema: null,
@@ -66,7 +67,8 @@ function transformImportedGraph(graph, path) {
         }
 
         if (node.type === "edit") {
-            data.schema = node.schema;
+            data.schema = JSON.parse(node.schema);
+            data.parameters = getDefaultParams(data.schema);
         }
     }
     
