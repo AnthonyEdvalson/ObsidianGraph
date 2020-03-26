@@ -29,7 +29,7 @@ function getDefaultParams(schema) {
                 obj[k] = getDefaultParams(v);
             return obj;
         default:
-            throw new Error("Unknown type " + schema.type + " in " + JSON.stringify(schema));
+            throw new Error("Unknown type " + schema.type + " in " + JSON.stringify(schema, null, 2));
     }
 }
 

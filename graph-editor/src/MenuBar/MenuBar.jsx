@@ -37,7 +37,8 @@ function MenuBar() {
                 {name: "New Graph...", shortcut: "Ctrl+N", action: "new"},
                 {name: "Open Graph...", shortcut: "Ctrl+O", action: "open"},
                 {name: "Save...", shortcut: "Ctrl+S", action: "save"},
-                {name: "Save As...", shortcut: "Ctrl+Shift+S", action: "save as"}
+                {name: "Save As...", shortcut: "Ctrl+Shift+S", action: "save as"},
+                {name: "Export...", shortcut: "Ctrl+E", action: "exportGraph"}
             ],
         },
         {

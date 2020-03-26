@@ -2,6 +2,7 @@
 const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
 const { getDefaultParams } = require("../UI/Schema");
+const JSZip = require("jszip");
 
 
 function newGraph(state, dispatch) {
@@ -39,11 +40,26 @@ function save(state, dispatch) {
         defaultPath: state.graph.meta.name + ".obn",
         filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
     }).then(result => {
-        console.log(result)
-        console.log(fs);
         if (result.filePath)
             fs.writeFile(result.filePath, data, () => {});
     });
+}
+
+
+function exportGraph(state, dispatch) {
+/*    let zip = new JSZip();
+    zip.file("app.obgf", );
+    zip.file("app.obgb", );
+    zip.folder("back");
+    zip.folder("front");
+
+    dialog.showSaveDialog({
+        defaultPath: state.graph.meta.name + ".obg",
+        filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
+    }).then(result => {
+        if (result.filePath)
+            zip.generateNodeStream({}).pipe(fs.createWriteStream(result.filePath));
+    });*/
 }
 
 
@@ -102,5 +118,6 @@ export default {
     save,
     undo: () => {},
     redo: () => {},
-    importNode
+    importNode,
+    exportGraph
 };

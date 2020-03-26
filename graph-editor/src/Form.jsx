@@ -8,7 +8,7 @@ function useForm(key) {
 
     if (setKey && !(key in form.data))
     {
-        throw Error("Cannot find key '" + key + "' in " + JSON.stringify(Object.keys(form.data)));
+        throw Error("Cannot find key '" + key + "' in " + JSON.stringify(Object.keys(form.data, null, 2)));
     }
 
     let data = form.data;
