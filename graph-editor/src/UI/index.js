@@ -16,6 +16,7 @@ import TextArea from './Inputs/TextArea';
 import TextInput from './Inputs/TextInput';
 import Modal from './Modal';
 import Schema from './Schema';
+import PathInput from './Inputs/PathInput';
 
 
 export default {
@@ -35,5 +36,6 @@ export default {
     TextArea,
     TextInput,
     Modal,
-    Schema
+    Schema,
+    PathInput
 };

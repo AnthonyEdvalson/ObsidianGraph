@@ -21,7 +21,7 @@ function MultilineEdit(props) {
 
     return (
         <InputWrapper {...props}>
-            <textarea className="TextArea ui-elem" value={form.data} onKeyDown={handleKeyDown} onChange={e => { let v = e.target.value; form.handleChange(prevState => v)}}></textarea>
+            <textarea className="TextArea ui-elem" value={form.data} onKeyDown={handleKeyDown} onChange={e => { let v = e.target.value; form.handleChange(() => v)}}></textarea>
         </InputWrapper>
     );
 }

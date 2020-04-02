@@ -56,7 +56,6 @@ function END_LINK(state, action) {
 
     let sources = (inout1 === "in") ? [action.port] : state.newLink.ports;
     let sinks   = (inout1 === "in") ? state.newLink.ports : [action.port];
-    console.log({sources, sinks})
     for (let sink of sinks)
         for (let source of sources)
             newState.links[sink] = source;

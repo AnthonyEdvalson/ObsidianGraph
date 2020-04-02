@@ -9,7 +9,8 @@ function TextEdit(props) {
     
     return (
         <InputWrapper {...props}>
-            <input className="TextInput ui-line-elem" type="text" value={form.data} onChange={e => { let v = e.target.value; form.handleChange(prevState => v)}}></input>
+            <input className="TextInput ui-line-elem" type="text" value={form.data} onChange={e => { let v = e.target.value; form.handleChange(() => v)}}></input>
+            {props.children}
         </InputWrapper>
     );
 }

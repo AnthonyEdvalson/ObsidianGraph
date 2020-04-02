@@ -18,8 +18,6 @@ function MOVE_PORT(state, action) {
 
 function DELETE_PORT(state, action) {
     let key = action.key;
-    console.log(key);
-
     let newState = {
         ...state,
         ports: {

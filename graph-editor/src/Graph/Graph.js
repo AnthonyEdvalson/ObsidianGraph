@@ -16,24 +16,8 @@ function Graph(props) {
       dispatch({type: "SET_SELECTION", items: [{type: "graph"}]})
   }
 
-  let content = null;
-
-  if (graph !== null)
-  {
-    if (graph.state === "error")
-      content = <h1>Cannot connect to server</h1>;
-    else
-      content = Object.keys(graph.nodes).map(key => (
-        <Node
-          key={key}
-          k={key}
-        />
-      ));
-  }
-
   useEffect(() => {
     function downHandler({key}) {
-      console.log(key);
       if (key === "Delete" || key === "Backspace") {
         dispatch({type: "DELETE_SELECTION"});
       }
@@ -43,12 +27,15 @@ function Graph(props) {
     return () => {window.removeEventListener('keydown', downHandler)};
   }, [dispatch]);
 
-
   return (
     <div className="Graph" onMouseDown={handleMouseDown} ref={graphRef}>
       <Toolbar />
       <div className="graph-body">
-        {content}
+        {
+          Object.keys(graph.nodes).map(key => (
+            <Node key={key} k={key}/>
+          ))
+        }
         <Links />
       </div>
     </div>

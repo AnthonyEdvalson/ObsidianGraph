@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import MenuBar from './MenuBar';
 import NewGraph from './Modals/NewGraph';
+import Library from './Library';
 
 function App () {
   return (
@@ -15,6 +16,7 @@ function App () {
         <div className="app-body">
           <Sidebar />
           <Graph />
+          <Library />
         </div>
         <NewGraph />
       </Provider>

@@ -2,7 +2,8 @@
 const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
 const { getDefaultParams } = require("../UI/Schema");
-const JSZip = require("jszip");
+//const path = window.require("path");
+//const JSZip = require("jszip");
 
 
 function newGraph(state, dispatch) {
@@ -22,28 +23,26 @@ function open(state, dispatch) {
             if (err)
                 throw err;
 
-            console.log(JSON.parse(data));
             dispatch({type: "LOAD_GRAPH", data: JSON.parse(data)});
         })
     });
 }
 
 function save(state, dispatch) {
-    let data = JSON.stringify({
-        meta: state.graph.meta,
-        nodes: state.graph.nodes,
-        ports: state.graph.ports,
-        links: state.graph.links
-    }, null, 2);
+    dispatch({type: "SAVE_GRAPH"});
+}
 
+
+/*function saveAs(state, dispatch) {
     dialog.showSaveDialog({
-        defaultPath: state.graph.meta.name + ".obn",
+        defaultPath: state.graph.meta.path,
         filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
     }).then(result => {
         if (result.filePath)
-            fs.writeFile(result.filePath, data, () => {});
+            dispatch({type: "SAVE_GRAPH", path: result.filePath});
     });
-}
+}*/
+
 
 
 function exportGraph(state, dispatch) {

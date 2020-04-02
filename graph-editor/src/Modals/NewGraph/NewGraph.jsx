@@ -3,12 +3,14 @@ import UI from '../../UI';
 import Form from '../../Form';
 import { useDispatch, useSelector } from 'react-redux';
 
+
 function NewGraph(props) {
     let dispatch = useDispatch();
     let open = useSelector(state => state.modals.newGraph);
-    console.log(open);
-    let [state, setState] = useState({
-        name: "",
+    
+    const [state, setState] = useState({
+        directory: "C:\\Users\\tonye\\Documents\\Obsidian Projects",
+        name: "New project",
         author: "",
         description: "",
         template: "Empty"
@@ -27,6 +29,7 @@ function NewGraph(props) {
         <UI.Modal open={open} header="New Graph">
             <div className="NewGraph" style={{overflow: "auto"}}>
                 <Form.Form data={state} onChange={setState}>
+                    <UI.PathInput k="directory" dialogOptions={{openDirectory: true, openFile: false}} />
                     <UI.TextInput k="name" />
                     <UI.TextInput k="author" />
                     <UI.TextArea k="description" />

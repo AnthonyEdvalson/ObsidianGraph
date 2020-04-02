@@ -36,6 +36,25 @@ function NEW_NODE(state, action) {
         graph: action.data
     }[type];
 
+    /*let fileDatas = {
+        py:   {ext: "py",   folder: "front", content: "def main(o):\n\t\n"},
+        js:   {ext: "py",   folder: "back", content: "import React from 'react';\n\nfunction main(o) {\n\t\n}\n\nexport default main;\n"},
+        data: {ext: "json", folder: "resources", content: ""}
+    };
+
+    if (type in fileDatas) {
+        let fileData = fileDatas[type];
+        console.log(state.meta.path);
+        console.log(fileData.folder);
+        console.log(data.name)
+        console.log(fileDatas.ext);
+        let filePath = path.join(state.meta.path, fileData.folder, data.name + "." + fileData.ext);
+        console.log({filePath, fileData});
+        fs.writeFile(filePath, fileData.content, {flag: "wx"}, (err) => {
+            if (err) throw err;
+        })
+    }*/
+    
     let newState = {
         ...state, 
         nodes:{ ...state.nodes } 

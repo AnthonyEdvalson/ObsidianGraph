@@ -1,3 +1,6 @@
+import path from 'path';
+const fs = window.require("fs");
+
 let emptyTemplate = {
     nodes: {},
     ports: {},
@@ -148,7 +151,6 @@ let backendTemplate = {
 
 function LOAD_GRAPH(state, action) {
     let newState = {
-        ...state,
         ...action.data,
         newLink: {
             port: null,
@@ -161,16 +163,31 @@ function LOAD_GRAPH(state, action) {
 }
 
 function NEW_GRAPH(state, action) {
-    let newState = {
-        meta: {
-            name: action.name,
-            author: action.author,
-            description: action.description,
-            tags: "",
-            category: "",
-            hideInLibrary: false
-        }
-    };
+    let name = action.name;
+    let dir = path.join(action.directory, action.name)
+
+    let frontDir = path.join(dir, "front");
+    let backDir = path.join(dir, "back");
+    let resDir = path.join(dir, "resources");
+    let obnPath = path.join(dir, name + ".obn");
+
+    fs.access(dir, err => {
+        if (!err) throw(new Error(dir + " already exists"));
+
+        fs.mkdir(dir, { recursive: true }, err => {
+            if (err) throw(err);
+            fs.mkdir(frontDir, {}, err => {if (err) throw(err)});
+            fs.mkdir(backDir,  {}, err => {if (err) throw(err)});
+            fs.mkdir(resDir,   {}, err => {if (err) throw(err)});
+            
+            fs.open(obnPath, "wx", (err, fd) => {
+                if (err) throw err;
+                fs.close(fd, err => {
+                    if (err) throw err;
+                });
+            });
+        });
+    });
 
     let template = {
         "Empty": emptyTemplate,
@@ -179,7 +196,34 @@ function NEW_GRAPH(state, action) {
         "Frontend": frontendTemplate
     }[action.template];
 
-    return LOAD_GRAPH(newState, {data: template});
+    template.meta = {
+        name: action.name,
+        path: dir,
+        author: action.author,
+        description: action.description,
+        tags: "",
+        category: "",
+        hideInLibrary: false
+    };
+
+    return LOAD_GRAPH(state, {data: template});
 }
 
-export default { LOAD_GRAPH, NEW_GRAPH };
+
+function SAVE_GRAPH(state, action) {
+    let data = JSON.stringify({
+        meta: state.meta,
+        nodes: state.nodes,
+        ports: state.ports,
+        links: state.links
+    }, null, 2);
+
+    let p = action.path || path.join(state.meta.path, state.meta.name + ".obn");
+    fs.writeFile(p, data, err => {
+        if (err) throw err;
+    });
+
+    return state;
+}
+
+export default { LOAD_GRAPH, NEW_GRAPH, SAVE_GRAPH };

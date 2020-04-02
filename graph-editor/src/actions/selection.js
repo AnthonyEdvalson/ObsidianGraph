@@ -1,5 +1,8 @@
 import linkActions from './link';
 import portActions from './port';
+import { getFilePath } from '../useFile';
+const fs = window.require("fs");
+
 
 function SET_SELECTION(state, action) {
     let newState = {
@@ -47,6 +50,10 @@ function DELETE_SELECTION(state, action) {
     
             newState.nodes = {...newState.nodes};
             delete newState.nodes[item.key];
+
+            fs.unlink(getFilePath(target.name, target.type, state.meta.path), err => {
+                if (err) throw err;
+            });
         }
         if (item.type === "link") {
             newState.links = {...newState.links};

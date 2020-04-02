@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import Draggable from '../Draggable';
 import './Node.css';
 import Port from './Port';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux';
+import useFile from '../../useFile';
 
 function useNodeMove(x, y, portRefs, dispatch, key) {
     const drag = Draggable(x, y, null, useCallback(e => {
@@ -39,12 +40,16 @@ function Node(props) {
 
     const data = useSelector(state => state.graph.nodes[key]);
     const selection = useSelector(state => state.graph.selection);
+    const graphFolder = useSelector(state => state.graph.meta.path);
 
-    let {x, y, name, type, inputs, output, preview} = data;
-    let hasError = preview.state === "error";
-    let [portRefs, setRef] = useKeyStore();
-    let selected = selection.some(item => item.type === "node" && item.key === key);
+    const {x, y, name, type, inputs, output, preview} = data;
+    const hasError = preview.state === "error";
+    const [portRefs, setRef] = useKeyStore();
+    const selected = selection.some(item => item.type === "node" && item.key === key);
 
+    // Ensures that the file names are synced up
+    useFile(name, type, graphFolder);
+    
     const dispatch = useDispatch();
 
     let dragHandleMouseDown = useNodeMove(x, y, portRefs, dispatch, key);

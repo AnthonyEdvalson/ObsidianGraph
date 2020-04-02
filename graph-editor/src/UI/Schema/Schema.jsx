@@ -35,8 +35,11 @@ function getDefaultParams(schema) {
 
 
 function Schema(props) {
-    let data = useForm(props.dk)
+    let data = useForm(props.dk);
     let schema = useForm(props.k);
+
+    if (schema.data === null)
+        return null;
 
     return (
         <Form.Form onChange={data.handleChange} data={data.data}>
