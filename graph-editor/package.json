@@ -10,11 +10,13 @@
     "electron-is-dev": "^1.1.0",
     "jquery": "^3.4.1",
     "jszip": "^3.2.2",
+    "mousetrap": "^1.6.5",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-icons": "^3.9.0",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
+    "redux-undo": "^1.0.1",
     "stacktrace-js": "^2.0.2",
     "wait-on": "^4.0.0"
   },

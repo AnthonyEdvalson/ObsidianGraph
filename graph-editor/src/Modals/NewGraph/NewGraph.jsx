@@ -7,9 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 function NewGraph(props) {
     let dispatch = useDispatch();
     let open = useSelector(state => state.modals.newGraph);
+    let libdir = useSelector(state => state.library.path);
     
     const [state, setState] = useState({
-        directory: "C:\\Users\\tonye\\Documents\\Obsidian Projects",
+        directory: libdir,
         name: "New project",
         author: "",
         description: "",

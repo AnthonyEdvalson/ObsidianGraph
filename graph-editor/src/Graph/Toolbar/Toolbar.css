@@ -6,6 +6,7 @@
     right: 0;
     left: 0;
     z-index: 10000;
+    font-size: 16px;
 }
 
 .ToolbarNodeButton {
@@ -13,9 +14,9 @@
     height: 100%;
     width: 70px;
     text-align: center;
-    padding-top: 6px;
+    padding-top: 4px;
     color: #fff;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 1px;
     background-color: var(--io-dim);
     transition: background-color 0.2s ease-out;

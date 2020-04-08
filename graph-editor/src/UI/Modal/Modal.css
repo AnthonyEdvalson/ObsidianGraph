@@ -16,9 +16,8 @@
     animation-timing-function: ease-out;
     background-color: #00000050;
     opacity: 0;
-    padding-top: 40px;
     z-index: 1000000;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(2px);
     display: flex;
     justify-content: center;
     align-items: center; 
@@ -28,6 +27,7 @@
 
 .modal-dialog {
     background-color: #28323e;
+    box-shadow: 0 0 40px #00000070;
     max-width: 600px;
     width: 100%;
     min-height: 200px;
@@ -51,5 +51,9 @@
     100% {
         padding-top: 0;
         opacity: 1;
+    }
+    0% {
+        padding-top: 10px;
+        opacity: 0;
     }
 }

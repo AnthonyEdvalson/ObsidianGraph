@@ -1,3 +1,6 @@
+const { getDefaultParams } = require("../UI/Schema");
+
+
 function uuid4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => {
         let a = crypto.getRandomValues(new Uint8Array(1))[0];
@@ -23,38 +26,50 @@ function MOVE_NODE(state, action) {
     return newState;
 }
 
+
+function transformImportedGraph(graph, path) {    
+    let data = {
+        path,
+        parameters: null,
+        inputs:[], 
+        output: null, 
+        schema: null,
+        name: graph.meta.name,
+        meta: graph.meta
+    };
+
+    for (let node of Object.values(graph.nodes)) {
+        if (node.type === "in") {
+            data.inputs.push({ label: node.name, type: node.output.type });
+        }
+
+        if (node.type === "out") {
+            data.output = { label: node.name, type: node.inputs[0].type };
+        }
+
+        if (node.type === "edit") {
+            data.schema = JSON.parse(node.schema);
+            data.parameters = getDefaultParams(data.schema);
+        }
+    }
+    
+    return data;
+}
+
+
 function NEW_NODE(state, action) {
     let type = action.nodeType;
 
     let data = {
-        py: {name: "Python", inputs: [{label: "input", type: "py"}], module: ""},
-        js: {name: "JavaScript", inputs: [{label: "input", type: "js"}], path: ""},
-        data: {name: "Data", content: ""},
-        in: {name: "Input", output: {label: "value", type: "data"}},
-        out: {name: "Output", inputs: [{label: "value", type: "data"}], output: null},
-        edit: {name: "Editor", output: {label: "data", type: "data"}, schema: ""},
-        graph: action.data
-    }[type];
+        py: () => ({name: "Python", inputs: [{label: "input", type: "py"}]}),
+        js: () => ({name: "JavaScript", inputs: [{label: "input", type: "js"}]}),
+        data: () => ({name: "Data", content: ""}),
+        in: () => ({name: "Input", output: {label: "value", type: "data"}}),
+        out: () => ({name: "Output", inputs: [{label: "value", type: "data"}], output: null}),
+        edit: () => ({name: "Editor", output: {label: "value", type: "data"}, schema: ""}),
+        graph: () => transformImportedGraph(action.data, action.path)
+    }[type]();
 
-    /*let fileDatas = {
-        py:   {ext: "py",   folder: "front", content: "def main(o):\n\t\n"},
-        js:   {ext: "py",   folder: "back", content: "import React from 'react';\n\nfunction main(o) {\n\t\n}\n\nexport default main;\n"},
-        data: {ext: "json", folder: "resources", content: ""}
-    };
-
-    if (type in fileDatas) {
-        let fileData = fileDatas[type];
-        console.log(state.meta.path);
-        console.log(fileData.folder);
-        console.log(data.name)
-        console.log(fileDatas.ext);
-        let filePath = path.join(state.meta.path, fileData.folder, data.name + "." + fileData.ext);
-        console.log({filePath, fileData});
-        fs.writeFile(filePath, fileData.content, {flag: "wx"}, (err) => {
-            if (err) throw err;
-        })
-    }*/
-    
     let newState = {
         ...state, 
         nodes:{ ...state.nodes } 
@@ -65,26 +80,24 @@ function NEW_NODE(state, action) {
         name: "New Node",
         x: 0,
         y: 0,
-        preview: {
-            state: "loading",
-            data: null
-        },
         inputs: [],
-        output: {label: "out", type: type},
+        output: {label: "value", type: type},
         ...data
     }
 
+    let nodeKey = uuid4();
+
     for (let input of newNode.inputs) {
         input.key = uuid4();
-        newState.ports[input.key] = {x: 0, y: 0};
+        newState.ports[input.key] = {x: 0, y: 0, node: nodeKey};
     }
 
     if (newNode.output) {
         newNode.output.key = uuid4();
-        newState.ports[newNode.output.key] = {x: 0, y: 0};
+        newState.ports[newNode.output.key] = {x: 0, y: 0, node: nodeKey};
     }
 
-    newState.nodes[uuid4()] = newNode;
+    newState.nodes[nodeKey] = newNode;
     return newState;
 };
 

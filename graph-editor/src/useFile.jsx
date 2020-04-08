@@ -57,13 +57,19 @@ let fileDatas = {
     data: {ext: "json", folder: "resources", content: ""}
 };
 
-function getFilePath(name, type, folder) {
+function getFilePath(name, type, projectFolder) {
     if (!(type in fileDatas))
         return null;
 
     let fd = fileDatas[type];
+    let fileName = name + "." + fd.ext;
 
-    return path.join(folder, fd.folder, name + "." + fd.ext);
+    try {
+        return path.normalize(path.join(projectFolder, fd.folder, fileName));
+    } catch (error) {
+        console.log([projectFolder, fd.folder, fileName])
+        throw error;
+    }
 }
 
 function useFileRef(name, type, folder) {

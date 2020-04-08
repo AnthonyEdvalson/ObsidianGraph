@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './Library.css';
 import { useDispatch, useSelector } from 'react-redux';
 import path from 'path';
@@ -10,14 +10,13 @@ const fs = window.require("fs");
 
 function traverseCategory(dir, name, callback) {
     let cat = { type: "category", categories: [], nodes: [], name };
-
     fs.readdir(dir, (err, files) => {
         if (err) throw err;
 
         for (let file of files) {
-            if (file.endsWith(".obn")) {
-                // Found an .obn file, assume this is a project folder
-                callback({ type: "node", name, obnPath: path.join(dir, file), projectPath: dir });
+            if (file.endsWith(".obg")) {
+                // Found an .obg file, assume this is a project folder
+                callback({ type: "node", name, obgPath: path.join(dir, file), projectPath: dir });
                 return;
             }
         }
@@ -32,7 +31,7 @@ function traverseCategory(dir, name, callback) {
                 callback(cat);
             }
         }
-        // No .obn found, this is a category folder
+        // No .obg found, this is a category folder
         for (let file of files) {
             let filePath = path.join(dir, file);
 
@@ -52,6 +51,9 @@ function traverseCategory(dir, name, callback) {
                 }
             });
         }
+
+        if (files.length === 0)
+            markComplete();
     });
 }
 
@@ -61,21 +63,25 @@ function Library() {
     const libData = useSelector(state => state.library);
     const [search, setSearch] = useState("");
 
-    useEffect(() => {
-        let libDir = "C:\\Users\\tonye\\Documents\\Obsidian Projects";
-        traverseCategory(libDir, "GLIB", libData => {
-            console.log(libData);
-            dispatch({type: "SET_LIBRARY", data: libData})
-        });
-    }, [dispatch]);
+    let libDir = libData.path;
 
+    let refresh = useCallback(() => {
+        traverseCategory(libDir, "GLIB", newData => {
+            dispatch({type: "SET_LIBRARY", data: newData});
+        });
+    }, [libDir, dispatch]);
+
+    useEffect(() => {
+        refresh();
+    }, [refresh]);
 
     return (
         <div className="Library">
+            <UI.Button onClick={refresh}>Refresh</UI.Button>
             <Form.Form onChange={setSearch} data={search}>
                 <UI.TextInput />
             </Form.Form>
-            <Category data={libData} search={search} />
+            <Category data={libData.contents} search={search} />
         </div>
     );
 }

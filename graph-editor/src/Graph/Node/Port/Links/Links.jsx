@@ -3,8 +3,8 @@ import Link from './Link';
 import { useSelector } from 'react-redux';
 
 function Links() {
-    let links = useSelector(state => state.graph.links);
-    let ports = useSelector(state => state.graph.ports);
+    let links = useSelector(state => state.graph.present.links);
+    let ports = useSelector(state => state.graph.present.ports);
 
     return (
         <svg className="Links" width={2000} height={2000}>

@@ -51,9 +51,12 @@ function DELETE_SELECTION(state, action) {
             newState.nodes = {...newState.nodes};
             delete newState.nodes[item.key];
 
-            fs.unlink(getFilePath(target.name, target.type, state.meta.path), err => {
-                if (err) throw err;
-            });
+            let filePath = getFilePath(target.name, target.type, state.path);
+            if (filePath) {
+                fs.unlink(filePath, err => {
+                    if (err) throw err;
+                });
+            }
         }
         if (item.type === "link") {
             newState.links = {...newState.links};

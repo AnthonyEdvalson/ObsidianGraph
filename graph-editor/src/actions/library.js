@@ -1,5 +1,8 @@
 function SET_LIBRARY(state, action) {
-    return action.data;
+    return {
+        ...state,
+        contents: action.data
+    };
 }
 
 export default { SET_LIBRARY };

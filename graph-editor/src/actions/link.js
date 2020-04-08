@@ -3,7 +3,8 @@ function START_LINK(state, action) {
         ...state,
         newLink: {
             ports: [action.port],
-            inout: action.inout
+            inout: action.inout,
+            transaction: action.transaction
         }
     }
 }
@@ -32,7 +33,8 @@ function RELINK(state, action) {
 
     newState.newLink = {
         ports,
-        inout: action.inout === "in" ? "out" : "in"
+        inout: action.inout === "in" ? "out" : "in",
+        transaction: action.transaction
     }
 
     return newState;

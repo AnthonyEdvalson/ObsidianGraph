@@ -16,7 +16,6 @@ function GraphSidebar(props) {
             <UI.TextInput k="name" />
             <UI.TextArea k="description" />
             <UI.TextInput k="author" />
-            <UI.TextInput k="category" />
             <UI.Checkbox k="hideInLibrary" />
             <UI.TextInput k="tags" />
             <UI.Label>Tags are spearated by spaces or commas</UI.Label>

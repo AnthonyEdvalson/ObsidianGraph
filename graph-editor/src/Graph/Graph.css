@@ -13,7 +13,7 @@
   --js-bright: #f16321;
   /*--io-bright: #ccc;*/
   --io-bright: #689bd6;
-  --data-bright: #ebe044;
+  --data-bright: #EFA26B;
   --graph-bright: #c21d1d;
   --edit-bright: #259bf5;
 
@@ -21,7 +21,7 @@
   --js-dim: #ad5024;
   /*--io-dim: #838383;*/
   --io-dim: #647f9e;
-  --data-dim: #cec653;
+  --data-dim: #C9885A;
   --graph-dim: #991c1c;
   --edit-dim: #1273bc;
 }

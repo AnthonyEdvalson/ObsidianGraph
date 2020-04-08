@@ -13,6 +13,7 @@
 
 .Heading>.Label {
     padding-top: 3px;
+    display: inline-block;
 }
 
 .Heading .heading-action,

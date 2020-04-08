@@ -6,13 +6,13 @@ import { useSelector } from 'react-redux';
 
 function Sidebar(props) {
     let selected = useSelector(state => {
-        let item = state.graph.selection.length === 1 ? state.graph.selection[0] : {};
+        let item = state.graph.present.selection.length === 1 ? state.graph.present.selection[0] : {};
 
         if (item.type === "node")
-            return {type: "node", data: state.graph.nodes[item.key], nodeKey: item.key};
+            return {type: "node", data: state.graph.present.nodes[item.key], nodeKey: item.key};
 
         if (item.type === "graph")
-            return {type: "graph", data: state.graph.meta};
+            return {type: "graph", data: state.graph.present.meta};
 
         return {type: null, data: null};
     });

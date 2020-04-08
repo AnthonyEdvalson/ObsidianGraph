@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './MenuBar.css';
 import Actions from './Actions';
-
+import Mousetrap from 'mousetrap';
 
 function MenuItem(props) {
     return (
@@ -13,12 +13,23 @@ function MenuItem(props) {
             </div>
         </div>
     )
-}
+} 
 
-
+ 
 function MenuOption(props) {
+    let action = () => Actions[props.action](props.state, props.dispatch);
+    
+    useEffect(() => {
+        if (props.shortcut) {
+            Mousetrap.bind(props.shortcut.toLowerCase(), action)
+            return () => {
+                 Mousetrap.unbind(props.shortcut.toLowerCase());
+            }
+        }
+    });
+
     return (
-        <div className="MenuOption" onClick={() => Actions[props.action](props.state, props.dispatch)}>
+        <div className="MenuOption" onClick={action}>
             <span>{props.children}</span>
             <small>{props.shortcut}</small>
         </div>
@@ -37,8 +48,13 @@ function MenuBar() {
                 {name: "New Graph...", shortcut: "Ctrl+N", action: "new"},
                 {name: "Open Graph...", shortcut: "Ctrl+O", action: "open"},
                 {name: "Save...", shortcut: "Ctrl+S", action: "save"},
+                null,
                 //{name: "Save As...", shortcut: "Ctrl+Shift+S", action: "saveAs"},
-                {name: "Export...", shortcut: "Ctrl+E", action: "exportGraph"}
+                {name: "Export...", shortcut: "Ctrl+E", action: "exportGraph"},
+                {name: "Open GLIB Folder", action: "showGLIB"},
+                null,
+                {name: "Refresh", shortcut: "F5", action: "refresh"},
+                {name: "Exit", action: "exit"}
             ],
         },
         {

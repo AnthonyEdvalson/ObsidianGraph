@@ -4,7 +4,9 @@ import Draggable from '../Draggable';
 import './Node.css';
 import Port from './Port';
 import { useSelector, useDispatch } from 'react-redux';
-import useFile from '../../useFile';
+import useFile, { getFilePath } from '../../useFile';
+import launchEditor from '../../launchEditor';
+const fs = window.require("fs");
 
 function useNodeMove(x, y, portRefs, dispatch, key) {
     const drag = Draggable(x, y, null, useCallback(e => {
@@ -38,12 +40,11 @@ function useKeyStore(defaultValue={}) {
 function Node(props) {
     const key = props.k;
 
-    const data = useSelector(state => state.graph.nodes[key]);
-    const selection = useSelector(state => state.graph.selection);
-    const graphFolder = useSelector(state => state.graph.meta.path);
+    const data = useSelector(state => state.graph.present.nodes[key]);
+    const selection = useSelector(state => state.graph.present.selection);
+    const graphFolder = useSelector(state => state.graph.present.path);
 
-    const {x, y, name, type, inputs, output, preview} = data;
-    const hasError = preview.state === "error";
+    const { x, y, name, type, inputs, output } = data;
     const [portRefs, setRef] = useKeyStore();
     const selected = selection.some(item => item.type === "node" && item.key === key);
 
@@ -58,14 +59,33 @@ function Node(props) {
         return <Port data={pdata} key={pIndex} k={pIndex} inout={inout} setRef={setRef} />
     }, [setRef]);
 
+    let subgraphPath = data.path;
+
     const handleMouseDown = useCallback((e) => {
-        dispatch({type: "SET_SELECTION", items: [{type: "node", key}]});
-        dragHandleMouseDown(e);
-    }, [dragHandleMouseDown, dispatch, key]);
+        if (e.button === 2) {
+            switch (type) {
+                case "js": 
+                case "py":
+                case "data":
+                    let filePath = getFilePath(name, type, graphFolder);
+                    launchEditor(filePath, 1);
+                    break;
+                case "graph":
+                    fs.readFile(subgraphPath, (err, data) => {
+                        if (err) throw err;
+                        dispatch({type: "LOAD_GRAPH", data: JSON.parse(data), filePath: subgraphPath});
+                    })
+                    break;
+                default:
+            }
+        }
+        else {
+            dispatch({type: "SET_SELECTION", items: [{type: "node", key}]});
+            dragHandleMouseDown(e);
+        }
+    }, [dragHandleMouseDown, dispatch, key, type, name, graphFolder, subgraphPath]);
 
     let className = `Node node-${type}`;
-    if (hasError)
-        className += " node-error";
     if (selected)
         className += " node-selected"
 
@@ -74,12 +94,7 @@ function Node(props) {
             <div className="node-info">
                 {name}
             </div>
-            {
-                (preview.state === "loaded" || hasError) && (
-                <div className="node-preview">
-                    {JSON.stringify(preview.data, null, 2)}
-                </div>)
-            }
+            <div className="node-preview"></div>
             <div className="node-ports-in">
             {
                 inputs.map((port) => (makePort(port.key, port, "in")))

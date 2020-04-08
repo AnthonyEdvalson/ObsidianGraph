@@ -21,7 +21,7 @@ function ToolbarNodeButton(props) {
 }
 
 function Toolbar() {
-    const outputExists = useSelector(state => Object.values(state.graph.nodes).some(n => n.type === "out"));
+    const outputExists = useSelector(state => Object.values(state.graph.present.nodes).some(n => n.type === "out"));
 
     return (
         <div className="Toolbar">

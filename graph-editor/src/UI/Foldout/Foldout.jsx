@@ -5,22 +5,15 @@ import Collapse from '../Collapse';
 
 function Foldout(props) {
     const [open, setOpen] = useState(props.open || true);
-    let body = null;
-    
-    if (open) {
-        body = (
-            <div className="foldout-body">
-                {open && props.children}
-            </div>
-        )
-    }
 
-    return (<div className={open ? "Foldout ui-elem" : "Foldout ui-elem foldout-open"} onClick={() => {}}>
+    return (<div className="ui-elem Foldout" onClick={() => {}}>
         <Heading label={props.label}>
             <Collapse open={open} onClick={() => setOpen(prevState => (!prevState))}></Collapse>
             {props.actions}
         </Heading>
-        {body}
+        <div className={"foldout-body" + (open ? " foldout-body-open" : "")}>
+            {props.children}
+        </div>
     </div>);
 }
 

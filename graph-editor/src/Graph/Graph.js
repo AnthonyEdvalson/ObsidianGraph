@@ -9,7 +9,7 @@ import Toolbar from './Toolbar';
 function Graph(props) {
   const graphRef = useRef(null);
   const dispatch = useDispatch();
-  const graph = useSelector(state => state.graph);
+  const graph = useSelector(state => state.graph.present);
 
   function handleMouseDown(e) {
     if (e.button === 0)

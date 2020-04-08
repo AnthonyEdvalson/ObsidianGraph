@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import './Port.css';
 import { useDispatch } from 'react-redux';
+import { uuid4 } from '../../../actions/node';
 
 
 function Port(props) {
@@ -19,9 +20,9 @@ function Port(props) {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey)
-            dispatch({type: "RELINK", port: key, inout});
+            dispatch({type: "RELINK", port: key, inout, transaction: uuid4()});
         else
-            dispatch({type: "START_LINK", port: key, inout});
+            dispatch({type: "START_LINK", port: key, inout, transaction: uuid4()});
     }
 
     const handleMouseUp = (e) => {

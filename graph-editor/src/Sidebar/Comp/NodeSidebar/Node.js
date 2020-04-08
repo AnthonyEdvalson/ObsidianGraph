@@ -41,7 +41,7 @@ function Node(props) {
                 <UI.Button onClick={handleDelete}>DELETE</UI.Button>
                 {/*<UI.Dropdown k="type" options={["data", "py", "js", "graph", "in", "out", "edit"]}/>*/}
             </UI.Foldout>
-            {body != null && body({nodeKey: props.nodeKey})}
+            {body !== null && React.createElement(body, {nodeKey: props.nodeKey})}
         </Form.Form>
     );
 }

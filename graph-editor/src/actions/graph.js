@@ -1,4 +1,4 @@
-import path from 'path';
+const path = window.require("path");
 const fs = window.require("fs");
 
 let emptyTemplate = {
@@ -14,16 +14,14 @@ let webAppTemplate = {
             name: "Input",
             x: 50,
             y: 50,
-            preview: { state: "loaded", data: {}},
             inputs: [],
-            output: {key: "Aout", label: "out", type: "py"}
+            output: {key: "Aout", label: "value", type: "py"}
         },
         B: {
             type: "out",
             name: "Output",
             x: 950,
             y: 50,
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Bin", label: "input", type: "py"}],
             output: null
         },
@@ -32,29 +30,25 @@ let webAppTemplate = {
             name: "Python",
             x: 350,
             y: 50,
-            module: "main.python_node",
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Cin", label: "input", type: "py"}],
-            output: {key: "Cout", label: "output", type: "py"}
+            output: {key: "Cout", label: "value", type: "py"}
         },
         D: {
             type: "js",
             name: "JavaScript",
             x: 650,
             y: 50,
-            path: "component",
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Din", label: "input", type: "js"}],
-            output: {key: "Dout", label: "output", type: "js"}
+            output: {key: "Dout", label: "value", type: "js"}
         }
     },
     ports: {
-        Aout: { x: 50, y: 50 },
-        Bin: { x: 950, y: 50 },
-        Cin: { x: 350, y: 50 },
-        Cout: { x: 350, y: 50 },
-        Din: { x: 650, y: 50 },
-        Dout: { x: 650, y: 50 }
+        Aout: { x: 50, y: 50, node: "A" },
+        Bin: { x: 950, y: 50, node: "B" },
+        Cin: { x: 350, y: 50, node: "C" },
+        Cout: { x: 350, y: 50, node: "C" },
+        Din: { x: 650, y: 50, node: "D" },
+        Dout: { x: 650, y: 50, node: "D" }
     },
     links: {
         Bin: "Dout",
@@ -70,16 +64,14 @@ let frontendTemplate = {
             name: "Input",
             x: 50,
             y: 50,
-            preview: { state: "loaded", data: {}},
             inputs: [],
-            output: {key: "Aout", label: "out", type: "js"}
+            output: {key: "Aout", label: "value", type: "js"}
         },
         B: {
             type: "out",
             name: "Output",
             x: 650,
             y: 50,
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Bin", label: "input", type: "js"}],
             output: null
         },
@@ -88,17 +80,15 @@ let frontendTemplate = {
             name: "JavaScript",
             x: 350,
             y: 50,
-            path: "component",
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Cin", label: "input", type: "js"}],
-            output: {key: "Cout", label: "output", type: "js"}
+            output: {key: "Cout", label: "value", type: "js"}
         }
     },
     ports: {
-        Aout: { x: 50, y: 50 },
-        Bin: { x: 650, y: 50 },
-        Cin: { x: 350, y: 50 },
-        Cout: { x: 350, y: 50 }
+        Aout: { x: 50, y: 50, node: "A" },
+        Bin: { x: 650, y: 50, node: "B" },
+        Cin: { x: 350, y: 50, node: "C" },
+        Cout: { x: 350, y: 50, node: "C" }
     },
     links: {
         Bin: "Cout",
@@ -113,16 +103,14 @@ let backendTemplate = {
             name: "Input",
             x: 50,
             y: 50,
-            preview: { state: "loaded", data: {}},
             inputs: [],
-            output: {key: "Aout", label: "out", type: "py"}
+            output: {key: "Aout", label: "value", type: "py"}
         },
         B: {
             type: "out",
             name: "Output",
             x: 650,
             y: 50,
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Bin", label: "input", type: "py"}],
             output: null
         },
@@ -131,17 +119,15 @@ let backendTemplate = {
             name: "Python",
             x: 350,
             y: 50,
-            module: "main.python_node",
-            preview: { state: "loaded", data: null },
             inputs: [{key: "Cin", label: "input", type: "py"}],
-            output: {key: "Cout", label: "output", type: "py"}
+            output: {key: "Cout", label: "value", type: "py"}
         }
     },
     ports: {
-        Aout: { x: 50, y: 50 },
-        Bin: { x: 650, y: 50 },
-        Cin: { x: 350, y: 50 },
-        Cout: { x: 350, y: 50 }
+        Aout: { x: 50, y: 50, node: "A" },
+        Bin: { x: 650, y: 50, node: "B" },
+        Cin: { x: 350, y: 50, node: "C" },
+        Cout: { x: 350, y: 50, node: "C" }
     },
     links: {
         Bin: "Cout",
@@ -152,10 +138,8 @@ let backendTemplate = {
 function LOAD_GRAPH(state, action) {
     let newState = {
         ...action.data,
-        newLink: {
-            port: null,
-            inout: null
-        },
+        path: action.folderPath || path.dirname(action.filePath),
+        newLink: null,
         selection: []
     };
 
@@ -169,7 +153,7 @@ function NEW_GRAPH(state, action) {
     let frontDir = path.join(dir, "front");
     let backDir = path.join(dir, "back");
     let resDir = path.join(dir, "resources");
-    let obnPath = path.join(dir, name + ".obn");
+    let obgPath = path.join(dir, name + ".obg");
 
     fs.access(dir, err => {
         if (!err) throw(new Error(dir + " already exists"));
@@ -180,7 +164,7 @@ function NEW_GRAPH(state, action) {
             fs.mkdir(backDir,  {}, err => {if (err) throw(err)});
             fs.mkdir(resDir,   {}, err => {if (err) throw(err)});
             
-            fs.open(obnPath, "wx", (err, fd) => {
+            fs.open(obgPath, "wx", (err, fd) => {
                 if (err) throw err;
                 fs.close(fd, err => {
                     if (err) throw err;
@@ -198,13 +182,12 @@ function NEW_GRAPH(state, action) {
 
     template.meta = {
         name: action.name,
-        path: dir,
         author: action.author,
         description: action.description,
         tags: "",
-        category: "",
         hideInLibrary: false
     };
+    template.path = dir;
 
     return LOAD_GRAPH(state, {data: template});
 }
@@ -218,7 +201,7 @@ function SAVE_GRAPH(state, action) {
         links: state.links
     }, null, 2);
 
-    let p = action.path || path.join(state.meta.path, state.meta.name + ".obn");
+    let p = action.path || path.join(state.path, state.meta.name + ".obg");
     fs.writeFile(p, data, err => {
         if (err) throw err;
     });
