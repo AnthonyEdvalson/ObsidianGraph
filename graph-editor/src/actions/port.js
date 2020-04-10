@@ -1,21 +1,6 @@
 import { uuid4 } from './node';
 import linkActions from './link';
 
-function MOVE_PORT(state, action) {
-    let newState = {
-        ...state,
-        ports: { ...state.ports }
-    };
-
-    newState.ports[action.port] = {
-        ...newState.ports[action.port],
-        x: action.x,
-        y: action.y
-    };
-
-    return newState;
-}
-
 function DELETE_PORT(state, action) {
     let key = action.key;
     let newState = {
@@ -52,5 +37,14 @@ function ADD_PORT(state, action) {
     return newState;
 }
 
+function CHANGE_PORT(state, action) {
+    let newState = {
+        ...state,
+        ports: { ...state.ports }
+    };
 
-export default { MOVE_PORT, DELETE_PORT, ADD_PORT };
+    newState.ports[action.port] = action.change(newState.ports[action.port]);
+    return newState;
+}
+
+export default { DELETE_PORT, ADD_PORT, CHANGE_PORT };

@@ -43,12 +43,12 @@ let webAppTemplate = {
         }
     },
     ports: {
-        Aout: { x: 50, y: 50, node: "A" },
-        Bin: { x: 950, y: 50, node: "B" },
-        Cin: { x: 350, y: 50, node: "C" },
-        Cout: { x: 350, y: 50, node: "C" },
-        Din: { x: 650, y: 50, node: "D" },
-        Dout: { x: 650, y: 50, node: "D" }
+        Aout: { node: "A" },
+        Bin: { node: "B" },
+        Cin: { node: "C" },
+        Cout: { node: "C" },
+        Din: { node: "D" },
+        Dout: { node: "D" }
     },
     links: {
         Bin: "Dout",
@@ -85,10 +85,10 @@ let frontendTemplate = {
         }
     },
     ports: {
-        Aout: { x: 50, y: 50, node: "A" },
-        Bin: { x: 650, y: 50, node: "B" },
-        Cin: { x: 350, y: 50, node: "C" },
-        Cout: { x: 350, y: 50, node: "C" }
+        Aout: { node: "A" },
+        Bin: { node: "B" },
+        Cin: { node: "C" },
+        Cout: { node: "C" }
     },
     links: {
         Bin: "Cout",
@@ -124,10 +124,10 @@ let backendTemplate = {
         }
     },
     ports: {
-        Aout: { x: 50, y: 50, node: "A" },
-        Bin: { x: 650, y: 50, node: "B" },
-        Cin: { x: 350, y: 50, node: "C" },
-        Cout: { x: 350, y: 50, node: "C" }
+        Aout: { node: "A" },
+        Bin: { node: "B" },
+        Cin: { node: "C" },
+        Cout: { node: "C" }
     },
     links: {
         Bin: "Cout",
@@ -140,7 +140,8 @@ function LOAD_GRAPH(state, action) {
         ...action.data,
         path: action.folderPath || path.dirname(action.filePath),
         newLink: null,
-        selection: []
+        selection: {all: [], items: []},
+        transform: { x: 0, y: 0, scale: 1 }
     };
 
     return newState;
@@ -198,7 +199,8 @@ function SAVE_GRAPH(state, action) {
         meta: state.meta,
         nodes: state.nodes,
         ports: state.ports,
-        links: state.links
+        links: state.links,
+        transform: state.transform
     }, null, 2);
 
     let p = action.path || path.join(state.path, state.meta.name + ".obg");
@@ -209,4 +211,32 @@ function SAVE_GRAPH(state, action) {
     return state;
 }
 
-export default { LOAD_GRAPH, NEW_GRAPH, SAVE_GRAPH };
+function clientToGraph(x, y, gt) {
+    return {
+        x: (x - gt.x) / gt.scale,
+        y: (y - gt.y) / gt.scale
+    }
+}
+
+function MOVE_GRAPH(state, {ds, dy, dx, pivot}) {
+    let newState = {
+        ...state,
+        transform: { ...state.transform }
+    };
+
+    if (ds) {
+        let {x, y} = clientToGraph(pivot.x, pivot.y, newState.transform);
+        console.log(x, y);
+        newState.transform.scale *= ds;
+        newState.transform.x -= (x * (1 - 1 / ds)) * newState.transform.scale;
+        newState.transform.y -= (y * (1 - 1 / ds)) * newState.transform.scale;
+    }
+    if (dx)
+        newState.transform.x += dx;
+    if (dy)
+        newState.transform.y += dy;
+    console.log(newState.transform.x, newState.transform.y, newState.transform)
+    return newState;
+}
+
+export default { LOAD_GRAPH, NEW_GRAPH, SAVE_GRAPH, MOVE_GRAPH };

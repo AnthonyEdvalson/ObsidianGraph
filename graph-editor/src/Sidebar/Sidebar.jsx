@@ -6,7 +6,10 @@ import { useSelector } from 'react-redux';
 
 function Sidebar(props) {
     let selected = useSelector(state => {
-        let item = state.graph.present.selection.length === 1 ? state.graph.present.selection[0] : {};
+        if (!state.graph.present.meta)
+            return null;
+
+        let item = state.graph.present.selection.items.length === 1 ? state.graph.present.selection.items[0] : {};
 
         if (item.type === "node")
             return {type: "node", data: state.graph.present.nodes[item.key], nodeKey: item.key};
@@ -19,7 +22,7 @@ function Sidebar(props) {
 
     let content = null;
 
-    if (selected.type === "node") {
+    if (selected && selected.type === "node") {
         let node = selected.data;
         content = (
             <>
@@ -31,7 +34,7 @@ function Sidebar(props) {
             </>
         );
     }
-    else if (selected.type === "graph") {
+    else if (selected && selected.type === "graph") {
         let meta = selected.data;
 
         content = (

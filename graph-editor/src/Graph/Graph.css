@@ -3,7 +3,7 @@
   position: relative;
   height: 100%;
   flex-grow: 1;
-  overflow: scroll;
+  overflow: hidden;
 
   --node-width: 280px;
   --port-width: 20px;
@@ -24,4 +24,14 @@
   --data-dim: #C9885A;
   --graph-dim: #991c1c;
   --edit-dim: #1273bc;
+}
+
+
+.graph-body {
+  transform-origin: top left;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }

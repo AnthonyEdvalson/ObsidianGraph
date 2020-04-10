@@ -36,7 +36,6 @@ function save(state, dispatch) {
 
 function exportGraph(state, dispatch) {
     let compGraph = compileGraph(state.graph.present);
-    console.log(compGraph)
 
     let zip = new JSZip();
     zip.file("front.json", JSON.stringify({nodes: compGraph.front, output: compGraph.output}));
@@ -98,6 +97,14 @@ function redo(state, dispatch) {
     dispatch(ActionCreators.redo())
 }
 
+function devtools(state, dispatch) {
+    remote.getCurrentWindow().webContents.openDevTools();
+}
+
+function selectAll(state, dispatch) {
+    dispatch({"type": "SELECT_ALL"});
+}
+
 export default {
     new: newGraph,
     open,
@@ -108,5 +115,7 @@ export default {
     exportGraph,
     showGLIB,
     refresh,
-    exit
+    exit,
+    devtools,
+    selectAll
 };

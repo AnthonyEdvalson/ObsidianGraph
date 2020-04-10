@@ -1,20 +1,15 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import './Port.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { uuid4 } from '../../../actions/node';
 
 
 function Port(props) {
-    let {data, inout, setRef} = props;
-    let {type, label} = data;
+    let {inout} = props;
     let key = props.k;
+    let {label} = useSelector(state => state.graph.present.ports[key]);
     
     const dispatch = useDispatch();
-    const ref = useRef(null);
-
-    useEffect(() => {
-        setRef(key, ref);
-    }, [ref, key, setRef]);
 
     const handleMouseDown = (e) => {
         e.preventDefault();
@@ -32,8 +27,8 @@ function Port(props) {
     }
 
     return (
-        <div className={"Port node-" + type}>
-            <div ref={ref} className="port-ring" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
+        <div className={"Port node-io"/* + type*/}>
+            <div className="port-ring" onMouseDown={handleMouseDown} onMouseUp={handleMouseUp}>
                 <span className="port-label">{label}</span>
             </div>
         </div>

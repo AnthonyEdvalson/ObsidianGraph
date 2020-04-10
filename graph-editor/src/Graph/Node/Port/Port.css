@@ -6,7 +6,7 @@
 }
 
 .port-ring {
-  background-color: #f0f;
+  background-color: var(--io-bright);
   box-shadow: 0 0 0 3px #212a35b0 inset;
   width: var(--port-width);
   height: var(--port-width);
@@ -33,7 +33,7 @@
   transition: opacity 0.1s ease-out, transform 0.08s ease-out;
   pointer-events: none;
   color: #fff;
-  text-shadow: 0 0 3px #000;
+  text-shadow: 1px 1px 2px #000;
   font-size: 15px;
 }
 

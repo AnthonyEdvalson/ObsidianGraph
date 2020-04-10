@@ -17,7 +17,10 @@ function MenuItem(props) {
 
  
 function MenuOption(props) {
-    let action = () => Actions[props.action](props.state, props.dispatch);
+    let action = (e) => {
+        e.preventDefault();
+        Actions[props.action](props.state, props.dispatch);
+    }
     
     useEffect(() => {
         if (props.shortcut) {
@@ -53,6 +56,7 @@ function MenuBar() {
                 {name: "Export...", shortcut: "Ctrl+E", action: "exportGraph"},
                 {name: "Open GLIB Folder", action: "showGLIB"},
                 null,
+                {name: "Dev Tools", shortcut: "F11", action: "devtools"},
                 {name: "Refresh", shortcut: "F5", action: "refresh"},
                 {name: "Exit", action: "exit"}
             ],
@@ -62,7 +66,11 @@ function MenuBar() {
             options: [
                 {name: "Undo", shortcut: "Ctrl+Z", action: "undo"},
                 {name: "Redo", shortcut: "Ctrl+Y", action: "redo"},
-                null
+                null,
+                {name: "Select All", shortcut: "Ctrl+A", action: "selectAll"},
+                {name: "Copy", shortcut: "Ctrl+C", action: "copy"},
+                {name: "Paste", shortcut: "Ctrl+V", action: "past"},
+                {name: "Duplicate", shortcut: "Ctrl+D", action: "duplicate"}
             ]
         },
         {

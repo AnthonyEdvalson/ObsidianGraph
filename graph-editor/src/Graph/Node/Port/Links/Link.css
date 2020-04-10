@@ -1,6 +1,7 @@
 .Links {
     position: absolute;
     z-index: 50;
+    background-color: #14191f;
 }
 
 .Link .link-interact {

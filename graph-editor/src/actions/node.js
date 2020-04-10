@@ -8,48 +8,30 @@ function uuid4() {
     });
 }
 
-function MOVE_NODE(state, action) {
-    let newState = {...state, nodes: {...state.nodes}, ports: {...state.ports}};
-    newState.nodes[action.node] = {
-        ...state.nodes[action.node],
-        x: action.x,
-        y: action.y
-    }
-
-    for (let port of action.ports) {
-        newState.ports[port.port] = {
-            ...state.ports[port.port],
-            x: port.x,
-            y: port.y
-        };
-    }
-    return newState;
-}
-
 
 function transformImportedGraph(graph, path) {    
     let data = {
-        path,
-        parameters: null,
-        inputs:[], 
-        output: null, 
-        schema: null,
-        name: graph.meta.name,
-        meta: graph.meta
+        node: {
+            path,
+            parameters: null,
+            schema: null,
+            name: graph.meta.name,
+            meta: graph.meta
+        },
+        inputs: [],
+        output: null
     };
 
     for (let node of Object.values(graph.nodes)) {
-        if (node.type === "in") {
+        if (node.type === "in")
             data.inputs.push({ label: node.name, type: node.output.type });
-        }
 
-        if (node.type === "out") {
+        if (node.type === "out")
             data.output = { label: node.name, type: node.inputs[0].type };
-        }
 
         if (node.type === "edit") {
-            data.schema = JSON.parse(node.schema);
-            data.parameters = getDefaultParams(data.schema);
+            data.node.schema = JSON.parse(node.schema);
+            data.node.parameters = getDefaultParams(data.schema);
         }
     }
     
@@ -61,12 +43,12 @@ function NEW_NODE(state, action) {
     let type = action.nodeType;
 
     let data = {
-        py: () => ({name: "Python", inputs: [{label: "input", type: "py"}]}),
-        js: () => ({name: "JavaScript", inputs: [{label: "input", type: "js"}]}),
-        data: () => ({name: "Data", content: ""}),
-        in: () => ({name: "Input", output: {label: "value", type: "data"}}),
-        out: () => ({name: "Output", inputs: [{label: "value", type: "data"}], output: null}),
-        edit: () => ({name: "Editor", output: {label: "value", type: "data"}, schema: ""}),
+        py: () => ({node: {name: "Python"}, inputs: [{label: "input", type: "py"}]}),
+        js: () => ({node: {name: "JavaScript"}, inputs: [{label: "input", type: "js"}]}),
+        data: () => ({node: {name: "Data", content: ""}}),
+        in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
+        out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
+        edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value", type: "data"}}),
         graph: () => transformImportedGraph(action.data, action.path)
     }[type]();
 
@@ -80,21 +62,23 @@ function NEW_NODE(state, action) {
         name: "New Node",
         x: 0,
         y: 0,
+        output: null,
         inputs: [],
-        output: {label: "value", type: type},
-        ...data
+        ...data.node
     }
 
     let nodeKey = uuid4();
 
-    for (let input of newNode.inputs) {
-        input.key = uuid4();
-        newState.ports[input.key] = {x: 0, y: 0, node: nodeKey};
+    for (let input of data.inputs) {
+        let key = uuid4();
+        newNode.inputs.push(key);
+        newState.ports[key] = { node: nodeKey, ...input };
     }
 
-    if (newNode.output) {
-        newNode.output.key = uuid4();
-        newState.ports[newNode.output.key] = {x: 0, y: 0, node: nodeKey};
+    if (data.output) {
+        let key = uuid4();
+        newNode.output = key;
+        newState.ports[key] = { node: nodeKey, ...data.output};
     }
 
     newState.nodes[nodeKey] = newNode;
@@ -102,5 +86,5 @@ function NEW_NODE(state, action) {
 };
 
 
-export default { MOVE_NODE, NEW_NODE };
+export default { NEW_NODE };
 export { uuid4 };

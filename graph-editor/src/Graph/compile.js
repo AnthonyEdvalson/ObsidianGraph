@@ -6,7 +6,9 @@ function resolveInputs(graph, inputs, graphInputs) {
     let { links, ports, nodes } = graph;
     let result = {};
 
-    for (let { key, label } of inputs) {
+    for (let key of inputs) {
+        console.log({key, inputs, graph});
+        let {label} = graph.ports[key];
         let sourceName = null;
 
         if (key in links) {
@@ -15,7 +17,6 @@ function resolveInputs(graph, inputs, graphInputs) {
             let sourceNode = nodes[sourceNodeKey];
 
             if (sourceNode.type === "in") {
-                console.log({sourceNode, graphInputs});
                 sourceName = graphInputs[sourceNode.name];
             }
             else
@@ -84,7 +85,7 @@ function compileSubGraph(graph, inputs, prefix) {
     for (let node of Object.values(graph.nodes)) {
         switch (node.type) {
             case "out":
-                let outPort = node.inputs[0].key;
+                let outPort = node.inputs[0];
 
                 if (outPort in graph.links) {
                     let sourcePort = graph.links[outPort];
@@ -136,7 +137,7 @@ function compileSubGraph(graph, inputs, prefix) {
         data.files.back = applyPrefix(data.files.back, prefix);
         data.files.resources = applyPrefix(data.files.resources, prefix);
     }
-    
+    console.log(data);
     return data;
 }
 

@@ -11,21 +11,7 @@ import modalActions from './actions/modal';
 
 
 const init = {
-    graph: {
-        path: null,
-        meta: {
-            name: "Obsidian",
-            author: "",
-            description: "",
-            hideInLibrary: true,
-            tags: ""
-        },
-        nodes: { },
-        ports: { },
-        links: { },
-        newLink: null,
-        selection: []
-    },
+    graph: {},
     modals: {
         newGraph: false,
         openGraph: true,
@@ -53,18 +39,17 @@ let graphReducer = undoable(lookupReducer({...graphActions, ...nodeActions, ...p
     limit: 1000,
     groupBy: (action, currentState, previousHistory) => { 
         let groups = {
-            "MOVE_NODE": () => action.node,
-            "MOVE_PORT": () => currentState.ports[action.port].node,
+            "MOVE_SELECTION": () => "MOVE",
+            "MOVE_GRAPH": () => "MOVE",
             "START_LINK": () => action.transaction,
             "RELINK": () => action.transaction,
             "END_LINK": () => previousHistory.present.newLink.transaction
         };
-        console.log(previousHistory)
+        
         let t = action.type;
-        console.log(t in groups ? groups[t]() : null);
         return t in groups ? groups[t]() : null;
     },
-    filter: excludeAction(["SAVE_GRAPH"])
+    filter: excludeAction(["SAVE_GRAPH", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE"])
 });
 
 function rootReducer(state=init, action) {
