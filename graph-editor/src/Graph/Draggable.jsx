@@ -9,13 +9,14 @@ const Draggable = (cx, cy, handleStart=null, handleMove=null, handleEnd=null) =>
 
   // mouse move
   let handleMouseMove = useCallback(
-    ({ clientX, clientY, movementX, movementY }) => {
+    e => {
       if (state.isDragging && handleMove) {
         handleMove({
-          x: clientX - state.offsetX,
-          y: clientY - state.offsetY,
-          dx: movementX,
-          dy: movementY
+          x: e.clientX - state.offsetX,
+          y: e.clientY - state.offsetY,
+          dx: e.movementX,
+          dy: e.movementY,
+          e
         });
       }
     },
@@ -40,9 +41,9 @@ const Draggable = (cx, cy, handleStart=null, handleMove=null, handleEnd=null) =>
         isDragging: false
       }));
       if (handleMove)
-        handleMove({x: x, y: y, dx: 0, dy: 0});
+        handleMove({x: x, y: y, dx: 0, dy: 0, e});
       if (handleEnd)
-        handleEnd({x: x, y: y, dx: 0, dy: 0});
+        handleEnd({x: x, y: y, dx: 0, dy: 0, e});
     }
   }, [state.isDragging, cx, cy, handleEnd, handleMove]);
 
@@ -63,9 +64,9 @@ const Draggable = (cx, cy, handleStart=null, handleMove=null, handleEnd=null) =>
     }));
 
     if (handleStart)
-      handleStart({x: x - offX, y: y - offY, dx: 0, dy: 0});
+      handleStart({x: x - offX, y: y - offY, dx: 0, dy: 0, e});
     if (handleMove)
-      handleMove({x: x - offX, y: y - offY, dx: 0, dy: 0});
+      handleMove({x: x - offX, y: y - offY, dx: 0, dy: 0, e});
   }, [cx, cy, handleMove, handleStart]);
 
   useEffect(() => {

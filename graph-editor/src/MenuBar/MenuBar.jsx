@@ -56,7 +56,7 @@ function MenuBar() {
                 {name: "Export...", shortcut: "Ctrl+E", action: "exportGraph"},
                 {name: "Open GLIB Folder", action: "showGLIB"},
                 null,
-                {name: "Dev Tools", shortcut: "F11", action: "devtools"},
+                {name: "Dev Tools", shortcut: "F12", action: "devtools"},
                 {name: "Refresh", shortcut: "F5", action: "refresh"},
                 {name: "Exit", action: "exit"}
             ],
@@ -69,7 +69,7 @@ function MenuBar() {
                 null,
                 {name: "Select All", shortcut: "Ctrl+A", action: "selectAll"},
                 {name: "Copy", shortcut: "Ctrl+C", action: "copy"},
-                {name: "Paste", shortcut: "Ctrl+V", action: "past"},
+                {name: "Paste", shortcut: "Ctrl+V", action: "paste"},
                 {name: "Duplicate", shortcut: "Ctrl+D", action: "duplicate"}
             ]
         },

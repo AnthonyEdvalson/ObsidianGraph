@@ -10,8 +10,20 @@ function SET_SELECTION(state, action) {
         selection: { ...state.selection }
     };
 
-    if (action.ctrl)
-        newState.selection.items = [...state.selection.items, ...action.items];
+    if (action.ctrl) {
+        for (let item of action.items) {
+            let found = false;
+            for (let s of state.selection.items) {
+                if (s.type === item.type && s.key === item.key) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                newState.selection.items.push(item);
+        }
+    }
     else
         newState.selection.items = action.items;
 
@@ -97,7 +109,7 @@ function UNREGISTER_SELECTABLE(state, action) {
         selection: { ...state.selection }
     };
 
-    newState.selection.all = newState.selection.all.filter(item => item.type === action.item.type && item.key === action.item.key);
+    newState.selection.all = newState.selection.all.filter(item => !(item.type === action.item.type && item.key === action.item.key));
     return newState;
 }
 
@@ -130,5 +142,30 @@ function MOVE_SELECTION(state, action) {
     return newState;
 }
 
+function SELECT_RECT(state, action) {
+    let r = action.region;
+    let x = Math.min(r.x, r.x + r.width);
+    let y = Math.min(r.y, r.y + r.height);
+    let width = Math.abs(r.width);
+    let height = Math.abs(r.height);
+    let nw = 280;
+    let nh = 175;
+    let items = [];
 
-export default { SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION };
+    for (let item of state.selection.all) {
+        if (item.type === "node") {
+            let node = state.nodes[item.key];
+            let nx = node.x;
+            let ny = node.y;
+
+            if (x < nx + nw && nx < x + width && y < ny + nh && ny < y + height) {
+                items.push(item);
+            }
+        }
+    }
+
+    return SET_SELECTION(state, {items, ctrl: action.ctrl});
+}
+
+
+export default { SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT };

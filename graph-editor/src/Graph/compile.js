@@ -7,7 +7,6 @@ function resolveInputs(graph, inputs, graphInputs) {
     let result = {};
 
     for (let key of inputs) {
-        console.log({key, inputs, graph});
         let {label} = graph.ports[key];
         let sourceName = null;
 
@@ -137,7 +136,6 @@ function compileSubGraph(graph, inputs, prefix) {
         data.files.back = applyPrefix(data.files.back, prefix);
         data.files.resources = applyPrefix(data.files.resources, prefix);
     }
-    console.log(data);
     return data;
 }
 

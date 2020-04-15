@@ -1,24 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Sidebar.css';
 import NodeSidebar from './Comp/NodeSidebar/Node';
 import GraphSidebar from './Comp/GraphSidebar';
 import { useSelector } from 'react-redux';
 
 function Sidebar(props) {
-    let selected = useSelector(state => {
+    let selection = useSelector(state => {
         if (!state.graph.present.meta)
             return null;
 
-        let item = state.graph.present.selection.items.length === 1 ? state.graph.present.selection.items[0] : {};
+        let items = state.graph.present.selection.items;
 
-        if (item.type === "node")
-            return {type: "node", data: state.graph.present.nodes[item.key], nodeKey: item.key};
+        return items.length === 1 ? items[0] : null;
+    });
 
-        if (item.type === "graph")
-            return {type: "graph", data: state.graph.present.meta};
+    let selected = useSelector(state => {
+        if (selection) {
+            let graph = state.graph.present;
+
+            if (selection.type === "node")
+                return {type: "node", data: graph.nodes[selection.key], nodeKey: selection.key};
+
+            if (selection.type === "graph")
+                return {type: "graph", data: graph.meta};
+        }
 
         return {type: null, data: null};
     });
+
+    let [oldSelection, setOldSelection] = useState(selection);
+    if (selection && (oldSelection !== selection)) {
+        document.activeElement.blur();
+        setOldSelection(selection);
+    }
 
     let content = null;
 

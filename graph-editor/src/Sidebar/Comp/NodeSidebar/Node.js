@@ -30,6 +30,11 @@ function Node(props) {
         dispatch({type: "CHANGE_SELECTION", change});
     }
 
+    function onChangeName(change) {
+        let name = change();
+        dispatch({type: "SET_NODE_NAME", node: props.nodeKey, name});
+    }
+
     function handleDelete() {
         dispatch({type: "DELETE_SELECTION"});
     }
@@ -37,7 +42,9 @@ function Node(props) {
     return (
         <Form.Form data={data} onChange={onChange}>
             <UI.Foldout label="Node Properties">
-                <UI.TextInput k="name" />
+                <Form.Form data={data.name} onChange={onChangeName}>
+                    <UI.TextInput updateOn="blur" />
+                </Form.Form>
                 <UI.Button onClick={handleDelete}>DELETE</UI.Button>
                 {/*<UI.Dropdown k="type" options={["data", "py", "js", "graph", "in", "out", "edit"]}/>*/}
             </UI.Foldout>

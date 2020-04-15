@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import './Graph.css';
 import Links from './Node/Port/Links';
 import Node from './Node';
@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Toolbar from './Toolbar';
 import Draggable from './Draggable';
 import useSelectable from './useSelectable';
+import RectSelect from './RectSelect';
 
 function useGraphMove(transform, dispatch) {
   let {x, y} = transform;
@@ -19,44 +20,70 @@ function useGraphMove(transform, dispatch) {
   }
 
   return [drag.handleMouseDown, handleScroll];
+} 
+
+function clientToGraph(x, y, gt) {
+  return {
+      x: (x - gt.x) / gt.scale,
+      y: (y - gt.y) / gt.scale
+  }
+}
+
+function useRectSelect(gt) {
+  let [region, setRegion] = useState(null);
+  let [ctrl, setCtrl] = useState(false);
+  const dispatch = useDispatch();
+
+  const drag = Draggable(0, 0, null, useCallback(({dx, dy, e}) => {
+    if (!region) {
+      let {x, y} = clientToGraph(e.clientX, e.clientY, gt);
+      setRegion({x, y, width: dx, height: dy});
+      setCtrl(e.ctrlKey);
+    }
+    else {
+      let dx2 = dx / gt.scale;
+      let dy2 = dy / gt.scale;
+      let newRegion = {...region, width: region.width + dx2, height: region.height + dy2};
+      setRegion(newRegion);
+      dispatch({type: "SELECT_RECT", region: newRegion, ctrl});
+    }
+  }, [region, setRegion, dispatch, gt, ctrl]), () => {setRegion(null)});
+
+  return [region, drag.handleMouseDown, ctrl];
 }
 
 function Graph(props) {
   const dispatch = useDispatch();
   const graph = useSelector(state => state.graph.present);
   let [, setSelect] = useSelectable("graph", null);
-  let [dragHandleMouseDown, handleScroll] = useGraphMove(graph.transform || {x: 0, y: 0}, dispatch);
+  let t = graph.transform || {x: 0, y: 0};
+  let [handlePan, handleScroll] = useGraphMove(t, dispatch);
+  let [selectRegion, handleSelect] = useRectSelect(t || {x: 0, y: 0});
 
-  useEffect(() => {
-    function downHandler({key}) {
-      if (key === "Delete" || key === "Backspace") {
-        dispatch({type: "DELETE_SELECTION"});
-      }
+  /*function handleKeyDown({key}) {
+    if (key === "Delete" || key === "Backspace") {
+      dispatch({type: "DELETE_SELECTION"});
     }
-
-    window.addEventListener('keydown', downHandler);
-    return () => {window.removeEventListener('keydown', downHandler)};
-  }, [dispatch]);
+  }*/
 
   if (!graph.meta)
     return <div className="Graph" />;
 
-    let t = graph.transform;
-
-
   function handleMouseDown(e) {
-    if (e.button === 0)
+    if (e.button === 0) {
       setSelect(e);
+      handleSelect(e);
+    }
 
-    if (e.button === 2)
-      dragHandleMouseDown(e);
+    if (e.button === 1)
+      handlePan(e);
   }
 
-
   return (
-    <div className="Graph" onMouseDown={handleMouseDown} onWheel={handleScroll}>
+    <div className="Graph" onMouseDown={handleMouseDown} onWheel={handleScroll} /*onKeyDown={handleKeyDown}*/>
       <Toolbar />
       <div className="graph-body" style={{transform: `scale(${t.scale}) translate(${(t.x - 300) / t.scale}px, ${(t.y - 30) / t.scale}px)`}}>
+        <RectSelect region={selectRegion} />
         {
           Object.keys(graph.nodes).map(key => (
             <Node key={key} k={key} />

@@ -8,6 +8,7 @@ import linkActions from './actions/link';
 import selectionActions from './actions/selection';
 import libraryActions from './actions/library';
 import modalActions from './actions/modal';
+import clipboardActions from './actions/clipboard';
 
 
 const init = {
@@ -19,14 +20,19 @@ const init = {
     library: {
         path: "C:\\Users\\tonye\\Documents\\ObsidianProjects",
         contents: null
+    },
+    clipboard: {
+        nodes: {},
+        ports: {},
+        links: {}
     }
 }
 
 
 function lookupReducer(lookup) {
-    return (state, action) => {
+    return (state, action, ...rest) => {
         if (action.type in lookup) {
-            let newState = lookup[action.type](state, action);
+            let newState = lookup[action.type](state, action, ...rest);
             if (typeof(newState) === "undefined")
                 throw new Error(`${action.type} returned undefined`);
             return newState;
@@ -43,7 +49,8 @@ let graphReducer = undoable(lookupReducer({...graphActions, ...nodeActions, ...p
             "MOVE_GRAPH": () => "MOVE",
             "START_LINK": () => action.transaction,
             "RELINK": () => action.transaction,
-            "END_LINK": () => previousHistory.present.newLink.transaction
+            "END_LINK": () => previousHistory.present.newLink.transaction,
+            "SELECT_RECT": () => "SELECT_RECT"
         };
         
         let t = action.type;
@@ -53,15 +60,21 @@ let graphReducer = undoable(lookupReducer({...graphActions, ...nodeActions, ...p
 });
 
 function rootReducer(state=init, action) {
-    console.log(action);
+    let showDebug = ["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT"].indexOf(action.type) === -1;
+    if (showDebug)
+        console.log(action);
+
     let newState = {
         ...state,
-        graph: graphReducer(state.graph, action),
-        modals: lookupReducer({...modalActions})(state.modals, action),
-        library: lookupReducer({...libraryActions})(state.library, action)
+        graph: graphReducer(state.graph, action, state),
+        modals: lookupReducer(modalActions)(state.modals, action),
+        library: lookupReducer(libraryActions)(state.library, action),
+        clipboard: lookupReducer(clipboardActions)(state.clipboard, action, state)
     };
 
-    console.log(newState);
+    if (showDebug)
+        console.log(newState);
+
     return newState;
 }
 

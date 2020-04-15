@@ -56,7 +56,8 @@ function Node(props) {
 
 function useNodeMove(x, y, dispatch) {
     const drag = Draggable(x, y, null, useCallback(({dx, dy}) => {
-        dispatch({ type: "MOVE_SELECTION", dx, dy });
+        if (dx && dy)
+            dispatch({ type: "MOVE_SELECTION", dx, dy });
     }, [dispatch]));
     return drag.handleMouseDown;
 }

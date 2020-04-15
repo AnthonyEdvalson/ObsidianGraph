@@ -85,6 +85,39 @@ function NEW_NODE(state, action) {
     return newState;
 };
 
+function hasNameConflict(nodes, name, nodeKey) {
+    return Object.entries(nodes).some(([key, node]) => node.name === name && key !== nodeKey);
+}
 
-export default { NEW_NODE };
-export { uuid4 };
+function cleanName(nodes, name, node) {
+    name = name.replace(/\./g, "_");
+    name = name.replace(/^_/g, "");
+
+    const numRegex = /[0-9]+$/;
+    let num = parseInt(name.match(numRegex)) || 0;
+    let baseName = name.replace(numRegex, "");
+    while (hasNameConflict(nodes, name, node)) {
+        num++;
+        name = baseName + num.toString();
+    }
+
+    return name;
+}
+
+function SET_NODE_NAME(state, {node, name}) {
+    let newState = {
+        ...state, 
+        nodes:{ ...state.nodes } 
+    };
+
+    newState.nodes[node] = {
+        ...state.nodes[node],
+        name: cleanName(state.nodes, name, node)
+    };
+
+    return newState;
+}
+
+
+export default { NEW_NODE, SET_NODE_NAME };
+export { uuid4, hasNameConflict, cleanName };

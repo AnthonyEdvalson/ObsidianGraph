@@ -102,7 +102,19 @@ function devtools(state, dispatch) {
 }
 
 function selectAll(state, dispatch) {
-    dispatch({"type": "SELECT_ALL"});
+    dispatch({type: "SELECT_ALL"});
+}
+
+function copy(state, dispatch) {
+    dispatch({type: "COPY"});
+}
+
+function paste(state, dispatch) {
+    dispatch({type: "PASTE"});
+}
+
+function duplicate(state, dispatch) {
+    dispatch({type: "DUPLICATE"});
 }
 
 export default {
@@ -117,5 +129,8 @@ export default {
     refresh,
     exit,
     devtools,
-    selectAll
+    selectAll,
+    copy,
+    paste,
+    duplicate
 };
