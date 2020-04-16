@@ -12,7 +12,7 @@ const fs = window.require("fs");
 function Node(props) {
     const key = props.k;
     const data = useSelector(state => state.graph.present.nodes[key]);
-    const { x, y, name, type, inputs, output } = data;
+    var { x, y, name, type, inputs, output } = data;
 
     const graphFolder = useSelector(state => state.graph.present.path);
     var [selected, setSelect] = useSelectable("node", key);
@@ -72,9 +72,9 @@ function handleOpen(data, graphFolder, dispatch) {
             launchEditor(filePath, 1);
             break;
         case "graph":
-            fs.readFile(data.path, (err, data) => {
+            fs.readFile(data.path, (err, graphData) => {
                 if (err) throw err;
-                dispatch({type: "LOAD_GRAPH", data: JSON.parse(data), filePath: data.path});
+                dispatch({type: "LOAD_GRAPH", data: JSON.parse(graphData), filePath: data.path});
             });
             break;
         default:

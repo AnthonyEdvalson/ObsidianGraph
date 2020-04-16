@@ -5,9 +5,9 @@
   flex-grow: 1;
   overflow: hidden;
 
-  --node-width: 280px;
+  --node-width: 300px;
   --port-width: 20px;
-  --node-preview-height: calc(var(--node-width) / 1.6);
+  --node-preview-height: 200px;
 
   --py-bright: #f1a821;
   --js-bright: #f16321;

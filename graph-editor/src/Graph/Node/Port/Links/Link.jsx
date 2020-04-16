@@ -3,6 +3,7 @@ import './Link.css';
 import useSelectable from '../../../useSelectable';
 import { useSelector } from 'react-redux';
 
+
 function Link(props) {
     let {sink, source} = props;
     let [selected, setSelect] = useSelectable("link", sink);
@@ -15,9 +16,9 @@ function Link(props) {
     let i1 = n1.inputs.indexOf(sink);
 
     let x1 = 0 + n1.x;
-    let y1 = ((175 - (n1.inputs.length - 1) * 33) + i1 * 66) / 2 + n1.y;
-    let x2 = 280 + n2.x;
-    let y2 = 87.5 + n2.y;
+    let y1 = ((200 - (n1.inputs.length - 1) * 33) + i1 * 66) / 2 + n1.y;
+    let x2 = 300 + n2.x;
+    let y2 = 100 + n2.y;
 
     let xm = (x1 + x2) / 2;
     let ym = (y1 + y2) / 2;
