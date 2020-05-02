@@ -1,0 +1,76 @@
+.ErrorPage {
+    max-width: 1200px;
+    height: 90vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 25px 30px;
+    position: static;
+    margin: 5vh auto;
+    display: flex;
+    flex-flow: column;
+}
+
+.ErrorPage .msg,
+.ErrorPage .type {
+    display: block;
+    color: #d42;
+    font-size: 18px;
+}
+
+.ErrorPage .msg {
+    display: block;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.ErrorPage .type {
+    display: block;
+    font-size: 1.7em;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.ErrorPage .col {
+    width: 50%;
+    padding: 0 10px;
+    margin: 0;
+    display: block;
+    flex-basis: 50%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    max-width: 50%;
+    position: relative;
+}
+
+.ErrorPage .row {
+    display: flex;
+    margin-top: 10px;
+    flex-grow: 1;
+}
+
+.ErrorPage .close {
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    opacity: .5;
+    transition-duration: 0.1s;
+    cursor: pointer;
+}
+
+.ErrorPage .close:hover {
+    opacity: 1;
+}
+
+.ErrorPage .request {
+    background-color: #333;
+    max-height: 200px;
+    overflow-y: scroll;
+    border-radius: 7px;
+    padding: 5px;
+    color: #ccc;
+    font-size: 12px;
+    overflow-x: hidden;
+    margin: 10px 15px;
+}
