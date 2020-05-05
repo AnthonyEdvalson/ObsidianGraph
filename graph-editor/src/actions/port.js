@@ -31,8 +31,8 @@ function ADD_PORT(state, action) {
     };
 
     let key = uuid4();
-    newState.nodes[action.node].inputs.push({key, label: "Port", type: "data"});
-    newState.ports[key] = {x: 0, y: 0, node: action.node};
+    newState.nodes[action.node].inputs.push(key);
+    newState.ports[key] = {label: "label", node: action.node, type: "data"};
 
     return newState;
 }

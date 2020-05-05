@@ -52,9 +52,9 @@ function useFile(file, handleChange) {
 }*/
 
 let fileDatas = {
-    py:   {ext: "py",   folder: "back", content: "def main(o):\n\t\n"},
-    js:   {ext: "js",   folder: "front", content: "import React from 'react';\n\nfunction main(o) {\n\t\n}\n\nexport default main;\n"},
-    data: {ext: "json", folder: "resources", content: ""}
+    back:  {ext: "js",   folder: "back",      content: "function main(o) {\n\t\n}\n\nmodule.exports = { main };\n"},
+    front: {ext: "js",   folder: "front",     content: "import React from 'react';\n\nfunction main(o) {\n\t\n}\n\nmodule.exports = { main };\n"},
+    data:  {ext: "json", folder: "resources", content: ""}
 };
 
 function getFilePath(name, type, projectFolder) {

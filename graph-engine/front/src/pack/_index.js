@@ -1,9 +1,7 @@
-const Part1 = require('./Part1.json')
-const Part2 = require('./Part2.json')
-const 7c.Component = require('./7c.Component')
-
 module.exports = {
-	Part1,
-	Part2,
-	7c.Component,
+	"Part1": require('./Part1.json'),
+	"Part2": require('./Part2.json'),
+	"7c.Component": require('./7c.Component'),
+	"SqliteTable.Editor": require('./SqliteTable.Editor.json'),
+	"Sqlite.Editor": require('./Sqlite.Editor.json'),
 };

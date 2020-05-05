@@ -45,7 +45,8 @@ function useRectSelect(gt) {
       let dy2 = dy / gt.scale;
       let newRegion = {...region, width: region.width + dx2, height: region.height + dy2};
       setRegion(newRegion);
-      dispatch({type: "SELECT_RECT", region: newRegion, ctrl});
+      if (Math.abs(newRegion.width) > 1 && Math.abs(newRegion.height) > 1)
+        dispatch({type: "SELECT_RECT", region: newRegion, ctrl});
     }
   }, [region, setRegion, dispatch, gt, ctrl]), () => {setRegion(null)});
 

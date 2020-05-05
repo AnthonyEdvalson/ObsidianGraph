@@ -60,7 +60,7 @@ let graphReducer = undoable(lookupReducer({...graphActions, ...nodeActions, ...p
 });
 
 function rootReducer(state=init, action) {
-    let showDebug = ["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT"].indexOf(action.type) === -1;
+    let showDebug = ["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE"].indexOf(action.type) === -1;
     if (showDebug)
         console.log(action);
 

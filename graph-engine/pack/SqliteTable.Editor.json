@@ -1,0 +1,10 @@
+[
+  {
+    "name": "first",
+    "fieldType": "TEXT"
+  },
+  {
+    "name": "last",
+    "fieldType": "TEXT"
+  }
+]

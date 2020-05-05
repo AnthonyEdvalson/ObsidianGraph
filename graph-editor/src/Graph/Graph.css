@@ -9,16 +9,16 @@
   --port-width: 20px;
   --node-preview-height: 200px;
 
-  --py-bright: #f1a821;
-  --js-bright: #f16321;
+  --back-bright: #f1a821;
+  --front-bright: #f16321;
   /*--io-bright: #ccc;*/
   --io-bright: #689bd6;
   --data-bright: #EFA26B;
   --graph-bright: #c21d1d;
   --edit-bright: #259bf5;
 
-  --py-dim: #b97a04;
-  --js-dim: #ad5024;
+  --back-dim: #b97a04;
+  --front-dim: #ad5024;
   /*--io-dim: #838383;*/
   --io-dim: #647f9e;
   --data-dim: #C9885A;

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRemote } from './obsidian';
+import front from "./app/_front.json";
 
 
 class Graph {
@@ -12,19 +13,10 @@ class Graph {
     }
 
     load(node) {
+      if (node in this.nodes)
         return this.nodes[node].load();
-        /*
-        try {
-            //trace.push(["call", node]);
-            if (!node || !(node in this.nodes))
-                throw Error(node + " Is an invalid node name");
-            //let v = this.nodes[node].load();
-            //trace.pop();
-            return v;
-        } catch (e) {
-            //e.message += "\n(" + trace.join(") > (") + ")";
-            throw e;
-        }*/
+      else
+        throw new Error("Cannot execute node " + node + ", only " + JSON.stringify(Object.keys(this.nodes)) + " allowed")
     }
 }
 
@@ -32,31 +24,43 @@ class Node {
     constructor(data, key, parent) {
         this.key = key;
         this.graph = parent;
-        this.path = data.code;
-        this.inputs = data.inputs;
+        this.type = data.type;
+
+        if (this.type === "code") {
+            this.inputs = data.inputs;
+            this.code = require("./app/" + this.key).default;
+        }
+        else if (this.type === "data") {
+            this.data = JSON.parse(data.file);
+        }
     }
 
 
     load() {
-        let component = require("./" + this.path).default;
-        let o = {
-            ins: this.inputs,
-            load: (node_name, load_args={}) => this.graph.load(node_name),
-            useRemote: useRemote
-        };
-        return (<div className="Subitem">{React.createElement(component, o)}</div>);
+        if (this.type === "code") {
+            let o = {
+                //ins: (this.inputs,
+                //load: (node_name, load_args = {}) => this.graph.load(node_name),
+                load: (label) => this.graph.load(this.inputs[label]),
+                useRemote: (label, args) => useRemote(this.inputs[label], args)
+            };
+            return (<div className="Subitem">{React.createElement(this.code, o)}</div>);
+        }
+        else if (this.type === "data") {
+            return this.data;
+        }
     }
 }
 
 function GraphRender() {
-    let [loaded, gData, failed] = useRemote("@get graph", {});
+    //let [loaded, gData, failed] = useRemote("@get graph", {});
 
-    if (failed)
-        return (<span>Failed to load</span>);
-    if (!loaded)
-        return (<span>Loading</span>);
+    //if (failed)
+    //    return (<span>Failed to load</span>);
+    //if (!loaded)
+    //    return (<span>Loading</span>);
     
-    let g = new Graph(gData);
+    let g = new Graph(front);
     return g.load(g.output, null, [])
 }
 

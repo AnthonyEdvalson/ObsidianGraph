@@ -31,7 +31,7 @@ function transformImportedGraph(graph, path) {
 
         if (node.type === "edit") {
             data.node.schema = JSON.parse(node.schema);
-            data.node.parameters = getDefaultParams(data.schema);
+            data.node.parameters = getDefaultParams(data.node.schema);
         }
     }
     
@@ -43,14 +43,20 @@ function NEW_NODE(state, action) {
     let type = action.nodeType;
 
     let data = {
-        py: () => ({node: {name: "Python"}, inputs: [{label: "input", type: "py"}]}),
-        js: () => ({node: {name: "JavaScript"}, inputs: [{label: "input", type: "js"}]}),
-        data: () => ({node: {name: "Data", content: ""}}),
+        back: () => ({node: {name: "Backend"}, inputs: [{label: "input", type: "back"}]}),
+        front: () => ({node: {name: "Frontend"}, inputs: [{label: "input", type: "front"}]}),
+        data: () => ({node: {name: "Data"}}),
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
         edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value", type: "data"}}),
         graph: () => transformImportedGraph(action.data, action.path)
     }[type]();
+
+    data = {
+        inputs: [],
+        output: {label: "out", type: "data"},
+        ...data,
+    }
 
     let newState = {
         ...state, 
@@ -68,7 +74,7 @@ function NEW_NODE(state, action) {
     }
 
     let nodeKey = uuid4();
-
+    
     for (let input of data.inputs) {
         let key = uuid4();
         newNode.inputs.push(key);

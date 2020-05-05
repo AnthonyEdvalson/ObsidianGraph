@@ -6,7 +6,7 @@ function Node() {
     return null;
     /*return (
         <UI.Foldout label="Output Properties">
-            <UI.PortsEditor k="inputs" typeOptions={["py", "js", "data"]} />
+            <UI.PortsEditor k="inputs" typeOptions={["back", "front", "data"]} />
         </UI.Foldout>
     );*/
 }

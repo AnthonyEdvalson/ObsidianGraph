@@ -26,18 +26,18 @@
     background-color: var(--io-bright);
 }
 
-.ToolbarNodeButton.py {
-    background-color: var(--py-dim);
+.ToolbarNodeButton.back {
+    background-color: var(--back-dim);
 }
-.ToolbarNodeButton.py:hover {
-    background-color: var(--py-bright);
+.ToolbarNodeButton.back:hover {
+    background-color: var(--back-bright);
 }
 
-.ToolbarNodeButton.js {
-    background-color: var(--js-dim);
+.ToolbarNodeButton.front {
+    background-color: var(--front-dim);
 }
-.ToolbarNodeButton.js:hover {
-    background-color: var(--js-bright);
+.ToolbarNodeButton.front:hover {
+    background-color: var(--front-bright);
 }
 
 .ToolbarNodeButton.data {

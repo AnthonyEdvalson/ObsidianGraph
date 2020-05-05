@@ -4,6 +4,7 @@ const FormContext = React.createContext(null);
 
 function useForm(key) {
     let form = useContext(FormContext);
+
     let setKey = typeof(key) !== "undefined";
 
     if (setKey && !(key in form.data))
@@ -24,6 +25,8 @@ function useForm(key) {
 }
 
 function Form(props) {
+    if (typeof(props.data) === "undefined")
+        return null;
 
     const modify = (prevState, path, change) => {
         if (path.length === 0) {

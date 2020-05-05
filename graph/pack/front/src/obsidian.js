@@ -69,7 +69,7 @@ function call(node, args, pinnedError, softFail=false) {
 }
 
 
-function useRemote(name, args) {
+function useRemote(name, args={}) {
   const [state, setState] = useState({loaded: false, failed: false, data: null, error: null});
   let pinnedError = Error();
   useEffect(() => {

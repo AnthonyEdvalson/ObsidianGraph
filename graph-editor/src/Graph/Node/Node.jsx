@@ -65,8 +65,8 @@ function useNodeMove(x, y, dispatch) {
 
 function handleOpen(data, graphFolder, dispatch) {
     switch (data.type) {
-        case "js": 
-        case "py":
+        case "front": 
+        case "back":
         case "data":
             let filePath = getFilePath(data.name, data.type, graphFolder);
             launchEditor(filePath, 1);

@@ -3,7 +3,9 @@ import subprocess
 import sys
 import json
 import atexit
+from zipfile import ZipFile
 
+import shutil
 from flask import Flask, request
 from flask_cors import CORS
 
@@ -11,22 +13,22 @@ import pge
 from postman import parse_request, make_response_success, make_response_fail
 
 
-app = Flask("Engine")
+flaskApp = Flask("Engine")
 subprocs = []
+obn = None
 
 
 def close_npm():
-    for subproc in subprocs:
-        subproc.kill()
+    for p in subprocs:
+        p.kill()
 
 
 atexit.register(close_npm)
 
 
 def graph_exec(node, req):
-    g_data = json.load(open(os.path.join(sys.argv[1], "app.obgb")))
     args = {"req": req}
-    return pge.run(g_data, args, node)
+    return pge.run(obn.back, args, node)
 
 
 def obsidian_exec(node, req):
@@ -55,7 +57,7 @@ def obsidian_exec(node, req):
     raise Exception("Unknown obsidian command '@{}'".format(node))
 
 
-@app.route("/call", methods=["POST"])
+@flaskApp.route("/call", methods=["POST"])
 def call():
     node, args = parse_request()
 
@@ -73,7 +75,7 @@ def call():
     return res
 
 
-@app.errorhandler(Exception)
+@flaskApp.errorhandler(Exception)
 def handle_uncaught(e):
     res = make_response_fail("obsidian", e)
 
@@ -84,14 +86,47 @@ def handle_uncaught(e):
     return res, 500
 
 
+def load_obn(path):
+    with ZipFile(path, "r") as obn:
+        app = {
+            "meta": json.load(obn.open("meta.json")),
+            "front": json.load(obn.open("front.json")),
+            "back": json.load(obn.open("back.json"))
+        }
+
+    folder = "pack/front/src/app/"
+    if os.path.isdir(folder):
+        for file in os.listdir(folder):
+            file_path = folder + file
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+    else:
+        os.mkdir(folder)
+
+    with open(folder + "_front.json", "w+") as frontDataFile:
+        json.dump(app["front"], frontDataFile)
+
+    for key, node in app["front"]["nodes"].items():
+        ext = ".jsx" if node["type"] == "code" else ".json"
+        with open(folder + key + ext, "w+") as nodeFile:
+            nodeFile.write(node["file"])
+
+    return app
+
+
 def start(*argv):
+    global obn
     if len(argv) != 2:
         raise Exception("Must always provide one argument, the path of the graph to run")
 
+    obn = load_obn(argv[1])
+
     subprocs.append(subprocess.Popen("npm start", shell=True, cwd="pack/front"))
 
-    CORS(app, origins=["http://localhost:3000", "http://localhost:3001"])
-    app.run(debug=True)
+    CORS(flaskApp, origins=["http://localhost:3000", "http://localhost:3001"])
+    flaskApp.run(debug=True)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 import React from 'react';
-import NodeJs from './NodeJs';
-import NodePy from './NodePy';
+import NodeFront from './NodeFront';
+import NodeBack from './NodeBack';
 import NodeData from './NodeData';
 import NodeIn from './NodeIn';
 import NodeOut from './NodeOut';
@@ -13,8 +13,8 @@ import { useDispatch } from 'react-redux';
 
 function Node(props) {
     let bodies = {
-        py: NodePy,
-        js: NodeJs,
+        back: NodeBack,
+        front: NodeFront,
         data: NodeData,
         in: NodeIn,
         out: NodeOut,
@@ -46,7 +46,7 @@ function Node(props) {
                     <UI.TextInput updateOn="blur" />
                 </Form.Form>
                 <UI.Button onClick={handleDelete}>DELETE</UI.Button>
-                {/*<UI.Dropdown k="type" options={["data", "py", "js", "graph", "in", "out", "edit"]}/>*/}
+                {/*<UI.Dropdown k="type" options={["data", "back", "front", "graph", "in", "out", "edit"]}/>*/}
             </UI.Foldout>
             {body !== null && React.createElement(body, {nodeKey: props.nodeKey})}
         </Form.Form>

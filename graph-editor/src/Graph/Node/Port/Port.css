@@ -73,11 +73,11 @@
 
 
 /* PORT COLORS */
-.Port.node-py>.port-ring {
-  background-color: var(--py-bright);
+.Port.node-back>.port-ring {
+  background-color: var(--back-bright);
 }
-.Port.node-js>.port-ring {
-  background-color: var(--js-bright);
+.Port.node-front>.port-ring {
+  background-color: var(--front-bright);
 }
 .Port.node-data>.port-ring {
   background-color: var(--data-bright);
@@ -99,9 +99,9 @@
 .Node.node-data .node-info {
   background-color: var(--data-dim);
 }
-.Node.node-js .node-info {
-  background-color: var(--js-dim);
+.Node.node-front .node-info {
+  background-color: var(--front-dim);
 }
-.Node.node-py .node-info {
-  background-color: var(--py-dim);
+.Node.node-back .node-info {
+  background-color: var(--back-dim);
 }

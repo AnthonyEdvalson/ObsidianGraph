@@ -1,9 +1,9 @@
-const Concat = require('./Concat')
-const Part1 = require('./Part1.json')
-const Part2 = require('./Part2.json')
-
 module.exports = {
-	Concat,
-	Part1,
-	Part2,
+	"Concat": require('./Concat'),
+	"Part1": require('./Part1.json'),
+	"Part2": require('./Part2.json'),
+	"SqliteTable.TableDefinition": require('./SqliteTable.TableDefinition'),
+	"SqliteTable.Editor": require('./SqliteTable.Editor.json'),
+	"Sqlite.SqliteConnection": require('./Sqlite.SqliteConnection'),
+	"Sqlite.Editor": require('./Sqlite.Editor.json'),
 };

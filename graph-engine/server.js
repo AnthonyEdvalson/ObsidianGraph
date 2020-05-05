@@ -14,6 +14,11 @@ const pack = require('./pack/_index');
 let back_graph = new Graph(obnData.back, pack);
 
 
+function obsidianExec(command, args) {
+  if (command === "getGraph")
+    return obnData.front;
+}
+
 app.use(express.json());
 
 app.post('/api/call', (req, res) => {
@@ -24,7 +29,7 @@ app.post('/api/call', (req, res) => {
     if (node[0] == "@")
       data = obsidianExec(node.substring(1), args);
     else
-      data = back_graph.run(node, { args, mode });
+      data = back_graph.run(node, { args, mode, storePath: obnData.storePath });
   } 
   catch (e) {
     console.log(e.stack);

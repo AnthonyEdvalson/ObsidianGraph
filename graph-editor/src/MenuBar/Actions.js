@@ -1,10 +1,10 @@
-import compileGraph from "../Graph/compile";
+import compileApp from "../Graph/compile";
 import { ActionCreators } from 'redux-undo';
 
 // ES5 imports used to fix conflict between electron and browserify
 const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
-const JSZip = require("jszip");
+const admZip = window.require("adm-zip");
 const child_process = window.require('child_process');
 const remote = window.require("electron").remote;
 
@@ -35,27 +35,35 @@ function save(state, dispatch) {
 
 
 function exportGraph(state, dispatch) {
-    let compGraph = compileGraph(state.graph.present);
+    let zip = new admZip();
 
-    let zip = new JSZip();
-    zip.file("front.json", JSON.stringify({nodes: compGraph.front, output: compGraph.output}));
-    zip.file("back.json", JSON.stringify({nodes: compGraph.back}));
-    zip.file("meta.json", JSON.stringify(compGraph.meta));
+    let compGraph = compileApp(state.graph.present, zip);
+
+    zip.addFile("front.json", JSON.stringify({nodes: compGraph.front, output: compGraph.output}, null, 2));
+    zip.addFile("back.json", JSON.stringify({nodes: compGraph.back}, null, 2));
+    zip.addFile("meta.json", JSON.stringify(compGraph.meta, null, 2));
     
-    for (let [side, files] of Object.entries(compGraph.files)) {
-        zip.folder(side);
-        let ext = {front: ".js", back: ".py", resources: ".json"}[side];
-        for (let [name, contents] of Object.entries(files)) {
-            zip.file(side + "/" + name + ext, contents);
-        }
-    }
+    /*zipdir(path.join(state.graph.present.path, "node_modules"), (err, buf) => {
+        if (err) throw err;
+        zip.file("packages.zip", buf, { compression: "STORE", binary: true, date: new Date("December 25, 2007, 00:00:01") });
+
+        dialog.showSaveDialog({
+            defaultPath: state.graph.present.meta.name + ".obn",
+            filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
+        }).then(result => {
+            if (result.filePath)
+                zip.generateNodeStream({compression:"DEFLATE"}).pipe(fs.createWriteStream(result.filePath));
+        });
+    })*/
+
+    //zip.addFile("packages.zip", buf, { compression: "STORE", binary: true, date: new Date("December 25, 2007, 00:00:01") });
 
     dialog.showSaveDialog({
         defaultPath: state.graph.present.meta.name + ".obn",
         filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
-    }).then(result => {
-        if (result.filePath)
-            zip.generateNodeStream({}).pipe(fs.createWriteStream(result.filePath));
+    }).then(({ filePath }) => {
+        if (filePath)
+            zip.writeZip(filePath);
     });
 }
 

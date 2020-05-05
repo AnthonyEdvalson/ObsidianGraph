@@ -12,6 +12,9 @@ function RectSelect(props) {
     let width = Math.abs(region.width);
     let height = Math.abs(region.height);
 
+    if (width + height < 1)
+        return null;
+
     let style = {transform: `translate(${x}px, ${y}px)`, width, height};
     return (<div className="RectSelect" style={style} />);
 }

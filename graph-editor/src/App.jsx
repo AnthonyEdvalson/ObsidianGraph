@@ -8,6 +8,7 @@ import MenuBar from './MenuBar';
 import NewGraph from './Modals/NewGraph';
 import Library from './Library';
 import OpenGraph from './Modals/OpenGraph';
+import Packages from './Modals/Packages';
 
 function App () {
   return (
@@ -21,6 +22,7 @@ function App () {
         </div>
         <NewGraph />
         <OpenGraph />
+        <Packages />
       </Provider>
     </div>
   );

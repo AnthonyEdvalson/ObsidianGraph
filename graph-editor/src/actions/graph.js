@@ -1,5 +1,6 @@
 import { uuid4, cleanName } from "./node";
 import { copy } from "./clipboard";
+import { getFilePath } from "../useFile";
 
 const path = window.require("path");
 const fs = window.require("fs");
@@ -147,6 +148,18 @@ function LOAD_GRAPH(state, action) {
         transform: { x: 0, y: 0, scale: 1 }
     };
 
+    for (let [k, v] of Object.entries(action.data.nodes)) {
+        let path = getFilePath(v.name, v.type, newState.path);
+
+        if (!path)
+            continue;
+
+        let file = newState.nodes[k].file;
+        
+        if (!fs.existsSync(path))
+            fs.writeFileSync(path, file.contents);
+    }
+
     return newState;
 }
 
@@ -191,23 +204,35 @@ function NEW_GRAPH(state, action) {
         tags: "",
         hideInLibrary: false
     };
-    template.path = dir;
 
-    return LOAD_GRAPH(state, {data: template});
+    return LOAD_GRAPH(state, {data: template, folderPath: dir});
 }
 
 
 function SAVE_GRAPH(state, action) {
-    let data = JSON.stringify({
+    let data = {
         meta: state.meta,
         nodes: state.nodes,
         ports: state.ports,
         links: state.links,
         transform: state.transform
-    }, null, 2);
+    };
 
-    let p = action.path || path.join(state.path, state.meta.name + ".obg");
-    fs.writeFile(p, data, err => {
+    let obgPath = action.path || path.join(state.path, state.meta.name + ".obg");
+
+    for (let [k, v] of Object.entries(state.nodes)) {
+        let path = getFilePath(v.name, v.type, state.path);
+
+        if (!path)
+            continue;
+
+        data.nodes[k].file = {
+            contents: fs.readFileSync(path).toString(),
+            modified: fs.statSync(path).mtime.toISOString()
+        };
+    }
+
+    fs.writeFile(obgPath, JSON.stringify(data, null, 2), err => {
         if (err) throw err;
     });
 
