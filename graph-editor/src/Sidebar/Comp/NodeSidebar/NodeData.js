@@ -6,7 +6,6 @@ import UI from '../../../UI';
 function Node() {
     return (
         <Foldout label="Data Properties">
-            <UI.TextInput k="content" />
         </Foldout>
     );
 }

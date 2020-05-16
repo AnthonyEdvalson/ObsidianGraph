@@ -40,7 +40,7 @@ function Schema(props) {
 
     if (schema.data === null)
         return null;
-
+    
     return (
         <Form.Form onChange={data.handleChange} data={data.data}>
             <SchemaElement { ...schema.data } />
@@ -67,6 +67,7 @@ function SchemaElement(props) {
         case "dropdown":
             return <Dropdown { ...props } />
         case "object":
+            console.log(props.fields);
             return (
                 <Obj { ...props }>
                     { Object.entries(props.fields).map(([k, v]) => <SchemaElement { ...v } k={k} key={k} />) }

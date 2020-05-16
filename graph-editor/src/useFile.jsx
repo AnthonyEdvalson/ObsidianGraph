@@ -53,7 +53,7 @@ function useFile(file, handleChange) {
 
 let fileDatas = {
     back:  {ext: "js",   folder: "back",      content: "function main(o) {\n\t\n}\n\nmodule.exports = { main };\n"},
-    front: {ext: "js",   folder: "front",     content: "import React from 'react';\n\nfunction main(o) {\n\t\n}\n\nmodule.exports = { main };\n"},
+    front: {ext: "js",   folder: "front",     content: "import React from 'react';\n\nfunction Main(o) {\n\t\n}\n\nmodule.exports = { main: Main };\n"},
     data:  {ext: "json", folder: "resources", content: ""}
 };
 

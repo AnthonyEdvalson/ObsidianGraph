@@ -1,0 +1,10 @@
+{
+  "nodes": {},
+  "output": "TableObject",
+  "recv": [],
+  "meta": {
+    "name": "SqliteTable",
+    "author": "Obsidian",
+    "description": "Simple table definition, automatically adds table to the database"
+  }
+}

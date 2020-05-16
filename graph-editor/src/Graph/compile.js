@@ -1,290 +1,193 @@
 import { getFilePath } from "../useFile";
-import AdmZip from "adm-zip";
+const AdmZip = window.require("adm-zip");
 const fs = window.require("fs");
 const path = window.require("path");
 
-/*
-function resolveInput(graph, port) {
-    let { links, ports, nodes } = graph;
-    let sourceName = null;
-
-    if (port in links) {
-        let sourcePortKey = links[port];
-        let sourceNodeKey = ports[sourcePortKey].node;
-        let sourceNode = nodes[sourceNodeKey];
-        sourceName = sourceNode.name;
-    }
-
-    return sourceName;
-}
-
-function resolveInputs(graph, inputs) {
-    let result = {};
-
-    for (let key of inputs) {
-        let {label} = graph.ports[key];
-        let sourceName = resolveInput(graph, key);
-        result[label] = sourceName;
-    }
-
-    return result;
-}
-
-
-function compileNode(graph, params, node) {
-    const sideMap = {front: "front", back: "back", edit: "resources", data: "resources"};
-    const nodeTypeMap = {front: "code", back: "code", edit: "data", data: "data"};
-
-    let side = sideMap[node.type];
-
-    let data = {
-        name: node.name,
-        side,
-        nodeData: {
-            type: nodeTypeMap[node.type]
-        }
-    }
-
-    let filePath = getFilePath(node.name, node.type, graph.path);
-    
-    if (filePath)
-        data.nodeData.file = fs.readFileSync(filePath, "utf-8");
-
-    if (node.type === "edit")
-        data.nodeData.file = JSON.stringify(params, null, 2);
-
-    if (data.nodeData.type === "code")
-        data.nodeData.inputs = resolveInputs(graph, node.inputs);
-
-    return data;
-}
-
-
-function applyPrefixes(nodes, prefix) {
-    let newDict = {};
-
-    for (let [name, node] of Object.entries(nodes)) {
-        for (let [label, inputNode] of Object.entries(node.inputs || [])) {
-            node.inputs[label] = prefix + inputNode;
-        }
-
-        newDict[prefix + name] = node;
-    }
-
-    return newDict;
-}
-
-function applyAliasing(name, aliases) {
-    return name in aliases ? aliases[name] : name;
-}
-
-function applyAliasings(nodes, aliases) {
-    console.log(nodes, aliases);
-
-    for (let node of Object.values(nodes)) {
-        if (node.type !== "code")
-            continue;
-
-        for (let [label, source] of Object.entries(node.inputs)) {
-            node.inputs[label] = applyAliasing(source, aliases);
-        }
-    }
-}
-
-function compileSubGraph(graph, inputs, params, prefix, packZip) {
-    let data = {
-        meta: {
-            name: graph.meta.name,
-            author: graph.meta.author,
-            description: graph.meta.description
-        },
-        front: {},
-        back: {},
-        output: null,
-    };
-
-    let packPath = path.join(graph.path, "node_modules");
-    if (fs.existsSync(packPath)) {
-        for (let file of fs.readdirSync(packPath, {withFileType: true})) {
-            packZip.addLocalFolder(path.join(packPath, file), "node_modules/" + file);
-        }
-    }
-
-    let aliases = {};
-
-    for (let node of Object.values(graph.nodes)) {
-        switch (node.type) {
-            case "out":
-                if (node.inputs.length > 0)
-                    data.output = resolveInput(graph, node.inputs);
-                break;
-                
-            case "front":
-            case "back":
-            case "data":
-            case "edit":
-                let {side, name, nodeData} = compileNode(graph, params, node);
-
-                if (["resources", "front"].includes(side))
-                    data.front[name] = nodeData;
-                if (["resources", "back"].includes(side))
-                    data.back[name] = nodeData;
-                break;
-
-            case "graph":
-                let subGraphInputs = resolveInputs(graph, node.inputs);
-                let subGraphData = JSON.parse(fs.readFileSync(node.path, "utf8"));
-                let subGraphParams = node.parameters;
-                subGraphData.path = path.dirname(node.path);
-
-                let subGraph = compileSubGraph(subGraphData, subGraphInputs, subGraphParams, prefix + node.name + ".", packZip);
-                
-                data.front = { ...data.front, ...subGraph.front };
-                data.back = { ...data.back, ...subGraph.back };
-                aliases[node.name] = subGraph.output;
-                break;
-
-            case "in":
-                aliases[node.name] = inputs[node.name];
-                break;
-
-            default:
-                break;
-        }
-    }
-    
-    //Resolve all aliases from in and graph nodes
-    applyAliasings(data.front, aliases);
-    applyAliasings(data.back, aliases);
-    data.output = applyAliasing(data.output, aliases);
-    
-    // Apply Prefix
-    if (prefix !== "") {
-        data.front = applyPrefixes(data.front, prefix);
-        data.back = applyPrefixes(data.back, prefix);
-        data.output = prefix + data.output;
-    }
-    console.log(data);
-    return data;
-}
-
-function compileGraph(graph, packZip) {
-    return compileSubGraph(graph, {}, null, "", packZip);
-}
-*/
+let warn;
+warn =  "//================================================================================//\n";
+warn += "//                            DO NOT EDIT THIS FILE                               //\n";
+warn += "//   It is automatically generated from an obn file, changes will not be saved.   //\n";
+warn += "//================================================================================//\n\n";
 
 function compileApp(graph) {
     let zip = new ZipBetter();
-    return compileGraph(graph, zip);
+    let front = zip.addFolder("front");
+    let back = zip.addFolder("back");
+    let aDef = compileGraph(null, { parentFront: front, parentBack: back }, graph);
+
+    return [zip.zip, aDef.meta.name];
 }
 
-function compileGraph(graph, zip) {
-    // Make Graph Folder
-    let folder = zip.makeDir(graph.meta.name);
+function compileGraph(graphPath, { parentFront, parentBack }, graph) {
+    graph = graph || JSON.parse(fs.readFileSync(graphPath, "utf8"));
+    graph.path = graph.path || path.dirname(graphPath);
+    let name = graph.meta.name;
+
+    let front = parentFront.addFolder(name);
+    let back = parentBack.addFolder(name);
 
     // Add Node Modules
-    let packPath = path.join(graph.path, "node_modules");
+    /*
+    console.log(graph);
+    let packPath = path.join(graph.path, "front", "node_modules");
     if (fs.existsSync(packPath))
-        folder.addLocalFolder(packPath);
+        front.importFolder(packPath, "node_modules");
 
-    // Add Meta.json
+    packPath = path.join(graph.path, "back", "node_modules");
+    if (fs.existsSync(packPath))
+        back.importFolder(packPath, "node_modules");*/
+
+    // Get metadata
     let meta = {
-        name: graph.meta.name,
+        name,
         author: graph.meta.author,
         description: graph.meta.description
     };
 
-    folder.addFile("meta.json", JSON.stringify(meta, null, 2));
-
     // Add Nodes
-
-    let subgraphs = folder.addFolder("subgraphs");
-    let front = folder.addFolder("front");
-    let back = folder.addFolder("back");
-
-    let gData = {
+    console.log(graph.nodes)
+    let out = Object.values(graph.nodes).find(v => v.type === "out");
+    console.log(out);
+    let outKey = graph.ports[graph.links[out.inputs[0]]].node;
+    
+    let gDef = {
         nodes: {},
-        output: null
+        recv: [],
+        output: graph.nodes[outKey].name,
+        inSides: {},
+        outSide: "",
+        meta
     };
 
-    for (let [key, node] in Object.entries(graph.nodes)) {
-        if (node.type === "out") {
-            gData.output = resolveInput(graph, node.inputs);
-        }
-        else if (node.type === "in") {
-            gData.nodes = {"type": "in", "label": node.name}
-        }
-        else if (node.type in ["front", "back"]) {
-            let srcPath = getFilePath(node.name, node.type, graph.path);
-            let side = sideMap[node.type];
+    gDef.outSide = compileNode(graph, outKey, "?", gDef, { front, back });
 
-            side.importFile(srcPath, path.basename(srcPath));
+    console.log(gDef);
 
-            gData.nodes[node.name] = {
-                type: "code",
-                inputs: resolveInputs(graph, node.inputs)
-            };
-            break;
-        }
-        else if (node.type === "data") {
-            let dataPath = getFilePath(node.name, node.type, graph.path);
-            let value = fs.readFileSync(dataPath).toString();
+    if (hasSide("?", gDef.outSide))
+        throw new Error("Outputted node must be a Front, Back, or Graph node.")
 
-            // TODO dont import into both sides, could have security issues
-            let nodeData = {type: "data", value}
-            gData.nodes[node.name] = nodeData;
-            break;
-        }
-        else if (node.type === "edit") {
-            let nodeData = {type: "edit"};
+    addExtras(gDef, "F", front);
+    addExtras(gDef, "B", back);
 
-            // TODO dont import into both sides, could have security issues
-            gData.nodes[node.name] = nodeData;
-        }
-        else if (node.type === "graph") {
-            let subgraphData = JSON.parse(fs.readFileSync(node.path, "utf8"));
-            compileGraph(subgraphData, subgraphs);
+    return gDef;
+}
+
+function hasSide(char, side) {
+    return side.indexOf(char) !== -1;
+}
+
+function compileNode(graph, key, prevSide, gDef, folders) {
+    let node = graph.nodes[key];
+    let name = node.name;
+    let side = prevSide;
+
+    console.log(name, graph)
+    if (node.type === "out")
+        throw new Error("Output nodes cannot be compiled");
+
+    else if (node.type === "in") {
+        gDef.nodes[name] = { "type": "in", side, "label": node.name };
+        gDef.inSides[name] = side;
+    }
+
+    else if (node.type === "front" || node.type === "back") {
+        // Get path to the source code
+        let srcPath = getFilePath(node.name, node.type, graph.path);
+
+        // Copy into front/ or back/
+        folders[node.type].importFile(srcPath, path.basename(srcPath), warn);
+
+        side = {front: "F", back: "B"}[node.type];
+
+        if (hasSide("F", side) && hasSide(prevSide, "B"))
+            throw new Error("You have a Front node outputting to a Back node, this is not allowed yet.");
+
+        // Graph.recv stores names of nodes that can receive requests from the frontend
+        if (hasSide("B", side) && hasSide(prevSide, "F"))
+            gDef.recv.push(name);
             
-            let nodeData = {type: "graph", inputs: resolveInputs(graph, node.inputs), graphName: subgraphData.meta.name};
-            gData.nodes[node.name] = nodeData;
-        }
+        let inputs = resolveInputs(graph, node.inputs);
+
+        // Log node in the graph definition
+        gDef.nodes[name] = { type: "code", side, inputs };
+
+        // Compile all inputting nodes
+        propagate(graph, node.inputs, side, gDef, folders);
+    }
+    else if (node.type === "data") {
+        // Get contents of the data file
+        let dataPath = getFilePath(node.name, node.type, graph.path);
+        let value = fs.readFileSync(dataPath).toString();
+
+        gDef.nodes[name] = { type: "data", side, value };
+    }
+    else if (node.type === "edit") {
+        gDef.nodes[name] = { type: "edit", side };
+    }
+    else if (node.type === "graph") {
+        // Load the graph's data and compile it
+        let subDef = compileGraph(node.path, { parentFront: folders.front, parentBack: folders.back });
+        let allSides = [...Object.values(subDef.inSides), subDef.outSide];
+        side = hasSide("F", allSides) ? "F" : "";
+        side += hasSide("B", allSides) ? "B" : "";
+        
+        let inputs = resolveInputs(graph, node.inputs);
+        gDef.nodes[name] = { type: "graph", side, inputs, graphName: subDef.meta.name, parameters: node.parameters };
+
+        propagate(graph, node.inputs, subDef.inSides, gDef, folders);
     }
 
-    let [frontNodes, backNodes] = resolveSides(gData.nodes);
-
-    folder.addFile("_index.js", compileIndex(gData.nodes));
-    front.addFile("_graph.json", compileGraphInfo(gData.nodes));
+    return side;
 }
 
-function compileIndex(nodes) {
-    let content = "";
-    for (let [name, nodeData] of Object.entries(nodes)) {
-        content += `\t"${name}": `;
-        if (nodeData.type === "data")
-            content += nodeData.value + ",\n";
-        if (nodeData.type in ["front", "back"])
-            content += `require('${name}'),\n`;
+function propagate(graph, inputs, side, gDef, folders) {
+    // Compile all inputting nodes
+    for (let input of inputs) {
+        let s = side;
+
+        if (typeof(side) === "object")
+            s = side[graph.ports[input].label]  // side is a mapping of input labels to sides
+
+        compileNode(graph, graph.ports[graph.links[input]].node, s, gDef, folders);
     }
-    
-    return "module.exports = {\n" + content + "};\n";
 }
 
-function compileGraphInfo(nodes) {
+function addExtras(gDef, side, folder) {
+    folder.addFile("_index.js", compileIndex(gDef, side));
+    folder.addFile("_graph.json", compileGraphInfo(gDef, side));
+}
+
+function compileIndex(gDef, side) {
     let content = "";
-    let info = {};
 
-    for (let [name, nodeData] of Object.entries(nodes)) {
-        if (nodeData.type === "data")
-            info[name] = {};
+    for (let [name, nodeData] of Object.entries(gDef.nodes)) {
+        if (!hasSide(side, nodeData.side))
+            continue;
 
-        content += `\t"${name}": `;
         if (nodeData.type === "data")
-            content += nodeData.value + ",\n";
-        if (nodeData.type in ["front", "back"])
-            content += `require('${name}'),\n`;
+            content += `\t\t"${name}": ${JSON.stringify(nodeData.value)},\n`;
+        if (nodeData.type === "code")
+            content += `\t\t"${name}": require('./${name}'),\n`;
+        if (nodeData.type === "graph")
+            content += `\t\t"${name}": require('./${name}/_index'),\n`;
+    }
+    content += `\t},\n`;
+    content += `\toutput: "${gDef.output}",\n`;
+    content += `\tgraph: require('./_graph.json'),\n`;
+    
+    return warn + "module.exports = {\n\tnodes: {\n" + content + "};\n";
+}
+
+function compileGraphInfo(gDef, side) {
+    let info = { nodes: {}, output: gDef.output, recv: gDef.recv, meta: gDef.meta };
+
+    for (let [name, nodeData] of Object.entries(gDef.nodes)) {
+        if (!hasSide(nodeData.side, side))
+            continue;
+        info.nodes[name] = nodeData;
     }
     
-    return "module.exports = {\n" + content + "};\n";
+    return JSON.stringify(info, null, 2);
 }
 
 function resolveInput(graph, port) {
@@ -317,30 +220,46 @@ class ZipBetter {
     constructor(scope, zip) {
         this.scope = scope || "";
         this.zip = zip || new AdmZip();
+        this.size = 0;
     }
 
-    nameToPath(name) {
-        return this.scope + (name.endsWith("/") ? "" : "/");
+    nameToPath(name, isDir) {
+        let p = this.scope + name;
+
+        if (isDir && !p.endsWith("/"))
+            p += "/";
+        if (!isDir && p.endsWith("/"))
+            p = p.substring(0, p.length - 1);
+        return p;
     }
 
     addFile(name, content) {
-        this.zip.addFile(this.nameToPath(name), content);
+        this.zip.addFile(this.nameToPath(name, false), content);
+        this.size++;
     }
 
     addFolder(name) {
-        let path = this.nameToPath(name);
+        let path = this.nameToPath(name, true);
         this.zip.addFile(path, "");
-        return ZipBetter(path, this.zip);
+        this.size++;
+        return new ZipBetter(path, this.zip);
     }
 
     importFolder(localPath, zipName) {
-        let zipPath = this.nameToPath(zipName);
+        let zipPath = this.nameToPath(zipName, true);
+        this.size++;
         this.zip.addLocalFolder(localPath, zipPath);
     }
 
-    importFile(localPath, zipName) {
-        let zipPath = this.nameToPath(zipName);
-        this.zip.addLocalFile(localPath, zipPath);
+    importFile(localPath, zipName, pre) {
+        //let zipPath = this.nameToPath(zipName, false);
+        this.size++;
+        this.addFile(zipName, pre + fs.readFileSync(localPath).toString());
+        //this.zip.addLocalFile(localPath, this.scope);
+    }
+
+    isEmpty() {
+        return this.size > 0;
     }
 }
 

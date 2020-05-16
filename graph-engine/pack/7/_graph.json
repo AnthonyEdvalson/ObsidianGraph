@@ -1,0 +1,69 @@
+{
+  "nodes": {
+    "Concat": {
+      "type": "code",
+      "side": "B",
+      "inputs": {
+        "b": "Part2",
+        "table": "SqliteTable",
+        "key": "Key"
+      }
+    },
+    "Part2": {
+      "type": "data",
+      "side": "B",
+      "value": "\"World\""
+    },
+    "SqliteTable": {
+      "type": "graph",
+      "side": "B",
+      "inputs": {
+        "Database": "Sqlite"
+      },
+      "graphName": "SqliteTable",
+      "parameters": {
+        "name": "demotable",
+        "columns": [
+          {
+            "name": "id",
+            "fieldType": "TEXT"
+          },
+          {
+            "name": "value",
+            "fieldType": "TEXT"
+          }
+        ]
+      }
+    },
+    "Sqlite": {
+      "type": "graph",
+      "side": "B",
+      "inputs": {},
+      "graphName": "Sqlite",
+      "parameters": "./7.db"
+    },
+    "Key": {
+      "type": "data",
+      "side": "B",
+      "value": "\"testingKey\""
+    },
+    "SetVal": {
+      "type": "code",
+      "side": "B",
+      "inputs": {
+        "table": "SqliteTable",
+        "key": "Key"
+      }
+    }
+  },
+  "output": "7c",
+  "recv": [
+    "Concat",
+    "SetVal"
+  ],
+  "meta": {
+    "name": "7",
+    "author": "",
+    "description": ""
+  }
+}

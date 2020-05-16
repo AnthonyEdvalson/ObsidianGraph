@@ -14,6 +14,7 @@ function respondFail(node, args, err, res) {
         tb: []
     });
 
+    console.log(e.stack);
     console.log(`${node} ${JSON.stringify(args)} !!! ${body}`);
     res.status(500).send(body);
 }

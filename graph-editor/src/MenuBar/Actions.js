@@ -4,7 +4,6 @@ import { ActionCreators } from 'redux-undo';
 // ES5 imports used to fix conflict between electron and browserify
 const fs = window.require("fs");
 const { dialog } = window.require("electron").remote;
-const admZip = window.require("adm-zip");
 const child_process = window.require('child_process');
 const remote = window.require("electron").remote;
 
@@ -35,13 +34,12 @@ function save(state, dispatch) {
 
 
 function exportGraph(state, dispatch) {
-    let zip = new admZip();
+    save(state, dispatch);
+    let [zip, name] = compileApp(state.graph.present);
 
-    let compGraph = compileApp(state.graph.present, zip);
-
-    zip.addFile("front.json", JSON.stringify({nodes: compGraph.front, output: compGraph.output}, null, 2));
+    /*zip.addFile("front.json", JSON.stringify({nodes: compGraph.front, output: compGraph.output}, null, 2));
     zip.addFile("back.json", JSON.stringify({nodes: compGraph.back}, null, 2));
-    zip.addFile("meta.json", JSON.stringify(compGraph.meta, null, 2));
+    zip.addFile("meta.json", JSON.stringify(compGraph.meta, null, 2));*/
     
     /*zipdir(path.join(state.graph.present.path, "node_modules"), (err, buf) => {
         if (err) throw err;
@@ -59,7 +57,7 @@ function exportGraph(state, dispatch) {
     //zip.addFile("packages.zip", buf, { compression: "STORE", binary: true, date: new Date("December 25, 2007, 00:00:01") });
 
     dialog.showSaveDialog({
-        defaultPath: state.graph.present.meta.name + ".obn",
+        defaultPath: name + ".obn",
         filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
     }).then(({ filePath }) => {
         if (filePath)

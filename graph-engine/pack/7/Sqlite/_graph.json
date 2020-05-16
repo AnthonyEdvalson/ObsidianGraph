@@ -1,0 +1,22 @@
+{
+  "nodes": {
+    "SqliteConnection": {
+      "type": "code",
+      "side": "B",
+      "inputs": {
+        "location": "Editor"
+      }
+    },
+    "Editor": {
+      "type": "edit",
+      "side": "B"
+    }
+  },
+  "output": "SqliteConnection",
+  "recv": [],
+  "meta": {
+    "name": "Sqlite",
+    "author": "Obsidian",
+    "description": "A simple interface for a Sqlite Database"
+  }
+}

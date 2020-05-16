@@ -6,39 +6,30 @@ const postman = require('./postman');
 const app = express();
 const port = process.env.PORT || 5000;
 const obnPath = process.argv[2];
-const mode = "dev";
-let obnData = loadObn(obnPath);
+let pack = null;
+let back_graph = null;
 
-// MUST load pack after loading the OBN so that import errors within the pack can be corrected
-const pack = require('./pack/_index');
-let back_graph = new Graph(obnData.back, pack);
-
-
-function obsidianExec(command, args) {
-  if (command === "getGraph")
-    return obnData.front;
+async function processCall(node, args) {
+  return back_graph.main(node, args);
 }
 
-app.use(express.json());
+loadObn(obnPath, () => {
+  // MUST load pack after loading the OBN so that import errors within the pack can be corrected
+  pack = require('./pack/7/_index');
+  back_graph = new Graph(pack, "back");
 
-app.post('/api/call', (req, res) => {
-  const [node, args] = postman.parseReq(req);
-  console.log(node, args);
+  app.use(express.json());
 
-  try {
-    if (node[0] == "@")
-      data = obsidianExec(node.substring(1), args);
-    else
-      data = back_graph.run(node, { args, mode, storePath: obnData.storePath });
-  } 
-  catch (e) {
-    console.log(e.stack);
-    postman.respondFail(node, args, e, res);
-    return;
-  }
-  console.log(data);
-  postman.respondSuccess(node, args, data, res);
+  app.post('/api/call', (req, res) => {
+    const [node, args] = postman.parseReq(req);
+    console.log("REQ: " + node + ", " + JSON.stringify(args));
+
+    let p = processCall(node, args).then(data => {
+      postman.respondSuccess(node, args, data, res);
+    }).catch(e => {
+      postman.respondFail(node, args, e, res);
+    });
+  });
+
+  app.listen(port, () => console.log(`Listening on port ${port}`));
 });
-
-
-app.listen(port, () => console.log(`Listening on port ${port}`));

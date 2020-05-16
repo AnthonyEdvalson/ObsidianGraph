@@ -1,0 +1,28 @@
+{
+  "nodes": {
+    "TableObject": {
+      "type": "code",
+      "side": "B",
+      "inputs": {
+        "db": "Database",
+        "schema": "Editor"
+      }
+    },
+    "Database": {
+      "type": "in",
+      "side": "B",
+      "label": "Database"
+    },
+    "Editor": {
+      "type": "edit",
+      "side": "B"
+    }
+  },
+  "output": "TableObject",
+  "recv": [],
+  "meta": {
+    "name": "SqliteTable",
+    "author": "Obsidian",
+    "description": "Simple table definition, automatically adds table to the database"
+  }
+}

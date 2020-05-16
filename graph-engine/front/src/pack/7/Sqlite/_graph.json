@@ -1,0 +1,10 @@
+{
+  "nodes": {},
+  "output": "SqliteConnection",
+  "recv": [],
+  "meta": {
+    "name": "Sqlite",
+    "author": "Obsidian",
+    "description": "A simple interface for a Sqlite Database"
+  }
+}
