@@ -1,0 +1,108 @@
+
+
+.Port {
+  margin-top: calc(var(--port-width) / 1.5);
+  position: relative;
+}
+
+.port-ring {
+  background-color: var(--io-bright);
+  box-shadow: 0 0 0 3px #212a35b0 inset;
+  width: var(--port-width);
+  height: var(--port-width);
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.Port:first-child {
+  margin-top: 0;
+}
+
+.port-ring:hover {
+  box-shadow: 0 0 0 3px #fff inset;
+}
+
+.port-label {
+  overflow: visible;
+  white-space: nowrap;
+  opacity: 0;
+  user-select: none;
+  transform: translateX(0px);
+  transition: opacity 0.1s ease-out, transform 0.08s ease-out;
+  pointer-events: none;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  font-size: 20px;
+  margin-top: -3px;
+}
+
+.Node:hover .port-label {
+  opacity: 1;
+}
+
+.Port:hover .port-label {
+  color: #fff;
+}
+
+.node-ports-in .port-label {
+  margin-right: var(--port-width);
+  float: right;
+}
+
+.Node:hover .node-ports-in .port-label {
+  transform: translateX(-4px);
+}
+
+.Node:hover .node-ports-out .port-label {
+  transform: translateX(4px);
+}
+
+.Node:hover .node-ports-in .port-ring:hover .port-label {
+  transform: translateX(-8px);
+}
+
+.Node:hover .node-ports-out .port-ring:hover .port-label{
+  transform: translateX(8px);
+}
+
+.node-ports-out .port-label {
+  margin-left: var(--port-width);
+  float: left;
+}
+
+
+/* PORT COLORS */
+.Port.node-back>.port-ring {
+  background-color: var(--back-bright);
+}
+.Port.node-front>.port-ring {
+  background-color: var(--front-bright);
+}
+.Port.node-data>.port-ring {
+  background-color: var(--data-bright);
+}
+
+
+/* NODE INFO COLORS */
+.Node.node-graph .node-info {
+  background-color: var(--graph-dim);
+}
+.Node.node-edit .node-info {
+  background-color: var(--edit-dim);
+}
+.Node.node-in .node-info,
+.Node.node-out .node-info,
+.Node.node-io .node-info {
+  background-color: var(--io-dim);
+}
+.Node.node-data .node-info {
+  background-color: var(--data-dim);
+}
+.Node.node-front .node-info {
+  background-color: var(--front-dim);
+}
+.Node.node-back .node-info {
+  background-color: var(--back-dim);
+}

@@ -1,5 +1,6 @@
 import { createStore } from 'redux';
 import undoable, { excludeAction } from 'redux-undo';
+import path from 'path';
 
 import graphActions from './actions/graph';
 import nodeActions from './actions/node';
@@ -9,16 +10,19 @@ import selectionActions from './actions/selection';
 import libraryActions from './actions/library';
 import modalActions from './actions/modal';
 import clipboardActions from './actions/clipboard';
-
+import projectAction from './actions/project';
 
 const init = {
+    project: null,
     graph: {},
     modals: {
         newGraph: false,
-        openGraph: true,
+        //openGraph: true,
+        openProject: true,
+        newProject: false,
     },
     library: {
-        path: "C:\\Users\\tonye\\Documents\\ObsidianProjects",
+        path: path.join(/*os.homedir()*/ "/Users/tonyedvalson", "Documents", "ObsidianProjects"),
         contents: null
     },
     clipboard: {
@@ -69,7 +73,8 @@ function rootReducer(state=init, action) {
         graph: graphReducer(state.graph, action, state),
         modals: lookupReducer(modalActions)(state.modals, action),
         library: lookupReducer(libraryActions)(state.library, action),
-        clipboard: lookupReducer(clipboardActions)(state.clipboard, action, state)
+        clipboard: lookupReducer(clipboardActions)(state.clipboard, action, state),
+        project: lookupReducer(projectAction)(state.project, action)
     };
 
     if (showDebug)

@@ -144,8 +144,7 @@ function LOAD_GRAPH(state, action) {
         ...action.data,
         path: action.folderPath || path.dirname(action.filePath),
         newLink: null,
-        selection: {all: [], items: []},
-        transform: { x: 0, y: 0, scale: 1 }
+        selection: {all: [], items: [], dragging: false}
     };
 
     for (let [k, v] of Object.entries(action.data.nodes)) {

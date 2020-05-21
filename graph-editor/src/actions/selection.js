@@ -125,16 +125,19 @@ function SELECT_ALL(state, action) {
 
 
 function MOVE_SELECTION(state, action) {
-    let gt = state.transform;
-    let newState = {...state, nodes: {...state.nodes}};
+    let gt = action.transform;
+    let newState = {
+        ...state, 
+        nodes: {...state.nodes}
+    };
 
     for (let item of state.selection.items) {
         if (item.type === "node") {
             let n = newState.nodes[item.key];
             newState.nodes[item.key] = {
                 ...n,
-                x: n.x + action.dx / gt.scale,
-                y: n.y + action.dy / gt.scale
+                x: n.x + action.dx / gt.s,
+                y: n.y + action.dy / gt.s
             };
         }
     }
@@ -167,5 +170,16 @@ function SELECT_RECT(state, action) {
     return SET_SELECTION(state, {items, ctrl: action.ctrl});
 }
 
+function SET_DRAGGING(state, action) {
+    let newState = {
+        ...state,
+        selection: {
+            ...state.selection,
+            dragging: action.dragging
+        }
+    };
 
-export default { SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT };
+    return newState;
+}
+
+export default { SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING };

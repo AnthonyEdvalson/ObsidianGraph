@@ -1,4 +1,4 @@
-import compileApp from "../Graph/compile";
+import compileApp from "../Editors/Graph/compile";
 import { ActionCreators } from 'redux-undo';
 
 // ES5 imports used to fix conflict between electron and browserify

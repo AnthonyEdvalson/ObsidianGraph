@@ -48,12 +48,12 @@ function MenuBar() {
         { 
             name: "File", 
             options: [
-                {name: "New Graph...", shortcut: "Ctrl+N", action: "new"},
-                {name: "Open Graph...", shortcut: "Ctrl+O", action: "open"},
-                {name: "Save...", shortcut: "Ctrl+S", action: "save"},
+                {name: "New Graph...", shortcut: "Mod+N", action: "new"},
+                {name: "Open Graph...", shortcut: "Mod+O", action: "open"},
+                {name: "Save...", shortcut: "Mod+S", action: "save"},
                 null,
                 //{name: "Save As...", shortcut: "Ctrl+Shift+S", action: "saveAs"},
-                {name: "Export...", shortcut: "Ctrl+E", action: "exportGraph"},
+                {name: "Export...", shortcut: "Mod+E", action: "exportGraph"},
                 {name: "Open GLIB Folder", action: "showGLIB"},
                 null,
                 {name: "Dev Tools", shortcut: "F12", action: "devtools"},
@@ -64,19 +64,19 @@ function MenuBar() {
         {
             name: "Edit",
             options: [
-                {name: "Undo", shortcut: "Ctrl+Z", action: "undo"},
-                {name: "Redo", shortcut: "Ctrl+Y", action: "redo"},
+                {name: "Undo", shortcut: "Mod+Z", action: "undo"},
+                {name: "Redo", shortcut: "Mod+Y", action: "redo"},
                 null,
-                {name: "Select All", shortcut: "Ctrl+A", action: "selectAll"},
-                {name: "Copy", shortcut: "Ctrl+C", action: "copy"},
-                {name: "Paste", shortcut: "Ctrl+V", action: "paste"},
-                {name: "Duplicate", shortcut: "Ctrl+D", action: "duplicate"}
+                {name: "Select All", shortcut: "Mod+A", action: "selectAll"},
+                {name: "Copy", shortcut: "Mod+C", action: "copy"},
+                {name: "Paste", shortcut: "Mod+V", action: "paste"},
+                {name: "Duplicate", shortcut: "Mod+D", action: "duplicate"}
             ]
         },
         {
             name: "Graph",
             options: [
-                {name: "Import...", shortcut: "Ctrl+Alt+O", action: "importNode"}
+                {name: "Import...", shortcut: "Mod+Alt+O", action: "importNode"}
             ]
         }
     ];

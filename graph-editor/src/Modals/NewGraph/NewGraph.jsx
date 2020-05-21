@@ -1,21 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import UI from '../../UI';
 import Form from '../../Form';
 import { useDispatch, useSelector } from 'react-redux';
 
 
-function NewGraph(props) {
+function NewGraph() {
     let dispatch = useDispatch();
     let open = useSelector(state => state.modals.newGraph);
-    let libdir = useSelector(state => state.library.path);
+    let projDir = useSelector(state => state.project && state.project.path);
     
-    const [state, setState] = useState({
-        directory: libdir,
-        name: "New project",
-        author: "",
-        description: "",
-        template: "Empty"
-    });
+    const [state, setState] = useState();
+
+    useEffect(() => {
+        setState(() => ({
+            directory: projDir,
+            name: "New Graph",
+            template: "Empty"
+        }));
+    }, [projDir]);
 
     function handleCreate() {
         dispatch({type: "NEW_GRAPH", ...state});
@@ -32,9 +34,7 @@ function NewGraph(props) {
                 <Form.Form data={state} onChange={setState}>
                     <UI.PathInput k="directory" dialogOptions={{openDirectory: true, openFile: false}} />
                     <UI.TextInput k="name" />
-                    <UI.TextInput k="author" />
-                    <UI.TextArea k="description" />
-                    <UI.Dropdown k="template" options={["Empty", "Web App", "Backend", "Frontend"]} />
+                    {/*<UI.Dropdown k="template" options={["Empty", "Web App", "Backend", "Frontend"]} />*/}
                     <UI.Button onClick={handleCreate}>Create</UI.Button>
                     <UI.Button onClick={handleCancel}>Cancel</UI.Button>
                 </Form.Form>
