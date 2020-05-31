@@ -16,7 +16,6 @@ function Node() {
                     </>
                 )
             }
-            <UI.TextInput k="path" />
             <UI.Schema k="schema" dk="parameters" />
         </UI.Foldout>
     );

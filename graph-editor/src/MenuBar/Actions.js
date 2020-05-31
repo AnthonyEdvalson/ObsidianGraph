@@ -1,71 +1,34 @@
 import compileApp from "../Editors/Graph/compile";
 import { ActionCreators } from 'redux-undo';
-
-// ES5 imports used to fix conflict between electron and browserify
-const fs = window.require("fs");
+import graphs from "../logic/graphs";
+import projects from "../logic/projects";
 const { dialog } = window.require("electron").remote;
 const child_process = window.require('child_process');
 const remote = window.require("electron").remote;
 
 
 function newGraph(state, dispatch) {
-    dispatch({type: "SET_MODAL_OPEN", name: "newGraph", open: true});
-}
-
-function open(state, dispatch) {
-    dispatch({type: "SET_MODAL_OPEN", name: "openGraph", open: true});
+    graphs.showNewGraph(dispatch);
 }
 
 function save(state, dispatch) {
-    dispatch({type: "SAVE_GRAPH"});
+    projects.save(state);
 }
 
-
-/*function saveAs(state, dispatch) {
-    dialog.showSaveDialog({
-        defaultPath: state.graph.present.path,
-        filters: [{name: "Obsidian Graph File", extensions: ["obg"]}]
-    }).then(result => {
-        if (result.filePath)
-            dispatch({type: "SAVE_GRAPH", path: result.filePath});
-    });
-}*/
-
-
-
-function exportGraph(state, dispatch) {
+function exportProject(state, dispatch) {
     save(state, dispatch);
-    let [zip, name] = compileApp(state.graph.present);
-
-    /*zip.addFile("front.json", JSON.stringify({nodes: compGraph.front, output: compGraph.output}, null, 2));
-    zip.addFile("back.json", JSON.stringify({nodes: compGraph.back}, null, 2));
-    zip.addFile("meta.json", JSON.stringify(compGraph.meta, null, 2));*/
-    
-    /*zipdir(path.join(state.graph.present.path, "node_modules"), (err, buf) => {
-        if (err) throw err;
-        zip.file("packages.zip", buf, { compression: "STORE", binary: true, date: new Date("December 25, 2007, 00:00:01") });
-
-        dialog.showSaveDialog({
-            defaultPath: state.graph.present.meta.name + ".obn",
-            filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
-        }).then(result => {
-            if (result.filePath)
-                zip.generateNodeStream({compression:"DEFLATE"}).pipe(fs.createWriteStream(result.filePath));
-        });
-    })*/
-
-    //zip.addFile("packages.zip", buf, { compression: "STORE", binary: true, date: new Date("December 25, 2007, 00:00:01") });
+    let [zip, name] = compileApp(state);
 
     dialog.showSaveDialog({
         defaultPath: name + ".obn",
-        filters: [{name: "Obsidian Node Files", extensions: ["obn"]}]
+        filters: [{name: "Obsidian Node File", extensions: ["obn"]}]
     }).then(({ filePath }) => {
         if (filePath)
             zip.writeZip(filePath);
     });
 }
 
-
+/*
 function importNode(state, dispatch) {
     dialog.showOpenDialog({
         filters: [{name: "Obsidian Graph File", extensions: ["obg"]}],
@@ -75,13 +38,10 @@ function importNode(state, dispatch) {
             return;
 
         for (let path of result.filePaths) {
-            fs.readFile(path, (err, data) => {
-                if (err) throw err;
-                dispatch({type: "NEW_NODE", nodeType: "graph", data: JSON.parse(data), path});
-            });
+            nodes.importObg(path, dispatch);
         }
     });
-}
+}*/
 
 function showGLIB(state, dispatch) {
     child_process.exec(`start "" "${state.library.path}"`);
@@ -125,12 +85,9 @@ function duplicate(state, dispatch) {
 
 export default {
     new: newGraph,
-    open,
     save,
     undo,
     redo,
-    importNode,
-    exportGraph,
     showGLIB,
     refresh,
     exit,
@@ -138,5 +95,6 @@ export default {
     selectAll,
     copy,
     paste,
-    duplicate
+    duplicate,
+    exportProject
 };

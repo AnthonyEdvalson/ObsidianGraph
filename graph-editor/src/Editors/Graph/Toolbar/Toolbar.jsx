@@ -1,6 +1,7 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import './Toolbar.css';
+import { useGraphSelector } from '../../../logic/graphs';
 
 
 function ToolbarNodeButton(props) {
@@ -21,7 +22,7 @@ function ToolbarNodeButton(props) {
 }
 
 function Toolbar() {
-    const outputExists = useSelector(state => Object.values(state.graph.present.nodes).some(n => n.type === "out"));
+    const outputExists = useGraphSelector(graph => Object.values(graph.nodes).some(n => n.type === "out"));
 
     return (
         <div className="Toolbar">

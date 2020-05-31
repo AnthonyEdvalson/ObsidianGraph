@@ -10,6 +10,8 @@ import OpenGraph from './Modals/OpenGraph';
 import Packages from './Modals/Packages';
 import OpenProject from './Modals/OpenProject';
 import NewProject from './Modals/NewProject';
+import EditNode from './Modals/EditNode';
+import { OpenGraphContext } from './logic/graphs';
 
 function AppBody() {
   let project = useSelector(state => state.project);
@@ -19,8 +21,10 @@ function AppBody() {
 
   return (
     <div className="app-body">
-      <Sidebar />
-      <Graph />
+      <OpenGraphContext.Provider value={project.openGraph}>
+        <Sidebar />
+        <Graph />
+      </OpenGraphContext.Provider>
     </div>
   )
 }
@@ -33,12 +37,12 @@ function Modals() {
       <Packages />
       <OpenProject />
       <NewProject />
+      <EditNode />
     </>
   )
 }
 
 function App () {
-  //let projPath = useSelector(state => state.graph.present.path);
 
   return (
     <div className="App">

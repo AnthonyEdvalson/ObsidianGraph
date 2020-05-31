@@ -1,18 +1,16 @@
 import React from 'react';
 import './Link.css';
 import useSelectable from '../../../useSelectable';
-import { useSelector } from 'react-redux';
+import { useGraphSelector } from '../../../../../logic/graphs';
 
 
 function Link(props) {
     let {sink, source} = props;
     let [selected, setSelect] = useSelectable("link", sink);
 
-    let nk1 = useSelector(state => state.graph.present.ports[sink].node);
-    let nk2 = useSelector(state => state.graph.present.ports[source].node);
+    let n1 = useGraphSelector(graph => graph.nodes[graph.ports[sink].node]);
+    let n2 = useGraphSelector(graph => graph.nodes[graph.ports[source].node]);
 
-    let n1 = useSelector(state => {let n = state.graph.present.nodes[nk1]; return {x: n.x, y: n.y, inputs: n.inputs}});
-    let n2 = useSelector(state => {let n = state.graph.present.nodes[nk2]; return {x: n.x, y: n.y}});
     let i1 = n1.inputs.indexOf(sink);
 
     let x1 = 0 + n1.x;

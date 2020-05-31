@@ -1,3 +1,6 @@
+import paths from "../logic/paths";
+import { makeLookupReducer } from "./util";
+
 const { getDefaultParams } = require("../UI/Schema");
 
 
@@ -9,10 +12,12 @@ function uuid4() {
 }
 
 
-function transformImportedGraph(graph, path) {    
+function transformImportedGraph(graph, importingPath, graphPath) {   
+    let location = paths.localPathToGraphLocation(importingPath, graphPath)
+    
     let data = {
         node: {
-            path,
+            location,
             parameters: null,
             schema: null,
             name: graph.meta.name,
@@ -41,15 +46,14 @@ function transformImportedGraph(graph, path) {
 
 function NEW_NODE(state, action) {
     let type = action.nodeType;
-
     let data = {
-        back: () => ({node: {name: "Backend"}, inputs: [{label: "input", type: "back"}]}),
-        front: () => ({node: {name: "Frontend"}, inputs: [{label: "input", type: "front"}]}),
-        data: () => ({node: {name: "Data"}}),
+        back: () => ({node: {name: "Backend", content: "function main(o) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main(o) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
+        data: () => ({node: {name: "Data", content: ""}}),
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
         edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value", type: "data"}}),
-        graph: () => transformImportedGraph(action.data, action.path)
+        graph: () => transformImportedGraph(action.data, action.path, state.path)
     }[type]();
 
     data = {
@@ -124,6 +128,17 @@ function SET_NODE_NAME(state, {node, name}) {
     return newState;
 }
 
+function SET_CONTENT(state, action) {
+    let newState = {
+        ...state,
+        nodes: { ...state.nodes} // In graoh reducers, replace state with state.nodes, and provide the full graph state as a third param
+    };
 
-export default { NEW_NODE, SET_NODE_NAME };
-export { uuid4, hasNameConflict, cleanName };
+    newState.nodes[action.nodeId].content = action.content;
+
+    return newState;
+}
+
+
+export default makeLookupReducer({ NEW_NODE, SET_NODE_NAME, SET_CONTENT });
+export { uuid4, hasNameConflict, cleanName }; // TODO move to logic

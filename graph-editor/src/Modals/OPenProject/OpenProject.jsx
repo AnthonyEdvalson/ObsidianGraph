@@ -2,10 +2,8 @@ import React, {useState, useEffect} from 'react';
 import UI from '../../UI';
 import { useDispatch, useSelector } from 'react-redux';
 import './OpenProject.css';
-const fs = window.require("fs");
-const path = window.require("path");
+import projects from '../../logic/projects';
 const { dialog } = window.require("electron").remote;
-
 
 function OpenProject() {
     let dispatch = useDispatch();
@@ -15,41 +13,14 @@ function OpenProject() {
     const recentPath = "./recents.json";
 
     useEffect(() => {
-        fs.readFile(recentPath, "utf-8", (err, data) => {
-            if (err) throw err;
-            setRecents(JSON.parse(data));
-        });
+        projects.readRecents(recentPath).then(setRecents);
     }, [setRecents]);
 
-    function handleOpen(filePath) {
-        fs.readFile(filePath, "utf-8", (err, data) => {
-            dispatch({type: "LOAD_PROJECT", data: JSON.parse(data), filePath});
-            handleClose();
-        });
-
-        let newRecent = {
-            name: path.basename(filePath, ".obp"), 
-            path: filePath, 
-            date: new Date().toLocaleString()
-        };
-
-        let newRecents = [newRecent];
-        for (let recent of recents) {
-            if (recent.path !== newRecent.path && newRecents.length < 5)
-                newRecents.push(recent);
-        }
-        
-        fs.writeFile(recentPath, JSON.stringify(newRecents), err => {
-            if (err) throw err;
-        });
-
-        setTimeout(() => {
+    function handleOpen(file) {
+        projects.openProject(file, dispatch, recents, recentPath).then(newRecents => {
             setRecents(newRecents);
-        }, 400);
-    }
-
-    function handleClose() {
-        dispatch({type: "SET_MODAL_OPEN", name: "openProject", open: false});
+        });
+        projects.hideOpenProject(dispatch);
     }
 
     function handleOpenFile() {
@@ -60,13 +31,14 @@ function OpenProject() {
         }).then(result => {
             if (result.canceled || !result.filePaths)
                 return;
+
             handleOpen(result.filePaths[0]);
         });
     }
 
     function handleNew() {
-        handleClose();
-        dispatch({type: "SET_MODAL_OPEN", name: "newProject", open: true});
+        projects.hideOpenProject(dispatch);
+        projects.showNewProject(dispatch);
     }
  
     return (
@@ -85,7 +57,7 @@ function OpenProject() {
                 </div>
                 <UI.Button onClick={handleOpenFile}>Open Project From File</UI.Button>
                 <UI.Button onClick={handleNew}>Create New Project</UI.Button>
-                <UI.Button onClick={handleClose}>Cancel</UI.Button>
+                <UI.Button onClick={() => projects.hideOpenProject(dispatch)}>Cancel</UI.Button>
             </div>
         </UI.Modal>
     );

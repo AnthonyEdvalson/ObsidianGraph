@@ -1,4 +1,5 @@
-import { getFilePath } from "../../useFile";
+import paths from "../../logic/paths";
+
 const AdmZip = window.require("adm-zip");
 const fs = window.require("fs");
 const path = window.require("path");
@@ -87,7 +88,7 @@ function compileNode(graph, key, prevSide, gDef, folders) {
 
     else if (node.type === "front" || node.type === "back") {
         // Get path to the source code
-        let srcPath = getFilePath(node.name, node.type, graph.path);
+        let srcPath = paths.getFilePath(node.name, node.type, graph.path);
 
         // Copy into front/ or back/
         folders[node.type].importFile(srcPath, path.basename(srcPath), warn);
@@ -111,7 +112,7 @@ function compileNode(graph, key, prevSide, gDef, folders) {
     }
     else if (node.type === "data") {
         // Get contents of the data file
-        let dataPath = getFilePath(node.name, node.type, graph.path);
+        let dataPath = paths.getFilePath(node.name, node.type, graph.path);
         let value = fs.readFileSync(dataPath).toString();
 
         gDef.nodes[name] = { type: "data", side, value };

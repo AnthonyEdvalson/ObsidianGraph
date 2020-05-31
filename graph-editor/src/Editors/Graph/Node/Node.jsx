@@ -1,37 +1,55 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useMemo, useContext } from 'react';
 import './Node.css';
 import Port from './Port';
-import { useSelector, useDispatch } from 'react-redux';
-import useFile, { getFilePath } from '../../../useFile';
-import launchEditor from '../../../launchEditor';
+import { useDispatch } from 'react-redux';
 import useSelectable from '../useSelectable';
 import { useDrag } from 'react-use-gesture';
-const fs = window.require("fs");
+import MonacoEditor from 'react-monaco-editor';
+import graphs, { useGraphSelector, OpenGraphContext } from '../../../logic/graphs';
+import nodes from '../../../logic/nodes';
 
 
 function Node(props) {
 	const key = props.k;
-	const data = useSelector(state => state.graph.present.nodes[key]);
-	var { x, y, name, type, inputs, output } = data;
+	const data = useGraphSelector(graph => graph.nodes[key])
+	let graphKey = useContext(OpenGraphContext);
+	var { x, y, name, type, inputs, output, content } = data;
 
-	const graphFolder = useSelector(state => state.graph.present.path);
 	var [selected, setSelect, dragging] = useSelectable("node", key);
-	const dispatch = useDispatch();
-	const bind = useNodeMove(() => handleOpen(data, graphFolder, dispatch), setSelect, dispatch, props.transform);
+	let moving = dragging || props.moving;
 
-	//useFile will sync associated file names
-	useFile(name, type, graphFolder);
+	const dispatch = useDispatch();
+	const bind = useNodeMove(() => handleOpen(data, key, graphKey, dispatch), setSelect, dispatch, props.transform);
 
 	let className = `Node node-${type}` + (selected ? " node-selected" : "") + (dragging ? " node-dragging" : "");
 	let style = {transform: `translate(${x}px, ${y}px)`};
-	
+
+	// Memoize the editor becuase it contains a huge number of elements, this way it does not get rendered nearly as much
+	let preview = useMemo(() => {
+		if (type !== "front" && type !== "back" && type !== "data")
+			return null;
+
+		return <MonacoEditor
+			width="300"
+			height="200"
+			language="javascript"
+			theme="vs-dark"
+			options={{readOnly: true, mouseStyle: "default", minimap: {enabled: false}, showFoldingControls: true, showUnused: true, lineNumbersMinChars: 3}}
+			value={content}
+		/>
+	}, [content, type]);
+
 	return (
 		<div style={style} className={className} { ...bind() }>
+
 			<div className="node-content">
 				<div className="node-info">
 					{name}
 				</div>
-				<div className="node-preview"></div>
+				<div className="node-preview" onDoubleClick={() => handleOpen(data, key, graphKey, dispatch)}>
+					<div className="node-preview-net" />
+					{moving ? null : preview}
+				</div>
 				<div className="node-ports-in">
 				{
 					inputs.map(key => <Port key={key} k={key} inout="in" />)
@@ -67,29 +85,26 @@ function useNodeMove(handleOpen, setSelect, dispatch, transform) {
 				}
 			}
 
-			if (last)
-				dispatch({ type: "SET_DRAGGING", dragging: false})
+			if (last) {
+				dispatch({ type: "SET_DRAGGING", dragging: false, snap: 50 });
+			}
 		},
-		{ filterTaps: true }
+		{ filterTaps: true, delay: true }
 	);
 
 	return bind;
 }
 
 
-function handleOpen(data, graphFolder, dispatch) {
+function handleOpen(data, key, graphKey, dispatch) {
 	switch (data.type) {
 		case "front": 
 		case "back":
 		case "data":
-			let filePath = getFilePath(data.name, data.type, graphFolder);
-			launchEditor(filePath, 1);
+			nodes.showEditNode(key, graphKey, dispatch);
 			break;
 		case "graph":
-			fs.readFile(data.path, (err, graphData) => {
-				if (err) throw err;
-				dispatch({type: "LOAD_GRAPH", data: JSON.parse(graphData), filePath: data.path});
-			});
+			graphs.openGraph(data.location, dispatch);
 			break;
 		default:
 	}

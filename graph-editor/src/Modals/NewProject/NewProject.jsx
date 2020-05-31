@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import UI from '../../UI';
 import Form from '../../Form';
 import { useDispatch, useSelector } from 'react-redux';
+import projects from '../../logic/projects';
 
 
 function NewProject(props) {
@@ -17,12 +18,8 @@ function NewProject(props) {
     });
 
     function handleCreate() {
-        dispatch({type: "NEW_PROJECT", ...state});
-        handleCancel();
-    }
-
-    function handleCancel() {
-        dispatch({type: "SET_MODAL_OPEN", name: "newProject", open: false});
+        projects.newProject(dispatch, state.directory, state.name, state.author, state.description);
+        projects.hideNewProject(dispatch);
     }
 
     return (
@@ -34,7 +31,7 @@ function NewProject(props) {
                     <UI.TextInput k="author" />
                     <UI.TextArea k="description" />
                     <UI.Button onClick={handleCreate}>Create</UI.Button>
-                    <UI.Button onClick={handleCancel}>Cancel</UI.Button>
+                    <UI.Button onClick={projects.hideNewProject}>Cancel</UI.Button>
                 </Form.Form>
             </div>
         </UI.Modal>

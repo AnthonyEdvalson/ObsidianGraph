@@ -3,12 +3,13 @@ import TextInput from '../Inputs/TextInput';
 import './PortEditor.css';
 import Dropdown from '../Inputs/Dropdown';
 import Form, { useForm } from '../../Form';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { useGraphSelector } from '../../logic/graphs';
 
 
 function PortEditor(props) {
     let key = useForm(props.k);
-    let data = useSelector(state => state.graph.present.ports[key.data]);
+    let data = useGraphSelector(graph => graph.ports[key.data]);
     let dispatch = useDispatch();
 
     function handleChange(change) {

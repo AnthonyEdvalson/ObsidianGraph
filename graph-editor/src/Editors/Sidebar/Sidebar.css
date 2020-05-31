@@ -8,6 +8,7 @@
     border-right: #101419 1px solid;
     display: flex;
     flex-flow: column;
+    position: relative;
 
     overflow-y: auto;
 }

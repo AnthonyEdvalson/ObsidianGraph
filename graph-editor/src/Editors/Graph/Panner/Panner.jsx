@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useGesture } from 'react-use-gesture';
 import './Panner.css';
 
@@ -30,23 +30,37 @@ function Panner(props) {
 	let t = props.transform;
 	let setTransform = props.setTransform;
 
+	let updateMoving = (first, last) => {
+		if (first)
+			props.setMoving(true);
+
+		if (last)
+			props.setMoving(false);
+	}
+
 	let bind = useGesture({
-			onPinch: ({ previous, da, origin }) => {
+			onPinch: ({ previous, da, origin, first, last }) => {
+				updateMoving(first, last);
 				setTransform(move(t, {ds: (da[0] - previous[0]) / 200, pivot: {x: origin[0], y: origin[1]}}))
 			},
-			onWheel: ({delta}) => {
+			onWheel: ({delta, first, last }) => {
+				updateMoving(first, last);
 				let dx = delta[0];
 				let dy = delta[1];
 				setTransform(move(t, { dx, dy })); 
 			},
-			onDrag: ({event, movement, initial, ctrlKey, tap, buttons, delta, last}) => {
+			onDrag: ({event, movement, initial, ctrlKey, tap, buttons, delta, first, last}) => {
 				if (event.__stop)
 					return;
 
+				updateMoving(false, last);
+
 				if (buttons === 4) {
+					updateMoving(first, last);
 					setTransform(move(t, {dx: delta[0], dy: delta[1]}));
 					return;
 				}
+				
 				let [x, y] = clientToGraph(...initial, t);
 				let [width, height] = clientToGraph(...movement, t, false);
 				let region = { x, y, width, height };

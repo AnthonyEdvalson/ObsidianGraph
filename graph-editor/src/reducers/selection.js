@@ -1,7 +1,6 @@
-import linkActions from './link';
-import portActions from './port';
-import { getFilePath } from '../useFile';
-const fs = window.require("fs");
+import { DELETE_LINK } from './link';
+import { DELETE_PORT } from './port';
+import { makeLookupReducer } from './util';
 
 
 function SET_SELECTION(state, action) {
@@ -64,23 +63,16 @@ function DELETE_SELECTION(state, action) {
             let target = state.nodes[item.key];
             
             if (target.output)
-                newState = portActions.DELETE_PORT(newState, {key: target.output});
+                newState = DELETE_PORT(newState, {key: target.output});
             for (let key of target.inputs)
-                newState = portActions.DELETE_PORT(newState, {key});
+                newState = DELETE_PORT(newState, {key});
     
             newState.nodes = {...newState.nodes};
             delete newState.nodes[item.key];
-
-            let filePath = getFilePath(target.name, target.type, state.path);
-            if (filePath) {
-                fs.unlink(filePath, err => {
-                    if (err) throw err;
-                });
-            }
         }
         if (item.type === "link") {
             newState.links = {...newState.links};
-            newState = linkActions.DELETE_LINK(newState, {sink: item.key});
+            newState = DELETE_LINK(newState, {sink: item.key});
         }
     }
 
@@ -179,7 +171,21 @@ function SET_DRAGGING(state, action) {
         }
     };
 
+    let snap = action.snap;
+    if (snap) {
+        for (let item of state.selection.items) {
+            if (item.type === "node") {
+                let n = newState.nodes[item.key];
+                newState.nodes[item.key] = {
+                    ...n,
+                    x: Math.round(n.x / snap) * snap,
+                    y: Math.round(n.y / snap) * snap
+                };
+            }
+        }
+    }
+
     return newState;
 }
 
-export default { SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING };
+export default makeLookupReducer({ SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING });

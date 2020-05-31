@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import UI from '../../UI';
 import Form from '../../Form';
 import { useDispatch, useSelector } from 'react-redux';
+import graphs from '../../logic/graphs';
 
 
 function NewGraph() {
@@ -9,23 +10,22 @@ function NewGraph() {
     let open = useSelector(state => state.modals.newGraph);
     let projDir = useSelector(state => state.project && state.project.path);
     
-    const [state, setState] = useState();
+    const [state, setState] = useState({
+        directory: projDir,
+        name: "New Graph",
+        template: "Empty"
+    });
 
     useEffect(() => {
-        setState(() => ({
-            directory: projDir,
-            name: "New Graph",
-            template: "Empty"
+        setState(prevState => ({
+            ...prevState,
+            directory: projDir
         }));
     }, [projDir]);
 
     function handleCreate() {
-        dispatch({type: "NEW_GRAPH", ...state});
-        handleCancel();
-    }
-
-    function handleCancel() {
-        dispatch({type: "SET_MODAL_OPEN", name: "newGraph", open: false});
+        graphs.newGraph(dispatch, state.name);
+        graphs.hideNewGraph(dispatch);
     }
 
     return (
@@ -36,7 +36,7 @@ function NewGraph() {
                     <UI.TextInput k="name" />
                     {/*<UI.Dropdown k="template" options={["Empty", "Web App", "Backend", "Frontend"]} />*/}
                     <UI.Button onClick={handleCreate}>Create</UI.Button>
-                    <UI.Button onClick={handleCancel}>Cancel</UI.Button>
+                    <UI.Button onClick={() => graphs.handleCancel(dispatch)}>Cancel</UI.Button>
                 </Form.Form>
             </div>
         </UI.Modal>

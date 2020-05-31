@@ -1,5 +1,6 @@
 import { uuid4 } from './node';
-import linkActions from './link';
+import { DELETE_LINK } from './link';
+import { makeLookupReducer } from './util';
 
 function DELETE_PORT(state, action) {
     let key = action.key;
@@ -15,7 +16,7 @@ function DELETE_PORT(state, action) {
 
     for (let [sink, source] of Object.entries(newState.links)) {
         if (source === key || sink === key)
-            newState = linkActions.DELETE_LINK(newState, {sink});
+            newState = DELETE_LINK(newState, {sink});
     }
 
     delete newState.ports[key];
@@ -47,4 +48,5 @@ function CHANGE_PORT(state, action) {
     return newState;
 }
 
-export default { DELETE_PORT, ADD_PORT, CHANGE_PORT };
+export default makeLookupReducer({ DELETE_PORT, ADD_PORT, CHANGE_PORT });
+export { DELETE_PORT }

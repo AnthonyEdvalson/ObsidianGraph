@@ -1,11 +1,11 @@
-import React from 'react';
-import UI from '../../UI';
-import { useDispatch, useSelector } from 'react-redux';
+//import React from 'react';
+//import UI from '../../UI';
+//import { useDispatch, useSelector } from 'react-redux';
 import './Packages.css';
 
 
 function Packages() {
-    let dispatch = useDispatch();
+    /*let dispatch = useDispatch();
     let graphName = useSelector(state => state.graph.present.meta ? state.graph.present.meta.name : null);
     let open = useSelector(state => state.modals.packages);
 
@@ -23,7 +23,8 @@ function Packages() {
                 <UI.Button onClick={handleClose}>Close</UI.Button>
             </div>
         </UI.Modal>
-    );
+    );*/
+    return null;
 }
 
 export default Packages;

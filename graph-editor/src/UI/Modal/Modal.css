@@ -16,7 +16,7 @@
     animation-timing-function: ease-out;
     background-color: #00000050;
     opacity: 0;
-    z-index: 1000000;
+    z-index: 10000;
     backdrop-filter: blur(2px);
     display: flex;
     justify-content: center;

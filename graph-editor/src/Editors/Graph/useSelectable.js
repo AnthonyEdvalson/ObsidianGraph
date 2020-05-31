@@ -1,8 +1,9 @@
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useCallback, useEffect } from "react";
+import { useGraphSelector } from "../../logic/graphs";
 
 function useSelectable(type, key) {
-    const selection = useSelector(state => state.graph.present.selection);
+    const selection = useGraphSelector(graph => graph.selection);
     const dispatch = useDispatch();
     let selectSet = !!selection;
 

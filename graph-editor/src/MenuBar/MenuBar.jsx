@@ -53,7 +53,7 @@ function MenuBar() {
                 {name: "Save...", shortcut: "Mod+S", action: "save"},
                 null,
                 //{name: "Save As...", shortcut: "Ctrl+Shift+S", action: "saveAs"},
-                {name: "Export...", shortcut: "Mod+E", action: "exportGraph"},
+                {name: "Export...", shortcut: "Mod+E", action: "exportProject"},
                 {name: "Open GLIB Folder", action: "showGLIB"},
                 null,
                 {name: "Dev Tools", shortcut: "F12", action: "devtools"},
@@ -76,7 +76,7 @@ function MenuBar() {
         {
             name: "Graph",
             options: [
-                {name: "Import...", shortcut: "Mod+Alt+O", action: "importNode"}
+                //{name: "Import...", shortcut: "Mod+Alt+O", action: "importNode"}
             ]
         }
     ];

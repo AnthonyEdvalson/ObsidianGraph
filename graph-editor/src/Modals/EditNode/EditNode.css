@@ -1,0 +1,38 @@
+.EditNode {
+    position: absolute;
+    top: 15px;
+    bottom: 15px;
+    right: 10px;
+    left: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 200;
+    background-color: #14191f;
+    box-shadow: 0 0 0 50px #00000080;
+}
+
+.EditNode .edit-node-header {
+    width: 100%;
+    height: 50px;
+    background-color: #28323e;
+    padding: 12px 30px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.EditNode .edit-node-header h1 {
+    margin: 0;
+    flex: 1 1 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.EditNode .edit-node-header button {
+    width: 50px;
+    flex: 0 0 1;
+}

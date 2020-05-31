@@ -1,3 +1,5 @@
+import { makeLookupReducer } from "./util";
+
 function copy(graph) {
     let clip = {
         nodes: {},
@@ -36,5 +38,5 @@ function COPY(state, action, fullState) {
 }
 
 
-export default { COPY };
-export { copy }
+export default makeLookupReducer({ COPY }, { nodes: {}, ports: {}, links: {} });
+export { copy };

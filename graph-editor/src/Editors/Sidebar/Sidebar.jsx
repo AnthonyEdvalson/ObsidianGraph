@@ -2,23 +2,20 @@ import React, { useState } from 'react';
 import './Sidebar.css';
 import NodeSidebar from './Comp/NodeSidebar/Node';
 import GraphSidebar from './Comp/GraphSidebar';
-import { useSelector } from 'react-redux';
 import Project from './Project';
+import { useGraphSelector } from '../../logic/graphs';
 
 function Sidebar(props) {
-    let selection = useSelector(state => {
-        if (!state.graph.present.meta)
+    let selection = useGraphSelector(graph => {
+        if (!graph.meta)
             return null;
 
-        let items = state.graph.present.selection.items;
-
+        let items = graph.selection.items;
         return items.length === 1 ? items[0] : null;
-    });
+    })
 
-    let selected = useSelector(state => {
+    let selected = useGraphSelector(graph => {
         if (selection) {
-            let graph = state.graph.present;
-
             if (selection.type === "node")
                 return {type: "node", data: graph.nodes[selection.key], nodeKey: selection.key};
 

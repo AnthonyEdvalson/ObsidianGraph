@@ -5,6 +5,7 @@
     background-color: #181818;
     color: ccc;
     font-size: 14px;
+    z-index: 5000;
 }
 
 .MenuItem {
@@ -49,7 +50,7 @@
 .menu-dropdown {
     position: fixed;
     display: none;
-    z-index: 100000;
+    z-index: 5010;
     background-color: #181818;
     padding: 1px;
 }
