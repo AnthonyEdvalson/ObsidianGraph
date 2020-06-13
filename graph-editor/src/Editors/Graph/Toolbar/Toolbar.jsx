@@ -1,17 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import './Toolbar.css';
-import { useGraphSelector } from '../../../logic/graphs';
+import { useGraphSelector, useGraphKey } from '../../../logic/graphs';
 
 
 function ToolbarNodeButton(props) {
     let t = props.t;
     const dispatch = useDispatch();
     let disabled = t === "out" && props.outputExists;
+    let graphId = useGraphKey();
 
     function MakeNode() {
         if (!disabled)
-            dispatch({type: "NEW_NODE", nodeType: t});
+            dispatch({type: "NEW_NODE", nodeType: t, graphId});
     }
 
     return (

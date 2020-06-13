@@ -79,5 +79,5 @@ function DELETE_LINK(state, action) {
     return newState;
 }
 
-export default makeLookupReducer({ START_LINK, RELINK, END_LINK, DELETE_LINK });
+export default makeLookupReducer({ START_LINK, RELINK, END_LINK, DELETE_LINK }, undefined, true);
 export { DELETE_LINK };

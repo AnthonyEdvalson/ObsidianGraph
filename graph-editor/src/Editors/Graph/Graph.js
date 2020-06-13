@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import './Graph.css';
 import Links from './Node/Port/Links';
 import Node from './Node';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Toolbar from './Toolbar';
 import useSelectable from './useSelectable';
 import RectSelect from './RectSelect';
 import Panner from './Panner';
-import { useGraphSelector } from '../../logic/graphs';
+import graphs, { useGraphSelector, OpenGraphContext } from '../../logic/graphs';
+import projects from '../../logic/projects';
 
 
 function Graph(props) {
@@ -27,7 +28,7 @@ function Graph(props) {
       setSelectRect(null);
     }
     else if (selectRect !== null || (region.width > 3 || region.height > 3)) {
-      dispatch({type: "SELECT_RECT", region, ctrl});
+      dispatch({type: "SELECT_RECT", region, ctrl, graphId: graph.key});
       setSelectRect(region);
     }
 
@@ -41,20 +42,39 @@ function Graph(props) {
   return (
     <div className="Graph">
       <Toolbar />
-      <Panner transform={t} setTransform={setT} setMoving={setMoving} handleDrag={handleDrag}>
-        <div className="graph-body">
-          <RectSelect region={selectRect} />
-          {
-            Object.keys(graph.nodes).map(key => (
-              <Node moving={moving} key={key} k={key} transform={t}/>
-            ))
-          } 
-          <Links />
-        </div>
-      </Panner>
+      <GraphRenderContents moving={moving} transform={t} setTransform={setT} setMoving={setMoving} handleDrag={handleDrag} selectRect={selectRect}/>
     </div>
   );
+}
+/*
+function GraphRender(props) {
+  let project = useSelector(state => state.project);
+  let packs = projects.getPackages(project.path);
+  console.log(props, project, packs)
+  let graph = graphs.getGraphFromLocation(props.location, project, packs);
+  return (
+    <OpenGraphContext.Provider value={graph}>
+      <GraphRenderContents { ...props } />
+    </OpenGraphContext.Provider>
+  )
+}*/
+
+function GraphRenderContents({ moving, transform, setTransform, setMoving, handleDrag, selectRect }) {
+  return (
+    <Panner transform={transform} setTransform={setTransform} setMoving={setMoving} handleDrag={handleDrag}>
+      <div className="graph-body">
+        <RectSelect region={selectRect} />
+        {
+          Object.keys(useGraphSelector(graph => graph.nodes)).map(key => (
+            <Node moving={moving} key={key} k={key} transform={transform}/>
+          ))
+        } 
+        <Links />
+      </div>
+    </Panner>
+  )
 }
 
 
 export default Graph;
+//export { GraphRender };

@@ -34,5 +34,4 @@ input.ui-line-elem:focus, textarea.ui-elem:focus, select.ui-line-elem:focus {
 
 textarea.ui-elem {
     min-height: 5em;
-    font-family: 'Courier New', Courier, monospace;
 }

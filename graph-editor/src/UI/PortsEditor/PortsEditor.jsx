@@ -6,10 +6,12 @@ import { useDispatch } from 'react-redux';
 
 function PortsEditor(props) {
     let dispatch = useDispatch();
+    let node = props.nodeKey;
+    let { graphId, typeOptions } = props;
     
     return (
-        <List k={props.k} handleAdd={e => {dispatch({type: "ADD_PORT", node: props.nodeKey})}}>
-            <PortEditor typeOptions={props.typeOptions} />
+        <List k={props.k} handleAdd={e => {dispatch({type: "ADD_PORT", node, graphId})}}>
+            <PortEditor typeOptions={typeOptions} graphId={graphId}/>
         </List>
     );
 }

@@ -2,8 +2,22 @@ import { useSelector } from "react-redux";
 import React, { useContext } from "react";
 import { newHistory } from "redux-undo";
 
-async function openGraph(id, dispatch) {
-    dispatch({type: "LOAD_GRAPH", id});
+
+function openGraph(key, dispatch) {
+    dispatch({ type: "LOAD_GRAPH", key });
+}
+
+function getGraphFromLocation(location, project, packs) {
+    if (location.type === "local")
+        return project.graphs[location.graphId].present;
+
+    if (location.type === "package")
+        return packs[location.pack].graphs[location.graphId];
+}
+
+function importGraph(location, project, packs, dispatch, graphId) {
+    let data = getGraphFromLocation(location, project, packs);
+    dispatch({ type: "NEW_NODE", nodeType: "graph", location, data, graphId });
 }
 
 function newGraph(dispatch, name) {
@@ -27,46 +41,63 @@ function packForSerialization(graph) {
     };
 }
 
-function unpackFromSerialization(data) {
+function unpackFromSerialization(data, graphId) {
     return newHistory([], {
-        ...data,
-        newLink: null,
-        selection: { all: [], items: [], dragging: false }
+        ...makeEmptyGraph(null, graphId),
+        ...data
     }, []);
 }
 
 const OpenGraphContext = React.createContext(null);
 
-function useGraphSelector(selector, graphKey) {
-    let defaultGraphKey = useContext(OpenGraphContext);
-    graphKey = graphKey || defaultGraphKey;
+function useGraphSelector(selector) {
+    let graph = useContext(OpenGraphContext);
 
     return useSelector(state => {
-        if (!graphKey)
+        if (!graph)
             return null;
 
         if (!selector)
-            selector = s => s;
-        
-        let graph = state.project.graphs[graphKey].present;
-
-        if (!graph)
-            return null;
+            return graph;
 
         return selector(graph);
     });
 }
 
+function useGraphKey() {
+    return useGraphSelector(graph => graph.graphId);
+}
+
+function makeEmptyGraph(name, graphId) {
+    return {
+        meta: {
+            name,
+            tags: "",
+            hideInLibrary: false
+        },
+        nodes: {},
+        links: {},
+        ports: {},
+        newLink: null,
+        selection: { all: [], items: [], dragging: false },
+        graphId
+    }
+}
+
 export default {
-    openGraph,
     newGraph,
     showNewGraph,
     hideNewGraph,
     packForSerialization,
-    unpackFromSerialization
+    unpackFromSerialization,
+    openGraph,
+    importGraph,
+    getGraphFromLocation
 }
 
 export {
     useGraphSelector,
-    OpenGraphContext
+    OpenGraphContext,
+    makeEmptyGraph,
+    useGraphKey
 }

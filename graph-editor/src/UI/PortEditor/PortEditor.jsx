@@ -13,7 +13,7 @@ function PortEditor(props) {
     let dispatch = useDispatch();
 
     function handleChange(change) {
-        dispatch({type: "CHANGE_PORT", change, port: key.data});
+        dispatch({type: "CHANGE_PORT", change, port: key.data, graphId: props.graphId});
     }
 
     return (

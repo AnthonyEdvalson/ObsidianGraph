@@ -1,4 +1,3 @@
-import paths from "../logic/paths";
 import { makeLookupReducer } from "./util";
 
 const { getDefaultParams } = require("../UI/Schema");
@@ -12,9 +11,8 @@ function uuid4() {
 }
 
 
-function transformImportedGraph(graph, importingPath, graphPath) {   
-    let location = paths.localPathToGraphLocation(importingPath, graphPath)
-    
+function transformImportedGraph(graph, location) {  
+    console.log(graph); 
     let data = {
         node: {
             location,
@@ -53,7 +51,7 @@ function NEW_NODE(state, action) {
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
         edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value", type: "data"}}),
-        graph: () => transformImportedGraph(action.data, action.path, state.path)
+        graph: () => transformImportedGraph(action.data, action.location)
     }[type]();
 
     data = {
@@ -140,5 +138,5 @@ function SET_CONTENT(state, action) {
 }
 
 
-export default makeLookupReducer({ NEW_NODE, SET_NODE_NAME, SET_CONTENT });
+export default makeLookupReducer({ NEW_NODE, SET_NODE_NAME, SET_CONTENT }, undefined, true);
 export { uuid4, hasNameConflict, cleanName }; // TODO move to logic

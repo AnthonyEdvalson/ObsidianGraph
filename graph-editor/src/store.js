@@ -16,7 +16,7 @@ function rootReducer(state, action) {
     if (showDebug)
         console.log(action);
 
-    let newState = combineReducers(reducers)(state, action);
+    let newState = combineReducers(reducers)(state, action, state);
 
     if (showDebug)
         console.log(newState);

@@ -3,7 +3,7 @@ import './Sidebar.css';
 import NodeSidebar from './Comp/NodeSidebar/Node';
 import GraphSidebar from './Comp/GraphSidebar';
 import Project from './Project';
-import { useGraphSelector } from '../../logic/graphs';
+import { useGraphSelector, useGraphKey } from '../../logic/graphs';
 
 function Sidebar(props) {
     let selection = useGraphSelector(graph => {
@@ -26,6 +26,8 @@ function Sidebar(props) {
         return {type: null, data: null};
     });
 
+    let graphId = useGraphKey();
+
     let [oldSelection, setOldSelection] = useState(selection);
     if (selection && (oldSelection !== selection)) {
         document.activeElement.blur();
@@ -42,7 +44,7 @@ function Sidebar(props) {
                     <h1>{node.name}</h1>
                     <small>NODE: {node.type.toUpperCase()}</small>
                 </div>
-                <NodeSidebar data={node} nodeKey={selected.nodeKey} />
+                <NodeSidebar data={node} nodeKey={selected.nodeKey} graphId={graphId}/>
             </>
         );
     }
@@ -55,7 +57,7 @@ function Sidebar(props) {
                     <h1>{meta.name}</h1>
                     <small>{meta.description}</small>
                 </div>
-                <GraphSidebar data={meta}/>
+                <GraphSidebar data={meta} graphId={graphId}/>
             </>
         );
     }

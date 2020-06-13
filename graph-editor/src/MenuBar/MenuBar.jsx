@@ -55,6 +55,7 @@ function MenuBar() {
                 //{name: "Save As...", shortcut: "Ctrl+Shift+S", action: "saveAs"},
                 {name: "Export...", shortcut: "Mod+E", action: "exportProject"},
                 {name: "Open GLIB Folder", action: "showGLIB"},
+                {name: "Import Project...", shortcut: "Mod+Shift+O", action: "importProjects"},
                 null,
                 {name: "Dev Tools", shortcut: "F12", action: "devtools"},
                 {name: "Refresh", shortcut: "F5", action: "refresh"},

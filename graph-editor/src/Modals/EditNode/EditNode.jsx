@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import MonacoEditor from 'react-monaco-editor';
+import Monaco from '../../Editors/Monaco';
 import './EditNode.css';
 import { useGraphSelector } from '../../logic/graphs';
 import nodes from '../../logic/nodes';
@@ -10,12 +10,8 @@ function EditNode() {
     let graphKey = args.graphKey; // TODO Rename graphKey to graphId
     let dispatch = useDispatch();
     let node = useGraphSelector(graph => graph.nodes[args.id], graphKey);
+    let defaultContent = node ? node.content : "";
     let [content, setContent] = useState("");
-
-    useEffect(() => {
-        if (node)
-            setContent(node.content);
-    }, [node]);
 
     if (!node)
         return null;
@@ -36,13 +32,7 @@ function EditNode() {
                 <button onClick={close}>X</button>
                 <button onClick={save}>SAVE</button>
             </div>
-            <MonacoEditor
-                language="javascript"
-                theme="vs-dark"
-                options={{showFoldingControls: true, showUnused: true}}
-                value={content}
-                onChange={setContent}
-            />
+            <Monaco defaultValue={defaultContent} mode="edit" onChange={setContent} k={args.id + "_EDIT"} />
         </div>
     );
 }

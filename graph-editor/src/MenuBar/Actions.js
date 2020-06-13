@@ -28,20 +28,19 @@ function exportProject(state, dispatch) {
     });
 }
 
-/*
-function importNode(state, dispatch) {
+function importProjects(state, dispatch) {
     dialog.showOpenDialog({
-        filters: [{name: "Obsidian Graph File", extensions: ["obg"]}],
+        filters: [{name: "Obsidian Project File", extensions: ["obp"]}],
         properties: ["openFile", "multiSelections"]
     }).then(result => {
         if (result.canceled)
             return;
 
         for (let path of result.filePaths) {
-            nodes.importObg(path, dispatch);
+            projects.importProject(path, state.project.path);
         }
     });
-}*/
+}
 
 function showGLIB(state, dispatch) {
     child_process.exec(`start "" "${state.library.path}"`);
@@ -96,5 +95,6 @@ export default {
     copy,
     paste,
     duplicate,
-    exportProject
+    exportProject,
+    importProjects
 };

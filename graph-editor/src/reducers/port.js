@@ -48,5 +48,5 @@ function CHANGE_PORT(state, action) {
     return newState;
 }
 
-export default makeLookupReducer({ DELETE_PORT, ADD_PORT, CHANGE_PORT });
+export default makeLookupReducer({ DELETE_PORT, ADD_PORT, CHANGE_PORT }, undefined, true);
 export { DELETE_PORT }

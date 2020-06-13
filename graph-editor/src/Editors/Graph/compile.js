@@ -1,5 +1,3 @@
-import paths from "../../logic/paths";
-
 const AdmZip = window.require("adm-zip");
 const fs = window.require("fs");
 const path = window.require("path");
@@ -27,18 +25,6 @@ function compileGraph(graphPath, { parentFront, parentBack }, graph) {
     let front = parentFront.addFolder(name);
     let back = parentBack.addFolder(name);
 
-    // Add Node Modules
-    /*
-    console.log(graph);
-    let packPath = path.join(graph.path, "front", "node_modules");
-    if (fs.existsSync(packPath))
-        front.importFolder(packPath, "node_modules");
-
-    packPath = path.join(graph.path, "back", "node_modules");
-    if (fs.existsSync(packPath))
-        back.importFolder(packPath, "node_modules");*/
-
-    // Get metadata
     let meta = {
         name,
         author: graph.meta.author,
@@ -74,6 +60,7 @@ function hasSide(char, side) {
 }
 
 function compileNode(graph, key, prevSide, gDef, folders) {
+    /*
     let node = graph.nodes[key];
     let name = node.name;
     let side = prevSide;
@@ -133,7 +120,7 @@ function compileNode(graph, key, prevSide, gDef, folders) {
         propagate(graph, node.inputs, subDef.inSides, gDef, folders);
     }
 
-    return side;
+    return side;*/
 }
 
 function propagate(graph, inputs, side, gDef, folders) {

@@ -7,20 +7,8 @@ function GraphSidebar(props) {
     let dispatch = useDispatch();
 
     function onChange(change) {
-        dispatch({type: "CHANGE_SELECTION", change});
+        dispatch({type: "CHANGE_SELECTION", change, graphId: props.graphId});
     }
-
-    /*function showPackages() {
-        dispatch({type: "SET_MODAL_OPEN", name: "packages", open: true});
-    }
-
-    function openTerminal() {
-        
-    }
-
-    function openFolder() {
-        shell.openItem(path);
-    }*/
     
     return (
         <Form.Form data={props.data} onChange={onChange}>

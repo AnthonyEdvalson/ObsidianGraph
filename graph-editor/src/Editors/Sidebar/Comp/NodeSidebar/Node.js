@@ -24,19 +24,20 @@ function Node(props) {
 
     let body = props.data.type in bodies ? bodies[props.data.type] : null;
     let data = props.data;
+    let graphId = props.graphId;
     let dispatch = useDispatch();
 
     function onChange(change) {
-        dispatch({type: "CHANGE_SELECTION", change});
+        dispatch({type: "CHANGE_SELECTION", change, graphId});
     }
 
     function onChangeName(change) {
         let name = change();
-        dispatch({type: "SET_NODE_NAME", node: props.nodeKey, name});
+        dispatch({type: "SET_NODE_NAME", node: props.nodeKey, name, graphId});
     }
 
     function handleDelete() {
-        dispatch({type: "DELETE_SELECTION"});
+        dispatch({type: "DELETE_SELECTION", graphId});
     }
 
     return (
@@ -46,9 +47,8 @@ function Node(props) {
                     <UI.TextInput updateOn="blur" />
                 </Form.Form>
                 <UI.Button onClick={handleDelete}>DELETE</UI.Button>
-                {/*<UI.Dropdown k="type" options={["data", "back", "front", "graph", "in", "out", "edit"]}/>*/}
             </UI.Foldout>
-            {body !== null && React.createElement(body, {nodeKey: props.nodeKey})}
+            {body !== null && React.createElement(body, {nodeKey: props.nodeKey, graphId})}
         </Form.Form>
     );
 }

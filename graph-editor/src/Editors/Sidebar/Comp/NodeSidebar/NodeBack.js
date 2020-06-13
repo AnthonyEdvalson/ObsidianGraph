@@ -5,7 +5,7 @@ import UI from '../../../../UI';
 function Node(props) {
     return (
         <UI.Foldout label="Python Properties">
-            <UI.PortsEditor k="inputs" nodeKey={props.nodeKey} typeOptions={["back", "data"]} />
+            <UI.PortsEditor k="inputs" nodeKey={props.nodeKey} typeOptions={["back", "data"]} graphId={props.graphId}/>
         </UI.Foldout>
     );
 }

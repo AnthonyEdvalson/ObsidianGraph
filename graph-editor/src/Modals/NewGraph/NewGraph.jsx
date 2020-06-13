@@ -34,7 +34,6 @@ function NewGraph() {
                 <Form.Form data={state} onChange={setState}>
                     <UI.PathInput k="directory" dialogOptions={{openDirectory: true, openFile: false}} />
                     <UI.TextInput k="name" />
-                    {/*<UI.Dropdown k="template" options={["Empty", "Web App", "Backend", "Frontend"]} />*/}
                     <UI.Button onClick={handleCreate}>Create</UI.Button>
                     <UI.Button onClick={() => graphs.handleCancel(dispatch)}>Cancel</UI.Button>
                 </Form.Form>

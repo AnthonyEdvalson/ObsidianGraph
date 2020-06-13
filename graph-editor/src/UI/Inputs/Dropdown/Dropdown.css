@@ -1,5 +1,5 @@
 .Dropdown select.ui-line-elem {
-    padding: 2px 4px; /*select has additonal padding on text that cannot be removed*/
+    padding: 2px 4px;
     outline: none !important;
 }
 

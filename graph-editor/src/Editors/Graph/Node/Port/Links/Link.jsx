@@ -14,9 +14,9 @@ function Link(props) {
     let i1 = n1.inputs.indexOf(sink);
 
     let x1 = 0 + n1.x;
-    let y1 = ((200 - (n1.inputs.length - 1) * 33) + i1 * 66) / 2 + n1.y;
+    let y1 = ((500 - (n1.inputs.length - 1) * 33) + i1 * 66) / 2 + n1.y;
     let x2 = 300 + n2.x;
-    let y2 = 100 + n2.y;
+    let y2 = 500 / 2 + n2.y;
 
     let xm = (x1 + x2) / 2;
     let ym = (y1 + y2) / 2;

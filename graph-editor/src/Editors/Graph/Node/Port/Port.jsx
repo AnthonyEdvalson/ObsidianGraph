@@ -2,13 +2,14 @@ import React from 'react';
 import './Port.css';
 import { useDispatch } from 'react-redux';
 import { uuid4 } from '../../../../reducers/node';
-import { useGraphSelector } from '../../../../logic/graphs';
+import { useGraphSelector, useGraphKey } from '../../../../logic/graphs';
 
 
 function Port(props) {
     let {inout} = props;
     let key = props.k;
     let {label} = useGraphSelector(graph => graph.ports[key]);
+    let graphId = useGraphKey();
     
     const dispatch = useDispatch();
 
@@ -16,15 +17,15 @@ function Port(props) {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey)
-            dispatch({type: "RELINK", port: key, inout, transaction: uuid4()}); // TODO move to logic
+            dispatch({type: "RELINK", port: key, inout, transaction: uuid4(), graphId}); // TODO move to logic
         else
-            dispatch({type: "START_LINK", port: key, inout, transaction: uuid4()});
+            dispatch({type: "START_LINK", port: key, inout, transaction: uuid4(), graphId});
     }
 
     const handleMouseUp = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        dispatch({type: "END_LINK", port: key, inout});
+        dispatch({type: "END_LINK", port: key, inout, graphId});
     }
 
     return (

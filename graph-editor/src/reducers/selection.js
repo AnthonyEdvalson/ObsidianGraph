@@ -3,7 +3,9 @@ import { DELETE_PORT } from './port';
 import { makeLookupReducer } from './util';
 
 
+
 function SET_SELECTION(state, action) {
+    
     let newState = {
         ...state,
         selection: { ...state.selection }
@@ -31,6 +33,7 @@ function SET_SELECTION(state, action) {
 
 
 function CHANGE_SELECTION(state, action) {
+    
     let newState = {
         ...state,
         selection: { ...state.selection }
@@ -53,6 +56,7 @@ function CHANGE_SELECTION(state, action) {
 }
 
 function DELETE_SELECTION(state, action) {
+    
     let newState = {
         ...state,
         selection: { ...state.selection }
@@ -82,6 +86,7 @@ function DELETE_SELECTION(state, action) {
 }
 
 function REGISTER_SELECTABLE(state, action) {
+    
     let newState = {
         ...state,
         selection: { ...state.selection }
@@ -96,6 +101,7 @@ function REGISTER_SELECTABLE(state, action) {
 }
 
 function UNREGISTER_SELECTABLE(state, action) {
+    
     let newState = {
         ...state,
         selection: { ...state.selection }
@@ -106,6 +112,7 @@ function UNREGISTER_SELECTABLE(state, action) {
 }
 
 function SELECT_ALL(state, action) {
+    
     let newState = {
         ...state,
         selection: { ...state.selection }
@@ -117,6 +124,7 @@ function SELECT_ALL(state, action) {
 
 
 function MOVE_SELECTION(state, action) {
+    
     let gt = action.transform;
     let newState = {
         ...state, 
@@ -138,6 +146,7 @@ function MOVE_SELECTION(state, action) {
 }
 
 function SELECT_RECT(state, action) {
+    
     let r = action.region;
     let x = Math.min(r.x, r.x + r.width);
     let y = Math.min(r.y, r.y + r.height);
@@ -159,10 +168,11 @@ function SELECT_RECT(state, action) {
         }
     }
 
-    return SET_SELECTION(state, {items, ctrl: action.ctrl});
+    return SET_SELECTION(state, {items, ctrl: action.ctrl, graphId: action.graphId});
 }
 
 function SET_DRAGGING(state, action) {
+    
     let newState = {
         ...state,
         selection: {
@@ -188,4 +198,4 @@ function SET_DRAGGING(state, action) {
     return newState;
 }
 
-export default makeLookupReducer({ SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING });
+export default makeLookupReducer({ SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING }, undefined, true);

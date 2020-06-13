@@ -31,19 +31,14 @@
 .Node.node-selected.node-error .node-content {
   box-shadow: 0 0 0 7px #b63d28;
 }
-/*
-.Node.node-dragging .node-content {
-  transform: translate(-3px, -3px);
-}*/
 
 .node-preview {
   top: 32px;
   left: 0;
   right: 0;
   bottom: 0;
-  font-family: 'Courier New', Courier, monospace;
   position: absolute;
-  overflow-y: auto;
+  overflow: hidden;
 }
 
 .node-preview-net {
@@ -53,7 +48,12 @@
   bottom: 0;
   left: 0;
   z-index: 5;
-  background-color: transparent;
+  background-color: #00000030;
+  transition: background-color ease-out 0.1s;
+}
+
+.node-preview-net:hover {
+  background-color: #00000000;
 }
 
 .Node.node-error .node-preview {

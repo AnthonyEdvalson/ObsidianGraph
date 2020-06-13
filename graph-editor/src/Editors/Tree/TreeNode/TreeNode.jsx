@@ -1,14 +1,7 @@
 import React from 'react';
 import './TreeNode.css';
 import UI from '../../../UI';
-/*
-function importNode(path, dispatch) {
-    fs.readFile(path, (err, data) => {
-        if (err) throw err;
-        dispatch({type: "NEW_NODE", nodeType: "graph", data: JSON.parse(data), path});
-    });
-}
-*/
+
 function TreeNode(props) {
     let data = props.data;
     if (!data)

@@ -4,40 +4,60 @@ import Port from './Port';
 import { useDispatch } from 'react-redux';
 import useSelectable from '../useSelectable';
 import { useDrag } from 'react-use-gesture';
-import MonacoEditor from 'react-monaco-editor';
-import graphs, { useGraphSelector, OpenGraphContext } from '../../../logic/graphs';
+import graphs, { useGraphSelector, OpenGraphContext, useGraphKey } from '../../../logic/graphs';
 import nodes from '../../../logic/nodes';
-
+import Monaco from '../../Monaco';
+import Schema, { getDefaultParams } from '../../../UI/Schema';
+import Form from '../../../Form';
 
 function Node(props) {
 	const key = props.k;
-	const data = useGraphSelector(graph => graph.nodes[key])
+	const data = useGraphSelector(graph => graph.nodes[key]);
+	const graphId = useGraphKey();
 	let graphKey = useContext(OpenGraphContext);
-	var { x, y, name, type, inputs, output, content } = data;
+	var { x, y, name, type, inputs, output, content, schema } = data;
 
 	var [selected, setSelect, dragging] = useSelectable("node", key);
 	let moving = dragging || props.moving;
 
 	const dispatch = useDispatch();
-	const bind = useNodeMove(() => handleOpen(data, key, graphKey, dispatch), setSelect, dispatch, props.transform);
+	const bind = useNodeMove(() => handleOpen(data, key, graphKey, dispatch), setSelect, dispatch, props.transform, graphId);
 
 	let className = `Node node-${type}` + (selected ? " node-selected" : "") + (dragging ? " node-dragging" : "");
 	let style = {transform: `translate(${x}px, ${y}px)`};
 
-	// Memoize the editor becuase it contains a huge number of elements, this way it does not get rendered nearly as much
+	// Memoize the preview becuase they can be very complicated, this way it does not get rendered every time
+	// The node moves or has a property changed
 	let preview = useMemo(() => {
-		if (type !== "front" && type !== "back" && type !== "data")
-			return null;
+		if (["front", "back", "data"].includes(type))
+			return <Monaco width="300" height="500" mode="readOnly" value={content} k={key} fontSize={8} />
+		else if (type === "edit") {
+			let schemaObject;
 
-		return <MonacoEditor
-			width="300"
-			height="200"
-			language="javascript"
-			theme="vs-dark"
-			options={{readOnly: true, mouseStyle: "default", minimap: {enabled: false}, showFoldingControls: true, showUnused: true, lineNumbersMinChars: 3}}
-			value={content}
-		/>
-	}, [content, type]);
+			try {
+				schemaObject = JSON.parse(schema);
+			}
+			catch {
+				return "- Invalid Schema -";
+			}
+
+			return (
+				<Form.Form data={{ schema: schemaObject, params: getDefaultParams(schemaObject) }} onChange={() => {}}>
+					<Schema k="schema" dk="params"/>
+				</Form.Form>
+			);
+		}
+		else if (type === "graph") {
+			return null;
+			/*return (
+				<GraphRender graphId={subgraphId} moving={true} transform={{x: 400, y: 200, s: 0.2}} />
+			)*/
+		}
+		
+		return null;
+	}, [content, type, key, schema]);
+
+	let previewStyle = { ...(moving ? {display: "none"} : {}) };
 
 	return (
 		<div style={style} className={className} { ...bind() }>
@@ -46,9 +66,9 @@ function Node(props) {
 				<div className="node-info">
 					{name}
 				</div>
-				<div className="node-preview" onDoubleClick={() => handleOpen(data, key, graphKey, dispatch)}>
+				<div className="node-preview" onDoubleClick={() => handleOpen(data, key, graphKey, dispatch)} style={previewStyle}>
 					<div className="node-preview-net" />
-					{moving ? null : preview}
+					{preview}
 				</div>
 				<div className="node-ports-in">
 				{
@@ -64,7 +84,7 @@ function Node(props) {
 }
 
 
-function useNodeMove(handleOpen, setSelect, dispatch, transform) {
+function useNodeMove(handleOpen, setSelect, dispatch, transform, graphId) {
 	let bind = useDrag(
 		({event, delta: [dx, dy], tap, buttons, last, first}) => {
 			event.__stop = true;
@@ -79,14 +99,14 @@ function useNodeMove(handleOpen, setSelect, dispatch, transform) {
 			else
 			{
 				if (buttons === 1) {
-					dispatch({ type: "MOVE_SELECTION", dx, dy, transform });
+					dispatch({ type: "MOVE_SELECTION", dx, dy, transform, graphId });
 					if (first)
-						dispatch({ type: "SET_DRAGGING", dragging: true});
+						dispatch({ type: "SET_DRAGGING", dragging: true, graphId });
 				}
 			}
 
 			if (last) {
-				dispatch({ type: "SET_DRAGGING", dragging: false, snap: 50 });
+				dispatch({ type: "SET_DRAGGING", dragging: false, snap: 50, graphId });
 			}
 		},
 		{ filterTaps: true, delay: true }
@@ -104,7 +124,7 @@ function handleOpen(data, key, graphKey, dispatch) {
 			nodes.showEditNode(key, graphKey, dispatch);
 			break;
 		case "graph":
-			graphs.openGraph(data.location, dispatch);
+			graphs.openGraph(data.graphId, dispatch);
 			break;
 		default:
 	}
