@@ -1,4 +1,4 @@
-import { makeLookupReducer } from "./util";
+import { lookupReducerFactory } from "./util";
 
 function START_LINK(state, action) {
     return {
@@ -79,5 +79,5 @@ function DELETE_LINK(state, action) {
     return newState;
 }
 
-export default makeLookupReducer({ START_LINK, RELINK, END_LINK, DELETE_LINK }, undefined, true);
+export default lookupReducerFactory({ START_LINK, RELINK, END_LINK, DELETE_LINK });
 export { DELETE_LINK };

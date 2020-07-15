@@ -1,6 +1,6 @@
 import { DELETE_LINK } from './link';
 import { DELETE_PORT } from './port';
-import { makeLookupReducer } from './util';
+import { lookupReducerFactory } from './util';
 
 
 
@@ -124,13 +124,13 @@ function SELECT_ALL(state, action) {
 
 
 function MOVE_SELECTION(state, action) {
-    
     let gt = action.transform;
+
     let newState = {
         ...state, 
         nodes: {...state.nodes}
     };
-
+    
     for (let item of state.selection.items) {
         if (item.type === "node") {
             let n = newState.nodes[item.key];
@@ -168,7 +168,7 @@ function SELECT_RECT(state, action) {
         }
     }
 
-    return SET_SELECTION(state, {items, ctrl: action.ctrl, graphId: action.graphId});
+    return SET_SELECTION(state, {items, ctrl: action.ctrl});
 }
 
 function SET_DRAGGING(state, action) {
@@ -198,4 +198,4 @@ function SET_DRAGGING(state, action) {
     return newState;
 }
 
-export default makeLookupReducer({ SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING }, undefined, true);
+export default lookupReducerFactory({ SET_SELECTION, CHANGE_SELECTION, DELETE_SELECTION, REGISTER_SELECTABLE, UNREGISTER_SELECTABLE, SELECT_ALL, MOVE_SELECTION, SELECT_RECT, SET_DRAGGING });

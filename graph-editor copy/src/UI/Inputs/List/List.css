@@ -1,0 +1,31 @@
+.button-filler {
+    width: 20px;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.list-add {
+    background-color: var(--ui-heading);
+    display: block;
+    width: 30px;
+    text-align: center;
+    height: 18px;
+    float: right;
+    cursor: pointer;
+    border-radius: 0 0 5px 5px;
+}
+
+.list-add:hover {
+    background-color: #555;
+}
+
+.list-items {
+    border: 1px var(--ui-heading) solid;
+    border-bottom-left-radius: 5px;
+    overflow: hidden;
+}
+
+.list-items,
+.list-add {
+    margin-right: var(--ui-indent);
+}

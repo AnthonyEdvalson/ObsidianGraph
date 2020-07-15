@@ -11,7 +11,7 @@ function Modal(props) {
                 <div className="modal-dialog">
                     <span className="modal-header">{props.header}</span>
                     <div className="modal-body">
-                        {props.children}
+                        { props.children }
                     </div>
                 </div>
             </div>

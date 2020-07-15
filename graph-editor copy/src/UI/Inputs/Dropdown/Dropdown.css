@@ -1,0 +1,8 @@
+.Dropdown select.ui-line-elem {
+    padding: 2px 4px; /*select has additonal padding on text that cannot be removed*/
+    outline: none !important;
+}
+
+.Dropdown option {
+    background-color: #232c36;
+}

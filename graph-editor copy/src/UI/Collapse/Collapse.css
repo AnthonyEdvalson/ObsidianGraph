@@ -1,0 +1,20 @@
+.Collapse {
+    height: 100%;
+    display: block;
+    width: 25px;
+    transition: all ease-out 0.1s;
+}
+
+.Collapse::after {
+    content: "⯈";
+    float: right;
+    margin-right: 6px;
+}
+
+.Collapse:hover {
+    background-color: #ffffff10;
+}
+
+.Collapse.collapse-open::after {
+    content: "⯆";
+}

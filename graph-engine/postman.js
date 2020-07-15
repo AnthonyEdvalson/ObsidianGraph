@@ -1,30 +1,30 @@
 function parseReq(req) {
-    data = req.body;
+    let data = req.body;
 
     if (typeof(data) !== "object")
-        throw new Error("Server could not understand the message '" + JSON.stringify(data) + "'. It expects a valid JSON dictionary");
+        throw new Error("Server could not understand the message '" + JSON.stringify(data) + "'. It expects a JSON dictionary");
     
-    return [data.node, data.args];
+    return [data.location, data.args];
 }
 
-function respondFail(node, args, err, res) {
+function respondFail(name, args, err, res) {
     let body = JSON.stringify({
         title: err.name,
         message: err.message,
         tb: []
     });
 
-    console.log(e.stack);
-    console.log(`${node} ${JSON.stringify(args)} !!! ${body}`);
+    console.log(err.stack);
+    console.log(`${JSON.stringify(name)} ${JSON.stringify(args)} !!! ${body}`);
     res.status(500).send(body);
 }
 
-function respondSuccess(node, args, data, res) {
+function respondSuccess(name, args, data, res) {
     if (typeof(data) === "undefined")
         data = null;
         
     let body = JSON.stringify(data, null, 2);
-    console.log(`${node} ${JSON.stringify(args)} >>> ${body}`);
+    console.log(`${JSON.stringify(name)} ${JSON.stringify(args)} >>> ${body}`);
     res.send(body);
 }
 

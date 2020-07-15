@@ -1,0 +1,13 @@
+{
+  "root": {
+    "projectName": "10",
+    "functionName": "Main"
+  },
+  "projects": [
+    "10",
+    "Sqlite2"
+  ],
+  "name": "10",
+  "author": "",
+  "description": ""
+}

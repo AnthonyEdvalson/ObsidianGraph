@@ -1,59 +1,56 @@
 import React from 'react';
 import './App.css';
-import Graph from './Editors/Graph';
-import Sidebar from './Editors/Sidebar';
+import Graphs from './Panels/Graphs';
+import Sidebar from './Panels/Sidebar';
 import { Provider, useSelector } from 'react-redux';
 import store from './store';
 import MenuBar from './MenuBar';
-import NewGraph from './Modals/NewGraph';
-import Packages from './Modals/Packages';
-import OpenProject from './Modals/OpenProject';
-import NewProject from './Modals/NewProject';
-import EditNode from './Modals/EditNode';
-import { OpenGraphContext } from './logic/graphs';
 import { ToastContainer, Slide } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.min.css";
+import { useState } from 'react';
+import { useCallback } from 'react';
+import { GraphIdContext, ProjectIdContext } from './logic/scope';
+import { graft } from './util';
 
-function AppBody() {
-  let project = useSelector(state => state.project);
-
-  if (!project)
-    return null;
-
-  return (
-    <div className="app-body">
-      <ToastContainer position="top-center" autoClose={3000} transition={Slide} hideProgressBar />
-      <OpenGraphContext.Provider value={project.graphs[project.openGraph].present}>
-        <Sidebar />
-        <Graph />
-      </OpenGraphContext.Provider>
-    </div>
-  )
-}
-
-function Modals() {
+function Editor() {
+  let [menuBarLayout, setMenuBarLayout] = useState({ Obsidian: menu });
+  let focusProject = useSelector(state => state.focus.projectId);
+  let focusGraph = useSelector(state => state.focus.graphId);
+  
+  const setMenu = useCallback((name, options) => {
+    setMenuBarLayout(prevState => graft(prevState, name, options));
+  }, [setMenuBarLayout]);
   return (
     <>
-      <NewGraph />
-      <Packages />
-      <OpenProject />
-      <NewProject />
-      <EditNode />
+      <MenuBar layout={menuBarLayout}/>
+      <div className="app-body">
+        <ToastContainer position="top-center" autoClose={3000} transition={Slide} hideProgressBar />
+        <ProjectIdContext.Provider value={focusProject}>
+          <GraphIdContext.Provider value={focusGraph}>
+            <Sidebar setMenu={setMenu} />
+            <Graphs setMenu={setMenu} />
+          </GraphIdContext.Provider>
+        </ProjectIdContext.Provider>
+      </div>
     </>
-  )
+  );
 }
 
-function App () {
-
+function App() {
   return (
     <div className="App">
       <Provider store={store}>
-        <MenuBar />
-        <AppBody />
-        <Modals />
+        <Editor />
       </Provider>
     </div>
   );
 }
+
+
+const menu = [
+  {name: "Dev Tools", shortcut: "F12", action: "devtools"},
+  {name: "Refresh", shortcut: "F5", action: "refresh"},
+  {name: "Exit", action: "exit"}
+];
 
 export default App;

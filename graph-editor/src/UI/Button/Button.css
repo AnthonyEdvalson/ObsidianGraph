@@ -12,6 +12,7 @@
     margin-left: 5px;
     padding: 3px 10px;
     float: right;
+    text-transform: uppercase;
 }
 
 .Button:hover {

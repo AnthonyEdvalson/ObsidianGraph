@@ -1,14 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import UI from '../../UI';
 import Form from '../../Form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import graphs from '../../logic/graphs';
 
 
-function NewGraph() {
+function NewGraph(props) {
     let dispatch = useDispatch();
-    let open = useSelector(state => state.modals.newGraph);
-    let projDir = useSelector(state => state.project && state.project.path);
+    let open = props.open;//useSelector(state => state.modals.newGraph);
+    let projDir = "";//useSelector(state => state.project && state.project.path);
     
     const [state, setState] = useState({
         directory: projDir,

@@ -4,15 +4,20 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js \"C:\\Users\\tonye\\Desktop\\7.obn\" --watch ./ --watch \"C:/Users/tonye/Desktop/7.obn\" --ignore front/src/pack --ignore pack/"
+    "start": "nodemon --exec babel-node server.js \"/Users/tonyedvalson/Desktop/10.obn\" --watch ./ --watch \"/Users/tonyedvalson/Desktop/10.obn\" --ignore front/src/pack --ignore pack/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "adm-zip": "^0.4.14",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "regenerator-runtime": "^0.13.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/node": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/register": "^7.10.4",
     "nodemon": "^2.0.3"
   }
 }

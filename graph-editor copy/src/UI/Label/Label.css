@@ -1,0 +1,7 @@
+.Label {
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-overflow: ellipsis;
+    min-width: 60px;
+    padding: 0 0 0 5px;
+}

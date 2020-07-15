@@ -1,5 +1,6 @@
 import graphs from "./graphs";
 import { toast } from "react-toastify";
+import buildProject from "./compileProject";
 
 const ncp = window.require("ncp").ncp;
 const fs = window.require("fs");
@@ -21,22 +22,6 @@ async function readRecents(recentPath) {
     }
 
     return JSON.parse(recents);
-}
-
-function showNewProject(dispatch) {
-    dispatch({type: "SET_MODAL_OPEN", name: "newProject", open: true});
-}
-
-function hideNewProject(dispatch) {
-    dispatch({type: "SET_MODAL_OPEN", name: "newProject", open: false});
-}
-
-function showOpenProject(dispatch) {
-    dispatch({type: "SET_MODAL_OPEN", name: "openProject", open: true});
-}
-
-function hideOpenProject(dispatch) {
-    dispatch({type: "SET_MODAL_OPEN", name: "openProject", open: false});
 }
 
 async function addRecent(obpPath, recents, recentPath) {
@@ -71,17 +56,19 @@ async function newProject(dispatch, directory, name, author, description) {
         tags: "",
         hideInLibrary: false,
         path: folderPath,
-        graphs: {}
+        graphs: {},
+        projectId: undefined
     };
 
     dispatch({type: "LOAD_PROJECT", data});
+    dispatch({type: "SET_FOCUS", focus: { projectId: data.projectId } });
 }
 
-function serializeObp(state) {
-    let {path, ...project} = state.project;
+function serializeObp(data) {
+    let {path, ...project} = data;
 
     let newGraphs = {};
-    for (let [id, graph] of Object.entries(state.project.graphs))
+    for (let [id, graph] of Object.entries(project.graphs))
         newGraphs[id] = graphs.packForSerialization(graph);
 
     let obpData = {
@@ -92,16 +79,23 @@ function serializeObp(state) {
     return JSON.stringify(obpData, null, 2);
 }
 
-async function openProject(obpPath, dispatch, recents, recentPath) {
+async function openProject(obpPath, dispatch) {
+    let data = null;
+
     try {
         let obp = await util.promisify(fs.readFile)(obpPath, "utf-8");
-        let data = deserializeObp(obp, obpPath);
+        data = deserializeObp(obp, obpPath);
         dispatch({type: "LOAD_PROJECT", data});
+        dispatch({type: "SET_FOCUS", focus: { projectId: data.projectId } });
     } catch (e) {
         toastErr("Unable to open that project", e);
+        return;
     }
 
-    return await addRecent(obpPath, recents, recentPath);
+    let packs = await getPackages(data.path);
+    for (let data of Object.values(packs)) {
+        dispatch({type: "LOAD_PROJECT", data});
+    }
 }
 
 function deserializeObp(obp, obpPath) {
@@ -118,11 +112,11 @@ function deserializeObp(obp, obpPath) {
     }
 }
 
-async function save(state) {
-    let obp = serializeObp(state);
+async function save(project) {
+    let obp = serializeObp(project);
 
-    let folderPath = state.project.path;
-    let obpPath = path.join(folderPath, state.project.name + ".obp");
+    let folderPath = project.path;
+    let obpPath = path.join(folderPath, project.name + ".obp");
 
     if (!fs.existsSync(folderPath)) {
         try {
@@ -135,7 +129,7 @@ async function save(state) {
 
     try {
         await util.promisify(fs.writeFile)(obpPath, obp);
-        toast("Saved " + state.project.name + ".obp", {type: "success"});
+        toast("Saved " + project.name + ".obp", {type: "success"});
     } catch (e) {
         toastErr("Unable to save obp file", e);
     }
@@ -147,7 +141,6 @@ async function importPackage(obpPath, targetProjectPath) {
     let importingName = path.basename(obpPath, ".obp");
     let targetDirectory = path.join(targetProjectPath, "pack")
     let targetProject = path.join(targetDirectory, importingName);
-    console.log(sourceProject, importingName, targetDirectory, targetProject);
     
     try {
         if (!fs.existsSync(targetDirectory))
@@ -190,18 +183,19 @@ async function getPackages(projectPath) {
     return packs;
 }
 
+function build(loadedProjects, projectId) {
+    return buildProject(loadedProjects, projectId);
+}
+
 export default {
     readRecents,
     addRecent,
     openProject,
-    showOpenProject,
-    hideOpenProject,
-    showNewProject,
-    hideNewProject,
     newProject,
     save,
     serializeObp,
     deserializeObp,
     importPackage,
-    getPackages
+    getPackages,
+    build
 };

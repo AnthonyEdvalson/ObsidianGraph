@@ -1,0 +1,29 @@
+.Project {
+    width: 100%;
+    height: 300px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    /*box-shadow: 0 0 30px #00000050;*/
+
+    border-right: #101419 1px solid;
+    display: flex;
+    flex-flow: column;
+
+    overflow-y: auto;
+}
+
+.side-head h1 {
+    margin: 0 0 5px 0;
+}
+
+.side-head small {
+    font-style: italic;
+    font-size: 12px;
+}
+
+.side-head {
+    padding: 10px 10px 30px 10px;
+}

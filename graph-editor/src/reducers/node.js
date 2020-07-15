@@ -1,6 +1,5 @@
-import { makeLookupReducer } from "./util";
-
-const { getDefaultParams } = require("../UI/Schema");
+import { lookupReducerFactory } from "./util";
+import { access } from "../util";
 
 
 function uuid4() {
@@ -9,38 +8,6 @@ function uuid4() {
         return (c ^ a & 15 >> c / 4).toString(16);// eslint-disable-line no-mixed-operators
     });
 }
-
-
-function transformImportedGraph(graph, location) {  
-    console.log(graph); 
-    let data = {
-        node: {
-            location,
-            parameters: null,
-            schema: null,
-            name: graph.meta.name,
-            meta: graph.meta
-        },
-        inputs: [],
-        output: null
-    };
-
-    for (let node of Object.values(graph.nodes)) {
-        if (node.type === "in")
-            data.inputs.push({ label: node.name, type: node.output.type });
-
-        if (node.type === "out")
-            data.output = { label: node.name, type: node.inputs[0].type };
-
-        if (node.type === "edit") {
-            data.node.schema = JSON.parse(node.schema);
-            data.node.parameters = getDefaultParams(data.node.schema);
-        }
-    }
-    
-    return data;
-}
-
 
 function NEW_NODE(state, action) {
     let type = action.nodeType;
@@ -51,7 +18,7 @@ function NEW_NODE(state, action) {
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
         edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value", type: "data"}}),
-        graph: () => transformImportedGraph(action.data, action.location)
+        graph: () => action.data
     }[type]();
 
     data = {
@@ -132,11 +99,12 @@ function SET_CONTENT(state, action) {
         nodes: { ...state.nodes} // In graoh reducers, replace state with state.nodes, and provide the full graph state as a third param
     };
 
-    newState.nodes[action.nodeId].content = action.content;
+    let node = access(newState, "nodes", action.nodeId);
+    node.content = action.content;
 
     return newState;
 }
 
 
-export default makeLookupReducer({ NEW_NODE, SET_NODE_NAME, SET_CONTENT }, undefined, true);
+export default lookupReducerFactory({ NEW_NODE, SET_NODE_NAME, SET_CONTENT });
 export { uuid4, hasNameConflict, cleanName }; // TODO move to logic

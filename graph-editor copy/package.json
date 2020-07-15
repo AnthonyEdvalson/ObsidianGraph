@@ -1,0 +1,53 @@
+{
+  "name": "graph-editor",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "adm-zip": "^0.4.14",
+    "bluebird": "^3.7.2",
+    "concurrently": "^5.1.0",
+    "cross-env": "^7.0.0",
+    "electron-builder": "^22.3.2",
+    "electron-is-dev": "^1.1.0",
+    "jquery": "^3.5.1",
+    "monaco-editor-webpack-plugin": "^1.9.0",
+    "mousetrap": "^1.6.5",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-icons": "^3.9.0",
+    "react-monaco-editor": "^0.36.0",
+    "react-redux": "^7.2.0",
+    "react-use-gesture": "^7.0.15",
+    "redux": "^4.0.5",
+    "redux-undo": "^1.0.1",
+    "stacktrace-js": "^2.0.2",
+    "wait-on": "^4.0.0"
+  },
+  "devDependencies": {
+    "electron": "^7.1.13",
+    "react-scripts": "^3.4.1"
+  },
+  "main": "src/electron.js",
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test --env=jsdom",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "release": "npm run react-build && electron-builder --publish=always",
+    "build": "npm run react-build && npm run electron-build",
+    "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3001 && electron .\""
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

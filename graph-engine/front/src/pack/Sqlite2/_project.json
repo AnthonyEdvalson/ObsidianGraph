@@ -1,0 +1,69 @@
+{
+  "functions": {
+    "Table.Input": {
+      "name": "Table.Input",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "nodeId": "599fc008-3f70-41cc-a47d-7efc61779f83",
+      "label": "Input"
+    },
+    "Table.Editor": {
+      "name": "Table.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "nodeId": "fec66c00-c4a5-4b3d-9504-0c3928955284"
+    },
+    "Table": {
+      "name": "Table",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "Table.Table"
+      },
+      "nodeId": "56fc811d-daf4-49c2-8cb4-9fe90ff2d2f7"
+    },
+    "Database.Editor": {
+      "name": "Database.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "nodeId": "bb309735-36c6-4ea8-a4f8-8abd4bd60d92"
+    },
+    "Database": {
+      "name": "Database",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "Database.Database"
+      },
+      "nodeId": "0e4c1a56-5429-47f7-845b-d8cc9810ef9b"
+    }
+  },
+  "remoteFunctions": [
+    "Table.Input",
+    "Table.Editor",
+    "Table.Table",
+    "Table",
+    "Database.Editor",
+    "Database.Database",
+    "Database"
+  ],
+  "name": "Sqlite2"
+}

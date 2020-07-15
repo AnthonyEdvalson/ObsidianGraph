@@ -1,14 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import UI from '../../UI';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import './OpenProject.css';
 import projects from '../../logic/projects';
 const { dialog } = window.require("electron").remote;
 
-function OpenProject() {
+function OpenProject({ open, defaultDirectory, handleClose }) {
     let dispatch = useDispatch();
-    let open = useSelector(state => state.modals.openProject);
-    let libdir = useSelector(state => state.library.path);
     let [recents, setRecents] = useState([]);
     const recentPath = "./recents.json";
 
@@ -17,15 +15,16 @@ function OpenProject() {
     }, [setRecents]);
 
     function handleOpen(file) {
-        projects.openProject(file, dispatch, recents, recentPath).then(newRecents => {
-            setRecents(newRecents);
+        projects.openProject(file, dispatch).then(async () => {
+            setRecents(await projects.addRecent(file, recents, recentPath));
         });
-        projects.hideOpenProject(dispatch);
+
+        handleClose();
     }
 
     function handleOpenFile() {
         dialog.showOpenDialog({
-            defaultPath: libdir,
+            defaultPath: defaultDirectory,
             filters: [{name: "Obsidian Project File", extensions: ["obp"]}],
             properties: ["openFile"]
         }).then(result => {
@@ -37,7 +36,7 @@ function OpenProject() {
     }
 
     function handleNew() {
-        projects.hideOpenProject(dispatch);
+        handleClose();
         projects.showNewProject(dispatch);
     }
  
@@ -45,15 +44,7 @@ function OpenProject() {
         <UI.Modal open={open} header="Open Project">
             <div className="OpenProject" style={{overflow: "auto"}}>
                 <div className="recents">
-                    {
-                        recents.map(recent => (
-                            <div key={recent.path} onClick={() => handleOpen(recent.path)}>
-                                <h1>{recent.name}</h1>
-                                <span>{recent.path}</span>
-                                <small>{recent.date}</small>
-                            </div>
-                        ))
-                    }
+                    {recents.map(recent => <RecentEntry key={recent.path} {...recent} handleOpen={handleOpen} />)}
                 </div>
                 <UI.Button onClick={handleOpenFile}>Open Project From File</UI.Button>
                 <UI.Button onClick={handleNew}>Create New Project</UI.Button>
@@ -63,4 +54,16 @@ function OpenProject() {
     );
 }
 
+function RecentEntry({ path, name, date, handleOpen }) {
+    return (
+        <div key={path} onClick={() => handleOpen(path)}>
+            <h1>{name}</h1>
+            <span>{path}</span>
+            <small>{date}</small>
+        </div>
+    )
+}
+
 export default OpenProject;
+
+

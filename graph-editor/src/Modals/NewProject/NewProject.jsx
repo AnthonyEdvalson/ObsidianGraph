@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import UI from '../../UI';
 import Form from '../../Form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import projects from '../../logic/projects';
 
 
 function NewProject(props) {
     let dispatch = useDispatch();
-    let open = useSelector(state => state.modals.newProject);
-    let libdir = useSelector(state => state.library.path);
+    let open = props.open;// useSelector(state => state.modals.newProject);
+    let libdir = "";//useSelector(state => state.library.path);
     
     const [state, setState] = useState({
         directory: libdir,

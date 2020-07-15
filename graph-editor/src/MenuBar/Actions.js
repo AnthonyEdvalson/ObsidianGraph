@@ -1,4 +1,4 @@
-import compileApp from "../Editors/Graph/compile";
+import compileApp from "../Panels/Graph/compile";
 import { ActionCreators } from 'redux-undo';
 import graphs from "../logic/graphs";
 import projects from "../logic/projects";
@@ -17,7 +17,7 @@ function save(state, dispatch) {
 
 function exportProject(state, dispatch) {
     save(state, dispatch);
-    let [zip, name] = compileApp(state);
+    let [zip, name] = projects.build(state.projects, state.focus.project);
 
     dialog.showSaveDialog({
         defaultPath: name + ".obn",

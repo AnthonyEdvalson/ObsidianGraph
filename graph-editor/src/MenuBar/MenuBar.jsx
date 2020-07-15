@@ -1,50 +1,10 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import './MenuBar.css';
-import Actions from './Actions';
 import Mousetrap from 'mousetrap';
 
-function MenuItem(props) {
-    return (
-        <div className="MenuItem">
-            <span className="menu-item-label">{props.label}</span>
-            <div className="menu-dropdown">
-                {props.children}
-            </div>
-        </div>
-    )
-} 
 
- 
-function MenuOption(props) {
-    let action = (e) => {
-        e.preventDefault();
-        Actions[props.action](props.state, props.dispatch);
-    }
-    
-    useEffect(() => {
-        if (props.shortcut) {
-            Mousetrap.bind(props.shortcut.toLowerCase(), action)
-            return () => {
-                 Mousetrap.unbind(props.shortcut.toLowerCase());
-            }
-        }
-    });
-
-    return (
-        <div className="MenuOption" onClick={action}>
-            <span>{props.children}</span>
-            <small>{props.shortcut}</small>
-        </div>
-    )
-}
-
-
-function MenuBar() {
-    const state = useSelector(s => s);
-    const dispatch = useDispatch();
-
-    const layout = [
+function MenuBar({ layout }) {
+    /*const layout = [
         { 
             name: "File", 
             options: [
@@ -80,27 +40,60 @@ function MenuBar() {
                 //{name: "Import...", shortcut: "Mod+Alt+O", action: "importNode"}
             ]
         }
-    ];
+    ];*/
 
     return (
         <div className="MenuBar">
             {
-                layout.map(item => 
-                    <MenuItem key={item.name} label={item.name}>
-                        {
-                            item.options.map((option, i) => 
-                                option ? 
-                                    (<MenuOption key={option.name} action={option.action} shortcut={option.shortcut} state={state} dispatch={dispatch}>
-                                        {option.name}
-                                    </MenuOption>)
-                                : <div key={i} className="menu-sep" />
-                            )
-                        }
-                    </MenuItem>
-                )
+                Object.entries(layout).map(([name, options]) => <MenuItem key={name} label={name} options={options} />)
             }
         </div>
     );
+}
+
+
+function MenuItem(props) {
+    return (
+        <div className="MenuItem">
+            <span className="menu-item-label">{props.label}</span>
+            <div className="menu-dropdown">
+                {
+                    props.options.map((option, i) => {
+                        if (option === null)
+                            return <div key={i} className="menu-sep" />
+                        
+                        return <MenuOption key={option.name} option={option} />
+                    })
+                }
+            </div>
+        </div>
+    )
+} 
+
+
+function MenuOption(props) {
+    let { name, action, shortcut } = props.option;
+
+    let handleAction = (e) => {
+        e.preventDefault();
+        action();
+    }
+    
+    useEffect(() => {
+        if (shortcut) {
+            let keyCode = shortcut.toLowerCase();
+
+            Mousetrap.bind(keyCode, handleAction);
+            return () => Mousetrap.unbind(keyCode);
+        }
+    });
+
+    return (
+        <div className="MenuOption" onClick={handleAction}>
+            <span>{name}</span>
+            <small>{shortcut}</small>
+        </div>
+    )
 }
 
 

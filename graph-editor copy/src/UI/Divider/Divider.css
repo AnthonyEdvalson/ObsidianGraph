@@ -1,0 +1,4 @@
+.Divider {
+    border-bottom: 1px #444 solid;
+    margin: calc(2 * var(--ui-spacing)) 0;
+}

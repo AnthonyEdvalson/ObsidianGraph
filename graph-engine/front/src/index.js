@@ -1,9 +1,9 @@
   
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GraphApp from './GraphApp';
+import EngineUI from './EngineUI';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<GraphApp />, document.getElementById('root'));
+ReactDOM.render(<EngineUI />, document.getElementById('root'));
 
 registerServiceWorker();

@@ -1,6 +1,6 @@
 import { uuid4 } from './node';
 import { DELETE_LINK } from './link';
-import { makeLookupReducer } from './util';
+import { lookupReducerFactory } from './util';
 
 function DELETE_PORT(state, action) {
     let key = action.key;
@@ -48,5 +48,5 @@ function CHANGE_PORT(state, action) {
     return newState;
 }
 
-export default makeLookupReducer({ DELETE_PORT, ADD_PORT, CHANGE_PORT }, undefined, true);
+export default lookupReducerFactory({ DELETE_PORT, ADD_PORT, CHANGE_PORT });
 export { DELETE_PORT }
