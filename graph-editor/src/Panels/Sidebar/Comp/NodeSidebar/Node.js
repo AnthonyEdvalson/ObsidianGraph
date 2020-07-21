@@ -1,6 +1,5 @@
 import React from 'react';
-import NodeFront from './NodeFront';
-import NodeBack from './NodeBack';
+import NodeCode from './NodeCode';
 import NodeData from './NodeData';
 import NodeIn from './NodeIn';
 import NodeOut from './NodeOut';
@@ -13,8 +12,9 @@ import { useGraphDispatch } from '../../../../logic/scope';
 
 function Node(props) {
     let bodies = {
-        back: NodeBack,
-        front: NodeFront,
+        back: NodeCode,
+        front: NodeCode,
+        agno: NodeCode,
         data: NodeData,
         in: NodeIn,
         out: NodeOut,

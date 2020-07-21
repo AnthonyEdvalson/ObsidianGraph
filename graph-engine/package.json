@@ -4,14 +4,17 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js \"/Users/tonyedvalson/Desktop/10.obn\" --watch ./ --watch \"/Users/tonyedvalson/Desktop/10.obn\" --ignore front/src/pack --ignore pack/"
+    "start": "nodemon --exec babel-node server.js \"./main.obn\" --watch ./ --ignore front/src/pack --ignore pack/ -e js,jsx,obn",
+    "start-light": "babel-node server.js \"./main.obn\""
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "adm-zip": "^0.4.14",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
-    "regenerator-runtime": "^0.13.5"
+    "regenerator-runtime": "^0.13.5",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",

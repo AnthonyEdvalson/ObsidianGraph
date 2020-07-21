@@ -80,6 +80,9 @@
 .Port.node-front>.port-ring {
   background-color: var(--front-bright);
 }
+.Port.node-agno>.port-ring {
+  background-color: var(--agno-bright);
+}
 .Port.node-data>.port-ring {
   background-color: var(--data-bright);
 }
@@ -102,6 +105,9 @@
 }
 .Node.node-front .node-info {
   background-color: var(--front-dim);
+}
+.Node.node-agno .node-info {
+  background-color: var(--agno-dim);
 }
 .Node.node-back .node-info {
   background-color: var(--back-dim);

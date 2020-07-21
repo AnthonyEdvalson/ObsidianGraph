@@ -1,9 +1,10 @@
-async function main({key, table}, value) {
-    let id = key();
-    let t = table();
-    await t.upsert({id, value});
+const _ = require('lodash');
 
-    return value;
+async function main({ table, key }) {
+	let t = table();
+	let kv = await t.get(key());
+
+	return _.replace(kv.value + "&World!", "&", " ");
 }
 
 module.exports = { main };

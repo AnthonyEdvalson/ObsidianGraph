@@ -2,7 +2,8 @@ import { lookupReducerFactory } from "./util";
 
 let init = {
     graphId: null,
-    projectId: null
+    projectId: null,
+    errorId: null
 }
 
 function SET_FOCUS(state, action) {

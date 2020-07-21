@@ -1,0 +1,50 @@
+function front({load}) {
+    data = load();
+
+    return <html>data</html>;
+}
+
+function load({table, handleChange}, id) {
+    let table = table();
+    return table.get(id, handleChange); // handleChange is added as a subscriber to the given id
+}
+
+function save({table, data}) {
+    data = data();
+    let table = table().save(id); // table will publish a message to it's internal mailbox whenever a value updates
+}
+
+////////////////////////////////////////
+
+class Mailbox {
+    constructor() {
+        this.keys: {};
+    }
+
+    publish(key, ...args) {
+        for (let sub of this.keys[key])
+            sub(...args);
+    }
+
+    subscribe(key, callback) {
+        if (!(key in this.keys))
+            this.keys[key] = [];
+
+        this.keys[key].push(callback);
+    }
+
+    unsubscribe(key, callback) {
+        let callbacks = this.keys[key];
+
+        callbacks = callbacks.filter(c => c !== callback);
+
+        if (callbacks.length === 0)
+            delete callbacks;
+    }
+}
+
+let mailbox = new Mailbox();
+
+function mailbox() {
+    return mailbox;
+}

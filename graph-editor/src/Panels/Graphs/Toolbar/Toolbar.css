@@ -40,6 +40,13 @@
     background-color: var(--front-bright);
 }
 
+.ToolbarNodeButton.agno {
+    background-color: var(--agno-dim);
+}
+.ToolbarNodeButton.agno:hover {
+    background-color: var(--agno-bright);
+}
+
 .ToolbarNodeButton.data {
     background-color: var(--data-dim);
 }

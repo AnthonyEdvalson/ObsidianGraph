@@ -28,6 +28,7 @@ body {
 
   --back-bright: #f1a821;
   --front-bright: #f16321;
+  --agno-bright: #e2d84d;
   --io-bright: #689bd6;
   --data-bright: #EFA26B;
   --graph-bright: #c21d1d;
@@ -35,6 +36,7 @@ body {
 
   --back-dim: #b97a04;
   --front-dim: #ad5024;
+  --agno-dim: #cfc318;
   --io-dim: #647f9e;
   --data-dim: #C9885A;
   --graph-dim: #991c1c;

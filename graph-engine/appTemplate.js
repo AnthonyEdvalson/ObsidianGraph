@@ -1,18 +1,21 @@
 import appInfo from './_app.json';
 
 
-function transform(object, map) {
-    let newObject = {};
-    for (let [k, v] of Object.entries(object))
-        newObject[k] = map(v);
-    return newObject;
+class EngineError extends Error {
+    constructor(innerError, ctx) {
+        super(innerError.message);
+        this.innerError = innerError;
+        this.ctx = ctx;
+    }
 }
 
 class App {
-    constructor() {
+    constructor(side, errorHandler) {
         this.name = appInfo.name;
+        this.side = side;
 
         this.projects = {};
+        this.errorHandler = errorHandler;
 
         for (let project of appInfo.projects) {
             let data = require('./' + project + "/_project.json");
@@ -20,18 +23,48 @@ class App {
         }
     }
 
-    call(location=appInfo.root, args=[], iargs) {
-        let { projectName, functionName } = location;
+    start(socket, location=appInfo.root, args=[]) {
+        let ctx = new Context(null, this.side, socket);
+        return this.call(location, args, ctx);
+    }
 
+    call(location, args, ctx) {
+        let { projectName, functionName } = location;
         let project = this.projects[projectName];
 
-        if (!iargs)
-            iargs = new Iargs(project, "???");
+        ctx.project = project;
 
-        iargs.stepTTL();
-        iargs.project = project;
+        try {
+            return project.call(functionName, args, ctx);
+        }
+        catch (err) {
+            if (err instanceof EngineError) {
+                if (!(err.innerError instanceof EngineError)) {
+                    this.handleError(err);
+                    err.handled = true;
+                }
+            }
 
-        return project.call(functionName, args, iargs);
+            throw err;
+        }
+    }
+
+    handleError(engineErr) {
+        let flatTrace = [];
+
+        let ctx = engineErr.ctx;
+
+        while (ctx.frame) {
+            let frame = {
+                ...ctx.frame.details,
+                ...ctx.data
+            }
+            flatTrace.push(frame);
+            ctx = ctx.parent;
+        }
+        
+        console.log(flatTrace, engineErr.ctx)
+        this.errorHandler(flatTrace);
     }
 }
 
@@ -55,17 +88,16 @@ class Project {
         this.functions = transform(functions, v => new Func(v, this));
 	}
 
-	callApp(location, args, iargs) {
-        return this.app.call(location, args, iargs);		
+	callApp(location, args, ctx) {
+        return this.app.call(location, args, ctx);		
     }
 
-    call(functionName, args, iargs) {
+    call(functionName, args, ctx) {
         if (functionName in this.functions)
-            return this.functions[functionName].main(args, iargs);
+            return this.functions[functionName].main(args, ctx);
 
-        // name is a node name, but on the backend
         if (this.remoteFunctions.has(functionName))
-            return callRemote(this.funcToLocaiton(functionName), args);
+            return callRemote(ctx.socket, this.funcToLocaiton(functionName), args);
         
         throw new Error("Engine Error: Cannot find the function '" + functionName + "'. " + 
             "Local names include: " + Object.keys(this.functions).sort().join(", ") + ". " +
@@ -82,46 +114,81 @@ class Func {
 	constructor(fDef, project) {
         let name = fDef.name;
         this.name = name;
-        
-        const funcMap = {
-            "code": (args, iargs) => {
-                let inputs = iargs.makeInputsCallable(fDef.inputs, false);
+        this.type = fDef.type;
+        this.nodeId = fDef.nodeId;
+        this.location = {
+            projectName: project.name,
+            functionName: this.name
+        }
+
+        this.funcMap = {
+            "code": (args, ctx) => {
+                let inputs = ctx.makeInputsCallable(fDef.inputs, false);
                 return fDef.code.main(inputs, ...args);
             },
-            "call": (args, iargs) => {
-                let newIargs = iargs.clone(fDef.parameters, fDef.inputs);
-                return project.callApp(fDef.location, args, newIargs);
+            "call": (args, ctx) => {
+                let newCtx = ctx.clone(fDef.parameters, fDef.inputs);
+                return project.callApp(fDef.location, args, newCtx);
             },
             "data": () => fDef.json,
-            "in": (args, iargs) => iargs.inputs[fDef.label](args),
-            "edit": (_, iargs) => iargs.parameters,
-            "out": (args, iargs) => {
-                let inputs = iargs.makeInputsCallable(fDef.inputs);
+            "in": (args, ctx) => ctx.inputs[fDef.label](args),
+            "edit": (_, ctx) => ctx.data.parameters,
+            "out": (args, ctx) => {
+                let inputs = ctx.makeInputsCallable(fDef.inputs);
                 return inputs["value"](args);
             }
         }
-        
-        if (!(fDef.type in funcMap))
-            throw new Error("Could not set a main function for type '" + fDef.type + "' on the function '" + name + "'");
+    }
 
-        this.main = (args, iargs) => {
-            let v = funcMap[fDef.type](args, iargs);
-            console.log(name + "(" + args.map(JSON.stringify).join(", ") + ") -> ", v);
-            return v;
+    main(args, prevCtx) {
+        let ctx = prevCtx.pushFrame(this.makeFrame(args, prevCtx));
+        let v;
+
+        try {
+            v = this.funcMap[this.type](args, ctx);
         }
-	}
+        catch (err) {
+            throw new EngineError(err, ctx);
+        }
+
+        return v;
+    }
+    
+    makeFrame(args, ctx) {
+        return {
+            ctx,
+            details: {
+                location: this.location,
+                args,
+                type: this.type,
+                nodeId: this.nodeId
+            }
+        }
+    }
 }
 
-class Iargs {
-    constructor(project, side, parameters=null, inputs={}, ttl=50) {
-        this.parameters = parameters;
-        this.side = side;
-        this.ttl = ttl;
+// Context must be immutable, a refence to the context is saved in every frame, and
+// it is used when errors occur.
+class Context {
+    constructor(project, side, socket, parameters=null, inputs={}, ttl=300, frame=null, parent=null) {
         this.project = project;
         this.inputs = this.makeInputsCallable(inputs);
+        this.frame = frame;
+        this.parent = parent;
+        this.socket = socket;
+
+        this.data = {
+            parameters,
+            side,
+            ttl
+        }
+
+        if (ttl <= 0)
+            throw new Error("Timed out");
     }
+
     clone(parameters, inputs) {
-        return new Iargs(this.project, this.side, parameters, inputs, this.ttl);
+        return new Context(this.project, this.data.side, this.socket, parameters, inputs, this.data.ttl, this.frame, this.parent);
     }
 
     makeInputsCallable(inputs, argumentsAsList=true) {
@@ -136,31 +203,25 @@ class Iargs {
         });
     }
 
-    stepTTL() {
-        this.ttl--;
-        if (this.ttl <= 0)
-            throw new Error("Infinite loop detected");
+    pushFrame(frame) {
+        return new Context(this.project, this.data.side, this.socket, this.data.parameters, this.inputs, this.data.ttl - 1, frame, this);
     }
 }
 
-
-function callRemote(location, args={}) {
-    let body = JSON.stringify({ location, args }, null, 2);
-	
+async function callRemote(socket, location, args={}) {
 	return new Promise((resolve, reject) => {
-		fetch('/api/call', {
-            body,
-			headers: { 'Content-Type': 'application/json' }, 
-			method: 'POST',
-			credentials: "same-origin"
-		}).then(res => {
-			if (res.ok)
-				resolve(res.json());
-			else
-				res.json().then(reject, reject);
-		});
+        socket.emit('call', { location, args }, res => {
+            resolve(res);
+            // TODO reject if there was an error
+        });
 	});
 }
 
-const app = new App();
-export default app;
+function transform(object, map) {
+    let newObject = {};
+    for (let [k, v] of Object.entries(object))
+        newObject[k] = map(v);
+    return newObject;
+}
+
+export default App;

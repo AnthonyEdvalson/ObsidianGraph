@@ -26,7 +26,7 @@ function Toolbar() {
     return (
         <div className="Toolbar">
             {
-                ["back", "front", "data", "edit", "in", "out"].map(v => {
+                ["back", "front", "agno", "data", "edit", "in", "out"].map(v => {
                     return <ToolbarNodeButton key={v} t={v} outputExists={outputExists} />
                 })
             }

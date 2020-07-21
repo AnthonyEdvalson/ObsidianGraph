@@ -23,6 +23,7 @@ function Node(props) {
 		switch (type) {
 			case "front": 
 			case "back":
+			case "agno":
 			case "data":
 				props.setEditingNodeId(key);
 				break;
@@ -42,7 +43,7 @@ function Node(props) {
 	// Memoize the preview becuase they can be very complicated, this way it does not get rendered every time
 	// The node moves or has a property changed
 	let preview = useMemo(() => {
-		if (["front", "back", "data"].includes(type))
+		if (["front", "back", "agno", "data"].includes(type))
 			return <Monaco width="300" height="500" mode="readOnly" value={content} k={key} fontSize={8} />
 		else if (type === "edit") {
 			let schemaObject;

@@ -12,8 +12,9 @@ function uuid4() {
 function NEW_NODE(state, action) {
     let type = action.nodeType;
     let data = {
-        back: () => ({node: {name: "Backend", content: "function main(o) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
-        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main(o) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
+        back: () => ({node: {name: "Backend", content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
+        agno: () => ({node: {name: "Code", content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
         data: () => ({node: {name: "Data", content: ""}}),
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),

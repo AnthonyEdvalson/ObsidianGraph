@@ -9,7 +9,18 @@ let utimes = util.promisify(fs.utimes);
 
 
 async function loadObn(obnPath) {
-    let zip = new admZip(obnPath);
+    let zip;
+
+    try {
+        zip = new admZip(obnPath);
+    }
+    catch (err) {
+        console.warn("Could not load " + obnPath + " Because of the following error:");
+        console.warn("  " + err.message);
+        console.warn("  Because there is no obn loaded, api/call is disabled")
+        return null;
+    }
+
     let allEntries = pullAllEntries(zip).contents;
 
     const frontFolder = "front/src/pack/";

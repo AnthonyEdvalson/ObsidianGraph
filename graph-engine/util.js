@@ -26,8 +26,13 @@ function transform(object, mapper) {
     return newObject
 }
 
+function trim(text, length=300) {
+    return text.length < length ? text : text.substring(0, length) + "...";
+}
+
 export {
     graft,
     access,
-    transform
+    transform,
+    trim
 }

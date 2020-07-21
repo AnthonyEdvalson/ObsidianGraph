@@ -21,17 +21,21 @@ function Project({ setMenu }) {
 
     useEffect(() => {
         const menu = [
-            {name: "New", shortcut: "Mod+N", action: projects.newProject },
-            {name: "Open", shortcut: "Mod+O", action: projects.openProject },
+            { name: "New", shortcut: "Mod+N", action: projects.newProject },
+            { name: "Open", shortcut: "Mod+O", action: projects.openProject },
             null,
-            {name: "Save", shortcut: "Mod+S", action: () => { projects.save(project) } },
+            { name: "Save", shortcut: "Mod+S", action: () => { projects.save(project) } },
             //{name: "Save As...", shortcut: "Ctrl+Shift+S", action: "saveAs"},
-            {name: "Export", shortcut: "Mod+E", action: () => { 
+            { name: "Export", shortcut: "Mod+Shift+E", action: () => { 
                 projects.save(project);
-                exportProject(loadedProjects, project.projectId)
+                exportProject(loadedProjects, project.projectId);
             }},
-            {name: "Show In Folder", action: () => { throw new Error("NOT IMPLEMENTED")}},
-            {name: "Import Project", shortcut: "Mod+Shift+O", action: () => { throw new Error("NOT IMPLEMENTED")}},
+            { name: "Push", shortcut: "Mod+E", action: () => {
+                projects.save(project);
+                pushProject(loadedProjects, project.projectId);
+            }},
+            { name: "Show In Folder", action: () => { throw new Error("NOT IMPLEMENTED")}},
+            { name: "Import Project", shortcut: "Mod+Shift+O", action: () => { throw new Error("NOT IMPLEMENTED")}},
         ];
 
         setMenu("Project", menu);
@@ -146,6 +150,26 @@ function exportProject(loadedProjects, projectId) {
         if (filePath)
             zip.write(filePath);
     });
+}
+
+function pushProject(loadedProjects, projectId) {
+    let [zip, name] = projects.build(loadedProjects, projectId);
+    let data = zip.admZip.toBuffer().toString("base64");
+
+    let body = JSON.stringify({ location: "loadObn", args: { data, name } }, null, 2);
+    console.log(body);
+	return new Promise((resolve, reject) => {
+		fetch('http://localhost:5000/api/engine', {
+            body,
+			headers: { 'Content-Type': 'application/json' }, 
+            method: 'POST'
+		}).then(res => {
+			if (res.ok)
+				resolve(res.json());
+			else
+				res.json().then(reject, reject);
+		});
+	});
 }
 
 export default Project;

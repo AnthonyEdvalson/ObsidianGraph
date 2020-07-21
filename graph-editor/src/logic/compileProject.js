@@ -1,5 +1,4 @@
 import { ZipBetter } from "./ZipBetter";
-import Project from "../Panels/Project/Project";
 
 const fs = window.require("fs");
 const path = window.require("path");
@@ -70,7 +69,7 @@ function buildGraph(loaded, buildData, projectId, graphId) {
             }
         };
     }
-    let [outKey, outNode] = Object.entries(graph.nodes).find(([k, v]) => v.type === "out");
+    let outKey = Object.entries(graph.nodes).find(([k, v]) => v.type === "out")[0];
     buildFunction(loaded, buildData, graph, outKey, buildData[name].data.functions);
 
     // Return the location of the built root function of the graph
@@ -108,7 +107,8 @@ function buildFunction(loaded, buildData, graph, key, functions) {
             
         case "back":
         case "front":
-            let sides = {front: ['F'], back: ['B']}[node.type];
+        case "agno":
+            let sides = {front: ['F'], back: ['B'], agno: ['F', 'B']}[node.type];
             
             fDef.type = "code";
             fDef.sides = sides;

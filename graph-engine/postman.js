@@ -1,3 +1,5 @@
+const { trim } = require("./util");
+
 function parseReq(req) {
     let data = req.body;
 
@@ -15,8 +17,9 @@ function respondFail(name, args, err, res) {
     });
 
     console.log(err.stack);
-    console.log(`${JSON.stringify(name)} ${JSON.stringify(args)} !!! ${body}`);
-    res.status(500).send(body);
+    console.log(`${JSON.stringify(name)} ${trim(JSON.stringify(args))} !!! ${body}`);
+    res(body);
+    return body;
 }
 
 function respondSuccess(name, args, data, res) {
@@ -24,8 +27,8 @@ function respondSuccess(name, args, data, res) {
         data = null;
         
     let body = JSON.stringify(data, null, 2);
-    console.log(`${JSON.stringify(name)} ${JSON.stringify(args)} >>> ${body}`);
-    res.send(body);
+    console.log(`${JSON.stringify(name)} ${trim(JSON.stringify(args))} >>> ${body}`);
+    res(body);
 }
 
 module.exports = {

@@ -22,6 +22,19 @@
       "nodeId": "8380cc77-2147-4929-b9d2-adb46e70610a",
       "label": "Insert"
     },
+    "UI.Code": {
+      "name": "UI.Code",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "input": "UI.Frontend"
+      },
+      "nodeId": "289a053c-f717-47f1-b5cc-e75fa5322c0d",
+      "content": "function main({input}) {\n  let x = input.x.x.x;\n\treturn input();\n}\n\nmodule.exports = { main };\n"
+    },
     "UI": {
       "name": "UI",
       "type": "out",
@@ -30,7 +43,7 @@
         "B"
       ],
       "inputs": {
-        "value": "UI.Frontend"
+        "value": "UI.Code"
       },
       "nodeId": "67257eb7-2796-4b1f-a452-dfc8c317179f"
     },
@@ -100,7 +113,7 @@
         "table": "Main.Table"
       },
       "nodeId": "7f3d5bcc-ee2a-4cc3-9e09-61dcefb263dd",
-      "content": "async function main({key, table}, value) {\n    let id = key();\n    let t = table();\n    await t.upsert({id, value});\n\n    return value;\n}\n\nmodule.exports = { main };\n"
+      "content": "const _ = require('lodash');\n\nasync function main({ table, key }) {\n\tlet t = table();\n\tlet kv = await t.get(key());\n\n\treturn _.replace(kv.value + \"&World!\", \"&\", \" \");\n}\n\nmodule.exports = { main };"
     },
     "Main.Concat": {
       "name": "Main.Concat",
@@ -113,7 +126,20 @@
         "table": "Main.Table"
       },
       "nodeId": "f9158b7c-559b-44e4-8798-299cbc4ebd79",
-      "content": "const _ = require('lodash');\n\nasync function main({ table, key }) {\n\tlet t = table();\n\tlet kv = await t.get(key());\n\n\treturn _.replace(kv.value + \"&World!\", \"&\", \" \");\n}\n\nmodule.exports = { main };"
+      "content": "const _ = require('lodash');\n\nasync function main({ table, key }) {\n\tlet t = table();\n\tlet kv = await t.get(key()) || {value: \"...\"};\n\n\treturn _.replace(kv.value + \"&World!\", \"&\", \" \");\n}\n\nmodule.exports = { main };"
+    },
+    "Main.Code": {
+      "name": "Main.Code",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "input": "Main.Concat"
+      },
+      "nodeId": "05dc75b5-56a5-4df0-8945-8357fa7c13ac",
+      "content": "function main({input}) {\n\treturn input();\n}\n\nmodule.exports = { main };\n"
     },
     "Main.UI": {
       "name": "Main.UI",
@@ -124,7 +150,7 @@
       ],
       "inputs": {
         "Insert": "Main.SetVal",
-        "Input": "Main.Concat"
+        "Input": "Main.Code"
       },
       "nodeId": "bcd85477-616a-4771-b59f-f85c878874f5",
       "parameters": null,

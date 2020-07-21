@@ -18,7 +18,7 @@ function Main({ input, insert }) {
   
   return (
     <div>
-      {state || "Loading..."}
+      {state || "Loading..."} BLOOP
       <button onClick={refresh}>Refresh</button>
       <input type="text" value={val} onChange={e => setVal(e.target.value)} />
       <button onClick={sendVal}>SEND</button>

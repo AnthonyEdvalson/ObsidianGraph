@@ -33,7 +33,20 @@
         "insert": "UI.Insert"
       },
       "nodeId": "ea243e7b-52f8-4d3f-8b61-2312678c127c",
-      "content": "const React = require('react');\n\nfunction Main({ input, insert }) {\n  let [state, setState] = React.useState(null);\n  let [val, setVal] = React.useState(\"Hello, \");\n  \n  let refresh = React.useCallback(() => {\n    input().then(setState);\n  }, []);\n\n  let sendVal = () => {\n    insert(val).then(refresh);\n  }\n\n  React.useEffect(() => {\n    refresh();\n  }, [refresh])\n  \n  return (\n    <div>\n      {state || \"Loading...\"}\n      <button onClick={refresh}>Refresh</button>\n      <input type=\"text\" value={val} onChange={e => setVal(e.target.value)} />\n      <button onClick={sendVal}>SEND</button>\n    </div>\n  );\n}\n\nmodule.exports = { main: Main };\n"
+      "content": "const React = require('react');\n\nfunction Main({ input, insert }) {\n  let [state, setState] = React.useState(null);\n  let [val, setVal] = React.useState(\"Hello, \");\n  \n  let refresh = React.useCallback(() => {\n    input().then(setState);\n  }, []);\n\n  let sendVal = () => {\n    insert(val).then(refresh);\n  }\n\n  React.useEffect(() => {\n    refresh();\n  }, [refresh])\n  \n  return (\n    <div>\n      {state || \"Loading...\"} BLOOP\n      <button onClick={refresh}>Refresh</button>\n      <input type=\"text\" value={val} onChange={e => setVal(e.target.value)} />\n      <button onClick={sendVal}>SEND</button>\n    </div>\n  );\n}\n\nmodule.exports = { main: Main };\n"
+    },
+    "UI.Code": {
+      "name": "UI.Code",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "input": "UI.Frontend"
+      },
+      "nodeId": "289a053c-f717-47f1-b5cc-e75fa5322c0d",
+      "content": "function main({input}) {\n  let x = input.x.x.x;\n\treturn input();\n}\n\nmodule.exports = { main };\n"
     },
     "UI": {
       "name": "UI",
@@ -43,7 +56,7 @@
         "B"
       ],
       "inputs": {
-        "value": "UI.Frontend"
+        "value": "UI.Code"
       },
       "nodeId": "67257eb7-2796-4b1f-a452-dfc8c317179f"
     },
@@ -102,6 +115,19 @@
         "projectName": "Sqlite2"
       }
     },
+    "Main.Code": {
+      "name": "Main.Code",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "input": "Main.Concat"
+      },
+      "nodeId": "05dc75b5-56a5-4df0-8945-8357fa7c13ac",
+      "content": "function main({input}) {\n\treturn input();\n}\n\nmodule.exports = { main };\n"
+    },
     "Main.UI": {
       "name": "Main.UI",
       "type": "call",
@@ -111,7 +137,7 @@
       ],
       "inputs": {
         "Insert": "Main.SetVal",
-        "Input": "Main.Concat"
+        "Input": "Main.Code"
       },
       "nodeId": "bcd85477-616a-4771-b59f-f85c878874f5",
       "parameters": null,
@@ -136,12 +162,14 @@
   "remoteFunctions": [
     "UI.Input",
     "UI.Insert",
+    "UI.Code",
     "UI",
     "Main.Data",
     "Main.Database",
     "Main.Table",
     "Main.SetVal",
     "Main.Concat",
+    "Main.Code",
     "Main.UI",
     "Main"
   ],
