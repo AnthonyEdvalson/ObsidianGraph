@@ -14,7 +14,7 @@ function Node(props) {
 	const data = useNodeSelector(key);
 	let { x, y, name, type, inputs, output, content, schema } = data;
 
-	let [selected, setSelect, dragging] = useSelectable("node", key);
+	let { selected, setSelect, dragging, error } = useSelectable("node", key);
 	let moving = dragging || props.moving;
 
 	const dispatch = useGraphDispatch();
@@ -37,7 +37,16 @@ function Node(props) {
 
 	const bind = useNodeMove(() => handleOpen(data, key, dispatch), setSelect, dispatch, props.transform);
 
-	let className = `Node node-${type}` + (selected ? " node-selected" : "") + (dragging ? " node-dragging" : "");
+	let className = `Node node-${type}`;
+
+	if (selected)
+		className += " node-selected";
+	if (dragging)
+		className += " node-dragging";
+	if (error)
+		className += " node-error";
+
+
 	let style = {transform: `translate(${x}px, ${y}px)`};
 
 	// Memoize the preview becuase they can be very complicated, this way it does not get rendered every time

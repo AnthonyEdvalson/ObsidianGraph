@@ -2,15 +2,15 @@ import React from 'react';
 import './Link.css';
 import useSelectable from '../../../useSelectable';
 import { useGraphSelector } from '../../../../../logic/scope';
-import { access } from '../../../../../util';
+import { util } from 'obsidian';
 
 
 function Link(props) {
     let {sink, source} = props;
-    let [selected, setSelect] = useSelectable("link", sink);
+    let { selected, setSelect } = useSelectable("link", sink);
 
-    let n1 = useGraphSelector(graph => access(graph, "nodes", access(graph, "ports", sink, "node")));
-    let n2 = useGraphSelector(graph => access(graph, "nodes", access(graph, "ports", source, "node")));
+    let n1 = useGraphSelector(graph => util.access(graph, "nodes", util.access(graph, "ports", sink, "node")));
+    let n2 = useGraphSelector(graph => util.access(graph, "nodes", util.access(graph, "ports", source, "node")));
 
     let i1 = n1.inputs.indexOf(sink);
 

@@ -1,4 +1,4 @@
-import { uuid4 } from './node';
+import { util } from 'obsidian';
 import { DELETE_LINK } from './link';
 import { lookupReducerFactory } from './util';
 
@@ -25,15 +25,24 @@ function DELETE_PORT(state, action) {
 }
 
 function ADD_PORT(state, action) {
+    let key = util.uuid4();
+    let node = state.nodes[action.node];
+
     let newState = {
         ...state,
-        nodes: { ...state.nodes },
-        ports: { ...state.ports }
+        nodes: { 
+            ...state.nodes,
+            [action.node]: {
+                ...node,
+                inputs: [...node.inputs, key],
+                samples: node.samples.map(s => ({ ...s, inputs: { ...s.inputs, [key]: null }}))
+            }
+        },
+        ports: { 
+            ...state.ports,
+            [key]: {label: "label", node: action.node, type: "data"}
+        }
     };
-
-    let key = uuid4();
-    newState.nodes[action.node].inputs.push(key);
-    newState.ports[key] = {label: "label", node: action.node, type: "data"};
 
     return newState;
 }

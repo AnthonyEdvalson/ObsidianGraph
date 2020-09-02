@@ -1,0 +1,8 @@
+.TimeTravel {
+    height: 400px;
+    position: relative;
+}
+
+.TimeTravel .timeline {
+    position: relative;
+}

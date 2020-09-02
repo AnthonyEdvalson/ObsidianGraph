@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Tree from '../Tree';
 import './Project.css';
 //import { useSelector, useDispatch } from 'react-redux';
@@ -7,10 +8,11 @@ import graphs from '../../logic/graphs';
 import OpenProject from '../../Modals/OpenProject';
 import Panel from '../Panel';
 import { useProjectSelector } from '../../logic/scope';
-import { useDispatch, useSelector } from 'react-redux';
 import projects from '../../logic/projects';
-const { shell } = window.require('electron').remote;
-const { dialog } = window.require("electron").remote;
+import engine from '../../logic/engine';
+import useFSLink from './useFSLink';
+const { shell, dialog } = window.require('electron').remote;
+
 
 function Project({ setMenu }) {
     let project = useProjectSelector();
@@ -18,6 +20,15 @@ function Project({ setMenu }) {
     let dispatch = useDispatch();
     let tree = useProjectTree(project, dispatch);
     let loadedProjects = useSelector(state => state.projects);
+    let courier = engine.useCourier();
+
+    let pushProject = useCallback((loadedProjects, projectId) => {
+        let [zip, name] = projects.build(loadedProjects, projectId);
+        let data = zip.admZip.toBuffer().toString("base64");
+        
+        console.log(courier)
+        courier.loadObn(data, name);
+    }, [courier]);
 
     useEffect(() => {
         const menu = [
@@ -39,7 +50,9 @@ function Project({ setMenu }) {
         ];
 
         setMenu("Project", menu);
-    }, [setMenu, project, loadedProjects]);
+    }, [setMenu, project, loadedProjects, pushProject]);
+
+    useFSLink();
     
     //let [newProject, setNewProject] = useState(false);
     //let [packs, setPacks] = useState([]);
@@ -150,26 +163,6 @@ function exportProject(loadedProjects, projectId) {
         if (filePath)
             zip.write(filePath);
     });
-}
-
-function pushProject(loadedProjects, projectId) {
-    let [zip, name] = projects.build(loadedProjects, projectId);
-    let data = zip.admZip.toBuffer().toString("base64");
-
-    let body = JSON.stringify({ location: "loadObn", args: { data, name } }, null, 2);
-    console.log(body);
-	return new Promise((resolve, reject) => {
-		fetch('http://localhost:5000/api/engine', {
-            body,
-			headers: { 'Content-Type': 'application/json' }, 
-            method: 'POST'
-		}).then(res => {
-			if (res.ok)
-				resolve(res.json());
-			else
-				res.json().then(reject, reject);
-		});
-	});
 }
 
 export default Project;

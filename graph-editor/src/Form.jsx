@@ -13,7 +13,7 @@ function useForm(key) {
     }
 
     let data = form.data;
-    let handleChange = (change, path=[]) => {form.handleChange(change, setKey ? [key, ...path] :[...path])};
+    let handleChange = (change, path=[]) => {form.handleChange(change, setKey ? [key, ...path] : [...path])};
     let path = [...form.path]
 
     if (setKey) {

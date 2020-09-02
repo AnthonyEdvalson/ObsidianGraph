@@ -1,0 +1,26 @@
+{
+    "ignore": [
+        "./front/src/app",
+        "./back/src/app",
+        "./node_modules",
+        "./front/node_modules",
+        "./back/node_modules"
+    ],
+    "ignoreRoot": [
+        "**/.git/**",
+        "**/.log/**",
+        "**/.nyc_output/**",
+        "**/.sass-cache/**",
+        "**/bower_components/**",
+        "**/coverage/**"
+    ],
+    "exec": "cd server && npm start",
+    "watch": [
+        "./",
+        "../node_modules/obsidian/lib"
+    ],
+    "ext": "js,jsx,obn",
+    "env": {
+      "NODE_ENV": "development"
+    }
+}

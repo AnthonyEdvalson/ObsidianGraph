@@ -1,20 +1,12 @@
 import { lookupReducerFactory } from "./util";
-import { access } from "../util";
-
-
-function uuid4() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => {
-        let a = crypto.getRandomValues(new Uint8Array(1))[0];
-        return (c ^ a & 15 >> c / 4).toString(16);// eslint-disable-line no-mixed-operators
-    });
-}
+import { util } from 'obsidian';
 
 function NEW_NODE(state, action) {
     let type = action.nodeType;
     let data = {
-        back: () => ({node: {name: "Backend", content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
-        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
-        agno: () => ({node: {name: "Code", content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        back: () => ({node: {name: "Backend", samples: [], content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        front: () => ({node: {name: "Frontend", samples: [], content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
+        agno: () => ({node: {name: "Code", samples: [], content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
         data: () => ({node: {name: "Data", content: ""}}),
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
@@ -43,16 +35,16 @@ function NEW_NODE(state, action) {
         ...data.node
     }
 
-    let nodeKey = uuid4();
+    let nodeKey = util.uuid4();
     
     for (let input of data.inputs) {
-        let key = uuid4();
+        let key = util.uuid4();
         newNode.inputs.push(key);
         newState.ports[key] = { node: nodeKey, ...input };
     }
 
     if (data.output) {
-        let key = uuid4();
+        let key = util.uuid4();
         newNode.output = key;
         newState.ports[key] = { node: nodeKey, ...data.output};
     }
@@ -97,15 +89,39 @@ function SET_NODE_NAME(state, {node, name}) {
 function SET_CONTENT(state, action) {
     let newState = {
         ...state,
-        nodes: { ...state.nodes} // In graoh reducers, replace state with state.nodes, and provide the full graph state as a third param
+        nodes: { ...state.nodes} // TODO In graph reducers, replace state with state.nodes, and provide the full graph state as a third param
     };
 
-    let node = access(newState, "nodes", action.nodeId);
+    let node = util.access(newState, "nodes", action.nodeId);
     node.content = action.content;
 
     return newState;
 }
 
+function ADD_SAMPLE(state, action) {
 
-export default lookupReducerFactory({ NEW_NODE, SET_NODE_NAME, SET_CONTENT });
-export { uuid4, hasNameConflict, cleanName }; // TODO move to logic
+    let oldNode = state.nodes[action.node];
+
+    let newState = {
+        ...state,
+        nodes: {
+            ...state.nodes,
+            [action.node]: {
+                ...oldNode,
+                samples: [ 
+                    ...oldNode.samples, 
+                    {
+                        name: "New Sample",
+                        inputs: util.transform(oldNode.inputs, () => ""),
+                        args: "{}"
+                    }
+                ]
+            }
+        }
+    };
+
+    return newState;
+}
+
+export default lookupReducerFactory({ NEW_NODE, SET_NODE_NAME, SET_CONTENT, ADD_SAMPLE });
+export { hasNameConflict, cleanName }; // TODO move to logic

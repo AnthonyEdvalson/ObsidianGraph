@@ -1,6 +1,6 @@
 import React from 'react';
 import './Port.css';
-import { uuid4 } from '../../../../reducers/node';
+import { util } from 'obsidian';
 import { useGraphSelector, useGraphDispatch } from '../../../../logic/scope';
 
 
@@ -15,9 +15,9 @@ function Port(props) {
         e.preventDefault();
         e.stopPropagation();
         if (e.shiftKey)
-            dispatch({type: "RELINK", port: key, inout, transaction: uuid4()}); // TODO move to logic
+            dispatch({type: "RELINK", port: key, inout, transaction: util.uuid4()}); // TODO move to logic
         else
-            dispatch({type: "START_LINK", port: key, inout, transaction: uuid4()});
+            dispatch({type: "START_LINK", port: key, inout, transaction: util.uuid4()});
     }
 
     const handleMouseUp = (e) => {

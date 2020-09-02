@@ -1,4 +1,32 @@
 
 .Errors {
-  display: none;;
+  position: absolute;
+  background-color: #1e262e;
+
+  z-index: 100;
+  border-left: #101419 1px solid;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 200px;
+  display: flex;
+  flex-flow: column;
+  position: relative;
+
+  overflow-y: auto;
+}
+
+.Errors .error-item {
+  width: 100%;
+  display: block;
+  padding: 5px 10px;
+}
+
+.Errors .error-item:hover {
+  background-color: #36485a;
+}
+
+.Errors .error-item.error-selected {
+  background-color: #36485a;
+
 }

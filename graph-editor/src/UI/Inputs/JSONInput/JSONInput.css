@@ -1,0 +1,373 @@
+/*.ace-tron .ace-dracula .ace_gutter {
+    background: #14191f;
+    color: rgb(97,110,128)
+  }
+  
+  .ace-tron .ace-dracula .ace_print-margin {
+    width: 1px;
+    background: #e8e8e8
+  }
+  
+  .ace-tron .ace-dracula {
+    background-color: #00000030;
+    color: #aec2e0
+  }
+  
+  .ace-tron .ace-dracula .ace_cursor {
+    color: #f8f8f0
+  }
+  
+  .ace-tron .ace-dracula .ace_marker-layer .ace_selection {
+    background: #7a9bc2
+  }
+  
+  .ace-tron .ace-dracula.ace_multiselect .ace_selection.ace_start {
+    box-shadow: 0 0 3px 0px #14191f;
+    border-radius: 2px
+  }
+  
+  .ace-tron .ace-dracula .ace_marker-layer .ace_step {
+    background: rgb(198, 219, 174)
+  }
+  
+  .ace-tron .ace-dracula .ace_marker-layer .ace_bracket {
+    margin: -1px 0 0 -1px;
+    border: 1px solid #3b3a32
+  }
+  
+  .ace-tron .ace-dracula .ace_marker-layer .ace_active-line {
+    background: #4572a130
+  }
+  
+  .ace-tron .ace-dracula .ace_gutter-active-line {
+    background-color: #1b232c
+  }
+  
+  .ace-tron .ace-dracula .ace_marker-layer .ace_selected-word {
+    border: 1px solid #7a9bc2
+  }
+  
+  .ace-tron .ace-dracula .ace_fold {
+    background-color: transparent;
+    border-color: #000;
+  }
+  
+  .ace-tron .ace-dracula .ace_keyword {
+    color: #748aa6
+  }
+  
+  .ace-tron .ace-dracula .ace_keyword.ace_other.ace_unit {
+    color: #267fb5
+  }
+  
+  .ace-tron .ace-dracula .ace_constant.ace_language {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_constant.ace_numeric {
+    color: #6ee2ff
+  }
+  
+  .ace-tron .ace-dracula .ace_constant.ace_character {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_constant.ace_other {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_support.ace_function {
+    color: #267fb5
+  }
+  
+  .ace-tron .ace-dracula .ace_support.ace_constant {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_support.ace_constant.ace_property-value {
+    color: #6ee2ff
+  }
+  
+  .ace-tron .ace-dracula .ace_support.ace_class {
+    font-style: italic;
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_support.ace_type {
+    font-style: italic;
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_storage {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_storage.ace_type {
+    color: #267fb5
+  }
+  
+  .ace-tron .ace-dracula .ace_invalid {
+    color: #f8f8f0;
+    background-color: #00a8c6
+  }
+  
+  .ace-tron .ace-dracula .ace_invalid.ace_deprecated {
+    color: #f8f8f0;
+    background-color: #00a8c6
+  }
+  
+  .ace-tron .ace-dracula .ace_string {
+    color: #6ee2ff
+  }
+  
+  .ace-tron .ace-dracula .ace_comment {
+    color: #324357
+  }
+  
+  .ace-tron .ace-dracula .ace_variable {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_variable.ace_parameter {
+    font-style: italic
+  }
+  
+  .ace-tron .ace-dracula .ace_entity.ace_other.ace_attribute-name {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_entity.ace_name.ace_function {
+    color: #ffffff
+  }
+  
+  .ace-tron .ace-dracula .ace_entity.ace_name.ace_tag {
+    color: #267fb5
+  }
+
+.ace-tron .jsoneditor {
+    border: 1px solid #323f4d;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+    width: calc(100% - calc(2 * var(--ui-spacing)));
+    margin: 0 0 5px 5px;
+}
+
+.ace-tron:focus-within .jsoneditor {
+    border: 1px solid #4572a1;
+}
+
+.ace-tron .jsoneditor-menu {
+    height: 20px;
+    bottom: 0;
+    position: absolute;
+    opacity: 0;
+    transition: opacity ease-out 0.15s 0.1s;
+    z-index: 10000;
+}
+
+.ace-tron:focus-within .jsoneditor-menu{
+    opacity: 1;
+}
+
+.ace-tron .ace_gutter {
+    transform: translateX(-100%);
+    transition: transform ease-out 0.15s 0.1s;
+}
+.ace-tron .ace_scroller {
+    background-color: transparent;
+    transition: left ease-out 0.15s 0.1s, transform ease-out 0.15s 0.1s, width ease-out 0.15s 0.1s;
+}
+
+.ace-tron:focus-within .ace_gutter,
+.ace-tron:hover        .ace_gutter {
+    transform: translateX(-15px);
+}
+
+.ace-tron:not(:focus-within):not(:hover) .ace_scroller {
+    left: 0px !important;
+    transform: none;
+}
+
+.ace-tron .ace_scroller {
+    transform: translateX(-15px);
+    width: calc(100% + 15px);
+}
+
+.ace-tron .jsoneditor-menu > button {
+    transform: scale(0.75) translate(-7px, -9px);
+    margin-right: -7px;
+}
+
+.ace-tron .jsoneditor-menu > .jsoneditor-modes {
+    float: right;
+}
+
+.ace-tron .jsoneditor-menu > .jsoneditor-modes > button {
+    height: 15px;
+    font-size: 12px;
+    margin: 0;
+}
+
+.ace-tron div.jsoneditor-outer.has-main-menu-bar {
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 20px;
+}
+
+.ace-tron .ace_editor {
+    min-height: 60px;
+    padding-top: 10px;
+}
+
+.ace-tron .ace_gutter-cell.ace_error {
+    background-color: #ff000090;
+    color: #FFF;
+    background-image: none;
+}
+
+.jsoneditor-poweredBy {
+    display: none;
+}*/
+
+
+/**
+ * Nord Theme Originally by Arctic Ice Studio
+ * https://nordtheme.com
+ *
+ * Ported for PrismJS by Zane Hitchcoxc (@zwhitchcox) and Gabriel Ramos (@gabrieluizramos)
+ */
+
+ code[class*="language-"],
+ pre[class*="language-"] {
+   color: #f8f8f2;
+   background: none;
+   font-family: "Fira Code", Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+   text-align: left;
+   white-space: pre;
+   word-spacing: normal;
+   word-break: normal;
+   word-wrap: normal;
+   line-height: 1.5;
+   -moz-tab-size: 4;
+   -o-tab-size: 4;
+   tab-size: 4;
+   -webkit-hyphens: none;
+   -moz-hyphens: none;
+   -ms-hyphens: none;
+   hyphens: none;
+ }
+ 
+ /* Code blocks */
+ pre[class*="language-"] {
+   padding: 1em;
+   margin: .5em 0;
+   overflow: auto;
+   border-radius: 0.3em;
+ }
+ 
+ :not(pre) > code[class*="language-"],
+ pre[class*="language-"] {
+   background: #2E3440;
+ }
+ 
+ /* Inline code */
+ :not(pre) > code[class*="language-"] {
+   padding: .1em;
+   border-radius: .3em;
+   white-space: normal;
+ }
+ 
+ .token.comment,
+ .token.prolog,
+ .token.doctype,
+ .token.cdata {
+   color: #324357;
+ }
+ 
+ .token.punctuation,
+ .token.attr-name,
+ .token.variable,
+ .JSEditor {
+   color: #aec2e0;
+ }
+ 
+ .namespace {
+   opacity: .7;
+ }
+ 
+ .token.property,
+ .token.tag,
+ .token.constant,
+ .token.symbol,
+ .token.deleted {
+   color: #81A1C1;
+ }
+ 
+ .token.number,
+ .token.string,
+ .token.char,
+ .token.url {
+   color: #6ee2ff;
+ }
+ 
+ .token.boolean {
+   color: #FFFFFF;
+ }
+ 
+ .token.selector,
+ .token.builtin,
+ .token.inserted,
+ .token.operator {
+   color: #748aa6;
+ }
+ 
+ .token.entity,
+ .token.function,
+ .language-css .token.string {
+   color: #FFFFFF;
+ }
+ 
+ .token.atrule,
+ .token.attr-value,
+ .token.class-name {
+   color: #88C0D0;
+ }
+ 
+ .token.keyword {
+   color: #267fb5;
+ }
+ 
+ .token.regex,
+ .token.important {
+   color: #EBCB8B;
+ }
+ 
+ .token.important,
+ .token.bold {
+   font-weight: bold;
+ }
+ 
+ .token.italic {
+   font-style: italic;
+ }
+ 
+ .token.entity {
+   cursor: help;
+ }
+
+
+.JSEditor {
+  width: calc(100% - calc(2 * var(--ui-spacing)));
+  margin-left: 5px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  border: 1px solid #323f4d;
+  background-color: #00000030;
+  outline: none !important;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+}
+
+.JSEditor .npm__react-simple-code-editor__textarea {
+  outline: none !important;
+}

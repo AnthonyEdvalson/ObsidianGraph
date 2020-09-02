@@ -1,35 +1,21 @@
-import { useState, useEffect } from 'react';
-import Engine from './pack';
-import SocketIO from 'socket.io-client';
-
-const engine = new Engine("front");
+import React, { useMemo } from 'react';
+import { Courier, Engine } from 'obsidian';
+import app from './app';
 
 function EngineUI() {
-	let [socket, setSocket] = useState(null);
+	let courier = useMemo(() => new Courier("http://localhost:5000/front", { onConnect: () => { console.log("Connected!"); } }, true), []);
 
-	engine.errorHandler = error => {
-		socket.emit("report", error)
-	}
+	let engine = useMemo(() => {
+		let highPrecisionTime = () => performance.timeOrigin + performance.now();
+		return new Engine("front", highPrecisionTime, courier, app, true);
+	}, [courier]);
 
-	useEffect(() => {
-		let handler = event => {
-			//setError(event.reason);
-		}
+	let res = engine.eval();
 
-		window.addEventListener('unhandledrejection', handler);
-		return () => window.removeEventListener('unhandledrejection', handler);
-	}, []);
-
-	useEffect(() => {
-		let socket = SocketIO("http://localhost:5000");
-		socket.on('connect', () => {setSocket(socket)});
-		return socket.disconnect;
-	}, []);
-
-	if (socket)
-		return engine.start(socket);
-	else
-		return null;
+	if (!React.isValidElement(res))
+		throw new Error("Top level function must return a react object, you returned " + JSON.stringify(res, null, 2));
+	
+	return React.cloneElement(res, {});
 }
 
 export default EngineUI;

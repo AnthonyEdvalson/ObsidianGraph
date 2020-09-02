@@ -1,7 +1,6 @@
 import React from 'react';
 import TextInput from '../Inputs/TextInput';
 import './PortEditor.css';
-import Dropdown from '../Inputs/Dropdown';
 import Form, { useForm } from '../../Form';
 import { useGraphDispatch, useGraphSelector } from '../../logic/scope';
 
@@ -16,8 +15,7 @@ function PortEditor(props) {
 
     return (
         <Form.Form onChange={handleChange} data={data}>
-            <TextInput k="label" />
-            <Dropdown k="type" options={props.typeOptions} />
+            <TextInput k="label" label={null} />
         </Form.Form>
     );
 }

@@ -1,4 +1,4 @@
-import { graft } from '../util';
+import { util } from 'obsidian';
 
 function lookupReducerFactory(handlers, defaultVal) {
     return (state, action, fullState) => {
@@ -24,7 +24,7 @@ function indexedReducerFactory(itemReducer, itemId) {
             let newProjectState = itemReducer(projectState, action, fullState);
     
             if (newProjectState !== projectState)
-                return graft(state, id, newProjectState);
+                return util.graft(state, id, newProjectState);
         }
 
         return state;

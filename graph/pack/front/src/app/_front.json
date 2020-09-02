@@ -1,1 +1,0 @@
-{"nodes": {"Part1": {"type": "data", "file": "\"Hello\""}, "Part2": {"type": "data", "file": "\"World\""}, "7c.Component": {"type": "code", "file": "import React from 'react';\n\nfunction main(o) {\n    let text = o.useRemote(\"input\");\n    return <span>{text}</span>\n}\n\nexport default main;\n", "inputs": {"input": "Concat"}}}, "output": "7c.Component"}

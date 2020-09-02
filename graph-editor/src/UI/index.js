@@ -1,7 +1,7 @@
 import './ui.css';
 import Button from './Button';
 import Checkbox from './Inputs/Checkbox';
-import DictionaryField from './Inputs/DictionaryField';
+import Dictionary from './Inputs/Dictionary';
 import Divider from './Divider';
 import Dropdown from './Inputs/Dropdown';
 import Foldout from './Foldout';
@@ -17,12 +17,13 @@ import TextInput from './Inputs/TextInput';
 import Modal from './Modal';
 import Schema from './Schema';
 import PathInput from './Inputs/PathInput';
+import JSONInput from './Inputs/JSONInput';
 
 
 export default {
     Button,
     Checkbox,
-    DictionaryField,
+    Dictionary,
     Divider,
     Dropdown,
     Foldout,
@@ -37,5 +38,6 @@ export default {
     TextInput,
     Modal,
     Schema,
-    PathInput
+    PathInput,
+    JSONInput
 };

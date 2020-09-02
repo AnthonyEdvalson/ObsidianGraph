@@ -5,6 +5,7 @@ import GraphSidebar from './Comp/GraphSidebar';
 import Project from '../Project';
 import { useGraphSelector } from '../../logic/scope';
 
+// TODO turn sidebar into a split panel that contains Project and Info panels
 function Sidebar({ setMenu }) {
     let selection = useGraphSelector(graph => {
         if (!graph.meta)
@@ -20,7 +21,7 @@ function Sidebar({ setMenu }) {
                 return {type: "node", data: graph.nodes[selection.key], nodeKey: selection.key};
 
             if (selection.type === "graph")
-                return {type: "graph", data: graph.meta};
+                return {type: "graph", data: graph};
         }
 
         return {type: null, data: null};
@@ -40,6 +41,7 @@ function Sidebar({ setMenu }) {
             <>
                 <div className="side-head">
                     <h1>{node.name}</h1>
+                    <small>{selection.key}</small>
                     <small>NODE: {node.type.toUpperCase()}</small>
                 </div>
                 <NodeSidebar data={node} nodeKey={selected.nodeKey} />
@@ -47,12 +49,14 @@ function Sidebar({ setMenu }) {
         );
     }
     else if (selected && selected.type === "graph") {
-        let meta = selected.data;
+        let meta = selected.data.meta;
+        let id = selected.data.graphId;
 
         content = (
             <>
                 <div className="side-head">
                     <h1>{meta.name}</h1>
+                    <small>{id}</small>
                     <small>{meta.description}</small>
                 </div>
                 <GraphSidebar data={meta} />

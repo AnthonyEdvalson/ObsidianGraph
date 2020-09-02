@@ -2,18 +2,39 @@ import { createStore, combineReducers } from 'redux';
 import projectReducer from './reducers/project';
 import focusReducer from './reducers/focus';
 import { indexedReducerFactory } from './reducers/util';
-import { graft } from "./util";
+import { util } from 'obsidian';
+
+
+function errorReducer(state={}, action) {
+    if (action.type === "NEW_ERROR")
+        return util.graft(state, action.data.errorId, action.data);
+    
+    if (action.type === "SET_FOCUS" && action.errorId in state)
+        state[action.errorId].new = false;
+    
+    return state;
+}
 
 function projectsReducer(state={}, action, fullState) {
     if (action.type === "LOAD_PROJECT")
-        return graft(state, action.data.projectId, action.data);
+        return util.graft(state, action.data.projectId, action.data);
 
     return indexedReducerFactory(projectReducer, "projectId")(state, action, fullState);
 }
 
+function profilesReducer(state={}, action, fullState) {
+    if (action.type === "LOAD_PROFILE")
+        return util.graft(state, action.data.id, action.data)
+    
+    return state;
+    //return indexedReducerFactory(profileReducer, "id")(state, action, fullState);
+}
+
 let reducers = {
     projects: projectsReducer,
-    focus: focusReducer
+    errors: errorReducer,
+    focus: focusReducer,
+    profiles: profilesReducer
 };
 
 let mainReducer = combineReducers(reducers);

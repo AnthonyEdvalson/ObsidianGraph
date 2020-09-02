@@ -30,9 +30,12 @@ let graphSuperReducer = undoable((state, action, fullState) => {
                 "END_LINK": () => previousHistory.present.newLink.transaction,
                 "SELECT_RECT": () => "SELECT_RECT"
             };
+            console.log("GROUPING")
             
             let t = action.type;
-            return t in groups ? groups[t]() : null;
+            let group = t in groups ? groups[t]() : null;
+            console.log(group);
+            return group;
         },
         filter: excludeAction(["REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE"])
     }

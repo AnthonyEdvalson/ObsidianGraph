@@ -2,25 +2,13 @@
   "name": "graph-engine",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js \"./main.obn\" --watch ./ --ignore front/src/pack --ignore pack/ -e js,jsx,obn",
-    "start-light": "babel-node server.js \"./main.obn\""
+    "start": "nodemon",
+    "wipe": "kill -9 $(lsof -t -i:5000)"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "adm-zip": "^0.4.14",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "regenerator-runtime": "^0.13.5",
-    "socket.io": "^2.3.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.10.4",
-    "@babel/node": "^7.10.4",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/register": "^7.10.4",
-    "nodemon": "^2.0.3"
-  }
+  "license": "UNLICENSED",
+  "dependencies": {},
+  "devDependencies": {}
 }

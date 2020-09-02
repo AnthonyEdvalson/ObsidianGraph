@@ -6,3 +6,7 @@
     flex-grow: 1;
     overflow: hidden;
 }
+
+.Panel.vertical {
+    flex-direction: column;
+}

@@ -1,7 +1,7 @@
 import { DELETE_LINK } from './link';
 import { DELETE_PORT } from './port';
 import { lookupReducerFactory } from './util';
-
+import { util } from 'obsidian';
 
 
 function SET_SELECTION(state, action) {
@@ -42,12 +42,23 @@ function CHANGE_SELECTION(state, action) {
     let select = newState.selection.items[0];
 
     if (select.type === "node") {
-        newState.nodes = {...newState.nodes};
+        newState.nodes = { ...newState.nodes };
         let oldNode = newState.nodes[select.key];
         newState.nodes[select.key] = action.change(oldNode);
+
+        // Cleanup hack for samples
+        let node = newState.nodes[select.key];
+        for (let s of node.samples) {
+            for (let i of Object.keys(s.inputs)) {
+                console.log(node, node.inputs, i);
+                if (!node.inputs.includes(i))
+                    delete s.inputs[i];
+            }
+        };
+
     }
     else if (select.type === "graph") {
-        newState.meta = {...newState.meta};
+        newState.meta = { ...newState.meta };
         let oldMeta = newState.meta;
         newState.meta = action.change(oldMeta);
     }
@@ -67,16 +78,17 @@ function DELETE_SELECTION(state, action) {
             let target = state.nodes[item.key];
             
             if (target.output)
-                newState = DELETE_PORT(newState, {key: target.output});
+                newState = DELETE_PORT(newState, { key: target.output });
+                
             for (let key of target.inputs)
                 newState = DELETE_PORT(newState, {key});
     
-            newState.nodes = {...newState.nodes};
+            newState.nodes = { ...newState.nodes };
             delete newState.nodes[item.key];
         }
         if (item.type === "link") {
-            newState.links = {...newState.links};
-            newState = DELETE_LINK(newState, {sink: item.key});
+            newState.links = { ...newState.links };
+            newState = DELETE_LINK(newState, { sink: item.key });
         }
     }
 

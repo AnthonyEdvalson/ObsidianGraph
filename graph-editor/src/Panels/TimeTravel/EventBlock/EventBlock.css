@@ -1,0 +1,50 @@
+.EventBlock {
+    display: block;
+    position: absolute;
+    background-color: #F0F;
+    color: #FFF;
+    border: 1px solid #00000030;
+    border-top: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    padding: 2px 7px;
+    overflow: hidden;
+    transition: background-color 0.1s ease-out;
+    background-image: linear-gradient(0deg, #00000020, #00000020);
+    opacity: 0.6;
+}
+
+.EventBlock:hover {
+    background-image: none;
+    opacity: 1;
+}
+
+.EventBlock.error {
+    background-color: #F08 !important;
+}
+
+.EventBlock.small {
+    padding: 0;
+    font-size: 0;
+}
+
+
+
+.EventBlock.block-call {
+    background-color: var(--graph-bright);
+}
+.EventBlock.block-edit {
+    background-color: var(--edit-bright);
+}
+.EventBlock.block-in,
+.EventBlock.block-out,
+.EventBlock.block-io {
+    background-color: var(--io-bright);
+}
+.EventBlock.block-data {
+    background-color: var(--data-bright);
+}
+.EventBlock.block-code {
+    background-color: var(--back-bright);
+}

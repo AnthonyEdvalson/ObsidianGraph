@@ -1,5 +1,6 @@
 import { makeLookupReducer } from "./util";
-import { uuid4, cleanName } from './node';
+import { cleanName } from './node';
+import { util } from 'obsidian';
 
 function copy(graph) {
     let clip = {
@@ -46,7 +47,7 @@ function paste(graph, clip) {
     let portMap = {};
 
     for (let [, node] of Object.entries(clip.nodes)) {
-        let newNodeKey = uuid4();
+        let newNodeKey = util.uuid4();
 
         let nodeCopy = {
             ...node,
@@ -74,7 +75,7 @@ function paste(graph, clip) {
 }
 
 function pastePort(clip, newGraph, key, nodeKey, portMap) {
-    let newPortKey = uuid4();
+    let newPortKey = util.uuid4();
 
     let port = clip.ports[key];
     port.node = nodeKey;

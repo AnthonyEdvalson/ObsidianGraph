@@ -1,9 +1,0 @@
-.InputWrapper {
-    /*border-top: #666 solid 1px;*/
-    overflow: auto;
-    margin: 0;
-}
-
-.InputWrapper>.Label {
-    font-weight: 600;
-}

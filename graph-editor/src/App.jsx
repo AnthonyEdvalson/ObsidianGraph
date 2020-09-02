@@ -1,34 +1,20 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import SocketIO from 'socket.io-client';
+import React, { useState, useCallback } from 'react';
 
 import './App.css';
 import Graphs from './Panels/Graphs';
 import Sidebar from './Panels/Sidebar';
-import { Provider, useSelector, useDispatch } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import store from './store';
 import MenuBar from './MenuBar';
 import { ToastContainer, Slide } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.min.css";
 import { GraphIdContext, ProjectIdContext } from './logic/scope';
-import { graft } from './util';
-import Errors from './Panels/Errors';
-import { uuid4 } from './reducers/node';
+import { util } from 'obsidian';
+import engine from './logic/engine';
+import Panel from './Panels/Panel';
+import TimeTravel from './Panels/TimeTravel';
 
 function Editor() {
-  let dispatch = useDispatch();
-
-  useEffect(() => {
-    let socket = SocketIO("http://localhost:5000/editor");
-
-    socket.on("report", (data) => {
-      data = { ...data, errorId: uuid4() }
-      dispatch({ type: "NEW_ERROR", data });
-      dispatch({ type: "SET_FOCUS", focus: { errorId: data.errorId }});
-    });
-
-    return socket.disconnect;
-  }, [dispatch]);
-
   let [menuBarLayout, setMenuBarLayout] = useState({ Obsidian: [
     { name: "Dev Tools", shortcut: "F12", action: "devtools" },
     { name: "Refresh", shortcut: "F5", action: "refresh" },
@@ -37,10 +23,9 @@ function Editor() {
 
   let focusProject = useSelector(state => state.focus.projectId);
   let focusGraph = useSelector(state => state.focus.graphId);
-  //let focusError = useSelector(state => state.focus.errorId);
 
   const setMenu = useCallback((name, options) => {
-    setMenuBarLayout(prevState => graft(prevState, name, options));
+    setMenuBarLayout(prevState => util.graft(prevState, name, options));
   }, [setMenuBarLayout]);
 
   return (
@@ -50,11 +35,13 @@ function Editor() {
         <ToastContainer position="top-center" autoClose={3000} transition={Slide} hideProgressBar />
         <ProjectIdContext.Provider value={focusProject}>
           <GraphIdContext.Provider value={focusGraph}>
-            {/*<ErrorIdContext.Provider value={focusError}>*/}
+            <Panel horizontal>
               <Sidebar setMenu={setMenu} />
-              <Graphs setMenu={setMenu} />
-              <Errors setMenu={setMenu} />
-            {/*</ErrorIdContext.Provider>*/}
+              <Panel vertical>
+                <Graphs setMenu={setMenu} />
+                <TimeTravel setMenu={setMenu} />
+              </Panel>
+            </Panel>
           </GraphIdContext.Provider>
         </ProjectIdContext.Provider>
       </div>
@@ -66,7 +53,9 @@ function App() {
   return (
     <div className="App">
       <Provider store={store}>
-        <Editor />
+        <engine.Engine href="http://localhost:5000/editor">
+          <Editor />
+        </engine.Engine>
       </Provider>
     </div>
   );
