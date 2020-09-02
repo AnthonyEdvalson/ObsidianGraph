@@ -12,7 +12,7 @@ function buildProject(loaded, projectId) {
     if (!startup)
         throw new Error("Cannot build " + project.name + ". It has no startup graph");
 
-    let rootLocation = buildGraph(loaded, buildData, projectId, startup);
+    let root = buildGraph(loaded, buildData, projectId, startup);
     console.log(buildData);
     
     let zip = new ZipBetter();
@@ -30,7 +30,7 @@ function buildProject(loaded, projectId) {
     }
 
     let appData = {
-        root: rootLocation,
+        root,
         projects: Object.keys(buildData),
         name: project.name,
         author: project.author,
@@ -72,8 +72,8 @@ function buildGraph(loaded, buildData, projectId, graphId) {
     let outKey = Object.entries(graph.nodes).find(([k, v]) => v.type === "out")[0];
     buildFunction(loaded, buildData, graph, outKey, buildData[name].data.functions);
 
-    // Return the location of the built root function of the graph
-    return { projectName: name, functionName: graph.meta.name };
+    // Return the id of the root function of the graph
+    return outKey;
 }
 
 function buildFunction(loaded, buildData, graph, key, functions) {
@@ -124,17 +124,13 @@ function buildFunction(loaded, buildData, graph, key, functions) {
         
         case "graph":
             // Load the graph's data and compile it
-            
-            let rootLocation = buildGraph(loaded, buildData, node.location.projectId, node.location.graphId);
+            let root = buildGraph(loaded, buildData, node.location.projectId, node.location.graphId);
 
             let inputs = resolveInputs(graph, node.inputs);
             fDef.type = "call";
             fDef.inputs = inputs;
             fDef.parameters = node.parameters;
-            fDef.location = {
-                functionName: rootLocation.functionName,
-                projectName: rootLocation.projectName
-            };
+            fDef.root = root;
 
             propagate(loaded, buildData, graph, node.inputs, functions);
             break;
