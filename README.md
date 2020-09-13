@@ -1,7 +1,11 @@
+> Hey There!
+>
+> Just so you know, Obsidian is still in alpha, the documentation may not be accurrate and entire features may be added or removed without notice.
+
 # Obsidian
 
-Obsidian is a web application engine, best suited for rapid development and testing of simple web applications.
-It is built on top of Node and React
+Obsidian is a web application engine, IDE, and full stack framework best suited for rapid development and testing of simple web applications.
+It built on top of Node and React
 
 Obsidian is based on the belief that most web app frameworks are designed for enterprise which prioritize
 speed and flexibility over simplicity and ease of use, which makes them trickier to learn,
