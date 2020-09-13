@@ -20,7 +20,7 @@ function getDefaultParams(schema) {
             return schema.default;
         case "list":
             let lis = [];
-            let count = typeof(schema.defaultCount) === "undefined" ? 1 : schema.defaultCount;
+            let count = schema.defaultCount === undefined ? 1 : schema.defaultCount;
             for (let i = 0; i < count ; i++)
                 lis.push(getDefaultParams(schema.field));
             return lis;

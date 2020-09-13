@@ -4,9 +4,9 @@ import { util } from 'obsidian';
 function NEW_NODE(state, action) {
     let type = action.nodeType;
     let data = {
-        back: () => ({node: {name: "Backend", samples: [], content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
-        front: () => ({node: {name: "Frontend", samples: [], content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
-        agno: () => ({node: {name: "Code", samples: [], content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        back: () => ({node: {name: "Backend", content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nmodule.exports = { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
+        agno: () => ({node: {name: "Code", content: "function main({input}) {\n\t\n}\n\nmodule.exports = { main };\n"}, inputs: [{label: "input", type: "back"}]}),
         data: () => ({node: {name: "Data", content: ""}}),
         in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
         out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
@@ -98,30 +98,5 @@ function SET_CONTENT(state, action) {
     return newState;
 }
 
-function ADD_SAMPLE(state, action) {
-
-    let oldNode = state.nodes[action.node];
-
-    let newState = {
-        ...state,
-        nodes: {
-            ...state.nodes,
-            [action.node]: {
-                ...oldNode,
-                samples: [ 
-                    ...oldNode.samples, 
-                    {
-                        name: "New Sample",
-                        inputs: util.transform(oldNode.inputs, () => ""),
-                        args: "{}"
-                    }
-                ]
-            }
-        }
-    };
-
-    return newState;
-}
-
-export default lookupReducerFactory({ NEW_NODE, SET_NODE_NAME, SET_CONTENT, ADD_SAMPLE });
+export default lookupReducerFactory({ NEW_NODE, SET_NODE_NAME, SET_CONTENT, });
 export { hasNameConflict, cleanName }; // TODO move to logic

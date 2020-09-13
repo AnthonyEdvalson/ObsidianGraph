@@ -1,8 +1,5 @@
 {
-  "root": {
-    "projectName": "10",
-    "functionName": "Main"
-  },
+  "root": "6465ed6d-e401-4962-ac34-631c147a418a",
   "projects": [
     "10",
     "Sqlite2"

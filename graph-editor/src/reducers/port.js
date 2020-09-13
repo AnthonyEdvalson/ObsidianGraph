@@ -35,7 +35,6 @@ function ADD_PORT(state, action) {
             [action.node]: {
                 ...node,
                 inputs: [...node.inputs, key],
-                samples: node.samples.map(s => ({ ...s, inputs: { ...s.inputs, [key]: null }}))
             }
         },
         ports: { 

@@ -27,6 +27,7 @@
     "react-use-gesture": "^7.0.15",
     "redux": "^4.0.5",
     "redux-undo": "^1.0.1",
+    "require-from-string": "^2.0.2",
     "socket.io": "^2.3.0",
     "stacktrace-js": "^2.0.2",
     "wait-on": "^4.0.0"

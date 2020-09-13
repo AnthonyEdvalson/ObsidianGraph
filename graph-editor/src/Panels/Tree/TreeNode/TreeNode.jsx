@@ -12,7 +12,7 @@ function TreeNode(props) {
     if (render)
         return render(data);
 
-    if (typeof(contents) !== "undefined") {
+    if (contents !== undefined) {
         return (
             <div className="TreeNode tree-node-container">
                 <UI.Foldout label={label} open={false}>

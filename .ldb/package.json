@@ -1,0 +1,11 @@
+{
+	"name": "live-debug-test",
+	"description": "",
+	"version": "0.0.0",
+	"publisher": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js"
+    },
+    "type": "module"
+}

@@ -1,12 +1,12 @@
 import fs from 'fs';
 import util from 'util';
-import { Engine, cli } from 'obsidian';
+import { cli } from 'obsidian';
 import zipUtil from './zipUtil';
 
 let mkdir = util.promisify(fs.mkdir);
 let writeFile = util.promisify(fs.writeFile);
 
-async function loadObn(obnPath) {
+async function loadObn(obnPath, frontFolder, backFolder) {
     let allEntries;
 
     try {
@@ -16,9 +16,6 @@ async function loadObn(obnPath) {
         cli.warn("loadObn", "Could not load " + obnPath + " Because of the following error:");
         cli.warn("loadObn", "  " + err.stack);
     }
-
-    const frontFolder = "../front/src/app/";
-    const backFolder = "../back/src/app/";
 
     let projects = []
 
@@ -32,10 +29,14 @@ async function loadObn(obnPath) {
 
     let appData = allEntries["app.json"].entry.getData().toString("utf-8");
 
-    await writeFile(frontFolder + "appData.json", appData);
-    await writeFile(backFolder + "appData.json", appData);
-    await writeFile(frontFolder + "index.js", makeAppIndex());
-    await writeFile(backFolder + "index.js", makeAppIndex());
+    if (frontFolder) {
+        await writeFile(frontFolder + "appData.json", appData);
+        await writeFile(frontFolder + "index.js", makeAppIndex());
+    }
+    if (backFolder) {
+        await writeFile(backFolder + "appData.json", appData);
+        await writeFile(backFolder + "index.js", makeAppIndex());
+    }
 
     cli.log("loadObn", obnPath + " has been loaded");
 }
@@ -44,9 +45,14 @@ function makeAppIndex() {
     return `import appData from './appData.json';
 import { util } from 'obsidian';
 
+let functions = {};
+
+for (let p of appData.projects)
+    functions = { ...functions, ...require("./" + p).default.functions };
+
 export default {
     ...appData,
-    projects: util.transform(appData.projects, p => require("./" + p).default)
+    functions
 };
 `
 }
@@ -54,8 +60,11 @@ export default {
 async function loadProject(projectData, frontFolder, backFolder) {
     let data = JSON.parse(projectData["project.json"].entry.getData().toString("utf-8"));
 
-    await loadProjectSide(data, "F", frontFolder, projectData["front_node_modules"]);
-    await loadProjectSide(data, "B", backFolder, projectData["back_node_modules"]);
+    if (frontFolder)
+        await loadProjectSide(data, "F", frontFolder, projectData["front_node_modules"]);
+    
+    if (backFolder)
+        await loadProjectSide(data, "B", backFolder, projectData["back_node_modules"]);
 }
 
 async function loadProjectSide(project, side, folder, node_modules) {
@@ -63,8 +72,7 @@ async function loadProjectSide(project, side, folder, node_modules) {
     await mkdir(folderPath, { recursive: true });
 
     let data = { 
-        functions: {}, 
-        remoteFunctions: [], 
+        functions: {},
         name: project.name 
     };
 
@@ -100,13 +108,17 @@ export default {
 
 async function loadFunction(def, side, data, folderPath) {
     if (def.sides.includes(side)) {
-        data.functions[def.name] = def;
+        data.functions[def.functionId] = def;
 
         if (def.type === "code")
             await writeFile(folderPath + def.name + ".js", def.content);
     }
     else {
-        data.remoteFunctions.push(def.name);
+        data.functions[def.functionId] = {
+            type: "remote",
+            functionId: def.functionId,
+            name: def.name
+        };
     }
 }
 

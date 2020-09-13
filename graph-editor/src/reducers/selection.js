@@ -1,7 +1,6 @@
 import { DELETE_LINK } from './link';
 import { DELETE_PORT } from './port';
 import { lookupReducerFactory } from './util';
-import { util } from 'obsidian';
 
 
 function SET_SELECTION(state, action) {
@@ -45,17 +44,6 @@ function CHANGE_SELECTION(state, action) {
         newState.nodes = { ...newState.nodes };
         let oldNode = newState.nodes[select.key];
         newState.nodes[select.key] = action.change(oldNode);
-
-        // Cleanup hack for samples
-        let node = newState.nodes[select.key];
-        for (let s of node.samples) {
-            for (let i of Object.keys(s.inputs)) {
-                console.log(node, node.inputs, i);
-                if (!node.inputs.includes(i))
-                    delete s.inputs[i];
-            }
-        };
-
     }
     else if (select.type === "graph") {
         newState.meta = { ...newState.meta };

@@ -40,7 +40,7 @@ let reducers = {
 let mainReducer = combineReducers(reducers);
 
 function rootReducer(state, action) {
-    let showDebug = true;//["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE", "SET_DRAGGING"].indexOf(action.type) === -1;
+    let showDebug = ["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE", "SET_DRAGGING", "SET_CONTENT"].indexOf(action.type) === -1;
     if (showDebug)
         console.log(action);
         

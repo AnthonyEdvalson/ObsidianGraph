@@ -3,6 +3,7 @@ body {
     --ui-indent: 10px;
 
     --ui-heading: #303d4c;
+    --ui-background: #1e262e;
 }
 
 .ui-elem, .ui-line-elem {
@@ -34,4 +35,11 @@ input.ui-line-elem:focus, textarea.ui-elem:focus, select.ui-line-elem:focus {
 
 textarea.ui-elem {
     min-height: 5em;
+}
+
+
+.danger {
+    --ui-heading: #422;
+    --ui-background: #211;
+    color: #A55;
 }

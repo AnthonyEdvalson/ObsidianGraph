@@ -2,7 +2,7 @@ import { util } from 'obsidian';
 
 function lookupReducerFactory(handlers, defaultVal) {
     return (state, action, fullState) => {
-        if (typeof(state) === "undefined")
+        if (state === undefined)
             return defaultVal;
 
         if (action.type in handlers)

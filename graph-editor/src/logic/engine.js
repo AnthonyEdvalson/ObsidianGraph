@@ -17,7 +17,7 @@ function useListener(event, listener) {
 }
 
 function Engine({ href, children }) {
-    const courier = useMemo(() => new Courier(href), [href], []); //TODO: destructor???
+    const courier = useMemo(() => new Courier(href, {}, true), [href], []); //TODO: destructor???
 
     return (
         <CourierContext.Provider value={courier}>

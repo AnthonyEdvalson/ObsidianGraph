@@ -8,6 +8,7 @@ import NodeEdit from './NodeEdit';
 import UI from '../../../../UI';
 import Form from '../../../../Form';
 import { useGraphDispatch } from '../../../../logic/scope';
+import './Node.css';
 
 
 function Node(props) {
@@ -47,7 +48,7 @@ function Node(props) {
                 </Form.Form>
                 <UI.Button onClick={handleDelete}>DELETE</UI.Button>
             </UI.Foldout>
-            {body !== null && React.createElement(body, {nodeKey: props.nodeKey})}
+            {body !== null && React.createElement(body, {nodeKey: props.nodeKey, data})}
         </Form.Form>
     );
 }

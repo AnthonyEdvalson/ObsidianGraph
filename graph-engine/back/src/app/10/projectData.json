@@ -1,6 +1,6 @@
 {
   "functions": {
-    "UI.Input": {
+    "3c73609c-e966-4029-af2c-2f760d6cd9e7": {
       "name": "UI.Input",
       "type": "in",
       "sides": [
@@ -8,10 +8,10 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "3c73609c-e966-4029-af2c-2f760d6cd9e7",
+      "functionId": "3c73609c-e966-4029-af2c-2f760d6cd9e7",
       "label": "Input"
     },
-    "UI.Insert": {
+    "8380cc77-2147-4929-b9d2-adb46e70610a": {
       "name": "UI.Insert",
       "type": "in",
       "sides": [
@@ -19,10 +19,20 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "8380cc77-2147-4929-b9d2-adb46e70610a",
+      "functionId": "8380cc77-2147-4929-b9d2-adb46e70610a",
       "label": "Insert"
     },
-    "UI": {
+    "ea243e7b-52f8-4d3f-8b61-2312678c127c": {
+      "type": "remote",
+      "functionId": "ea243e7b-52f8-4d3f-8b61-2312678c127c",
+      "name": "UI.Frontend"
+    },
+    "679060db-00be-4771-930e-7d6efc0a2ddb": {
+      "type": "remote",
+      "functionId": "679060db-00be-4771-930e-7d6efc0a2ddb",
+      "name": "UI.Wrap"
+    },
+    "67257eb7-2796-4b1f-a452-dfc8c317179f": {
       "name": "UI",
       "type": "out",
       "sides": [
@@ -30,11 +40,11 @@
         "B"
       ],
       "inputs": {
-        "value": "UI.Wrap"
+        "value": "679060db-00be-4771-930e-7d6efc0a2ddb"
       },
-      "nodeId": "67257eb7-2796-4b1f-a452-dfc8c317179f"
+      "functionId": "67257eb7-2796-4b1f-a452-dfc8c317179f"
     },
-    "Main.Data": {
+    "e9ff8c9f-e784-43cd-b5b5-07bcea8652a4": {
       "name": "Main.Data",
       "type": "data",
       "sides": [
@@ -42,10 +52,10 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "e9ff8c9f-e784-43cd-b5b5-07bcea8652a4",
+      "functionId": "e9ff8c9f-e784-43cd-b5b5-07bcea8652a4",
       "value": "69"
     },
-    "Main.Database": {
+    "f3f157e2-cfed-4f6e-bea2-21e188a7a906": {
       "name": "Main.Database",
       "type": "call",
       "sides": [
@@ -53,14 +63,11 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "f3f157e2-cfed-4f6e-bea2-21e188a7a906",
+      "functionId": "f3f157e2-cfed-4f6e-bea2-21e188a7a906",
       "parameters": ":memory:",
-      "location": {
-        "functionName": "Database",
-        "projectName": "Sqlite2"
-      }
+      "root": "0e4c1a56-5429-47f7-845b-d8cc9810ef9b"
     },
-    "Main.Table": {
+    "eebc129b-a362-456c-8c06-10c6c59eb2a6": {
       "name": "Main.Table",
       "type": "call",
       "sides": [
@@ -68,9 +75,9 @@
         "B"
       ],
       "inputs": {
-        "Input": "Main.Database"
+        "Input": "f3f157e2-cfed-4f6e-bea2-21e188a7a906"
       },
-      "nodeId": "eebc129b-a362-456c-8c06-10c6c59eb2a6",
+      "functionId": "eebc129b-a362-456c-8c06-10c6c59eb2a6",
       "parameters": {
         "name": "newTable",
         "columns": [
@@ -84,38 +91,35 @@
           }
         ]
       },
-      "location": {
-        "functionName": "Table",
-        "projectName": "Sqlite2"
-      }
+      "root": "56fc811d-daf4-49c2-8cb4-9fe90ff2d2f7"
     },
-    "Main.SetVal": {
+    "7f3d5bcc-ee2a-4cc3-9e09-61dcefb263dd": {
       "name": "Main.SetVal",
       "type": "code",
       "sides": [
         "B"
       ],
       "inputs": {
-        "key": "Main.Data",
-        "table": "Main.Table"
+        "key": "e9ff8c9f-e784-43cd-b5b5-07bcea8652a4",
+        "table": "eebc129b-a362-456c-8c06-10c6c59eb2a6"
       },
-      "nodeId": "7f3d5bcc-ee2a-4cc3-9e09-61dcefb263dd",
+      "functionId": "7f3d5bcc-ee2a-4cc3-9e09-61dcefb263dd",
       "content": "const _ = require('lodash');\n\nasync function main({ table, key }, value) {\n  key = key();\n\n  if (value === \"Hello, \")\n    throw new Error(\"That's not allowed!\");\n    \n\tlet t = table();\n  await t.upsert({id: key, value});\n}\n\nexport default { main };"
     },
-    "Main.Concat": {
+    "f9158b7c-559b-44e4-8798-299cbc4ebd79": {
       "name": "Main.Concat",
       "type": "code",
       "sides": [
         "B"
       ],
       "inputs": {
-        "key": "Main.Data",
-        "table": "Main.Table"
+        "key": "e9ff8c9f-e784-43cd-b5b5-07bcea8652a4",
+        "table": "eebc129b-a362-456c-8c06-10c6c59eb2a6"
       },
-      "nodeId": "f9158b7c-559b-44e4-8798-299cbc4ebd79",
-      "content": "const _ = require('lodash');\n\nasync function main({ table, key }) {\n\tlet t = table();\n\tlet kv = await t.get(key()) || {value: \"...\"};\n\n\treturn _.replace(kv.value + \"&World!\", \"&\", \" \");\n}\n\nexport default { main };"
+      "functionId": "f9158b7c-559b-44e4-8798-299cbc4ebd79",
+      "content": "const _ = require('lodash');\n\nasync function main({ table, key }) {\n\tlet t = table();\n\tlet kv = await t.get(key()) || {value: \"...\"};\n\n\treturn _.replace(kv.value + \"&World!\", \"&\", \" \");\n}\n\nfunction test(check) {\n  check({\n    table: {\n      get: () => ({ value: \"Hello,\" })\n    },\n    key: 69\n  }).returns(\"Hello, World!\");\n\n  check({\n    table: {\n      get: () => ({ value: \"&\" })\n    },\n    key: 69\n  }).returns(\" &Worlddddddd!\");\n}\n\nexport default { main, test };"
     },
-    "Main.UI": {
+    "bcd85477-616a-4771-b59f-f85c878874f5": {
       "name": "Main.UI",
       "type": "call",
       "sides": [
@@ -123,17 +127,14 @@
         "B"
       ],
       "inputs": {
-        "Insert": "Main.SetVal",
-        "Input": "Main.Concat"
+        "Insert": "7f3d5bcc-ee2a-4cc3-9e09-61dcefb263dd",
+        "Input": "f9158b7c-559b-44e4-8798-299cbc4ebd79"
       },
-      "nodeId": "bcd85477-616a-4771-b59f-f85c878874f5",
+      "functionId": "bcd85477-616a-4771-b59f-f85c878874f5",
       "parameters": null,
-      "location": {
-        "functionName": "UI",
-        "projectName": "10"
-      }
+      "root": "67257eb7-2796-4b1f-a452-dfc8c317179f"
     },
-    "Main": {
+    "6465ed6d-e401-4962-ac34-631c147a418a": {
       "name": "Main",
       "type": "out",
       "sides": [
@@ -141,14 +142,10 @@
         "B"
       ],
       "inputs": {
-        "value": "Main.UI"
+        "value": "bcd85477-616a-4771-b59f-f85c878874f5"
       },
-      "nodeId": "6465ed6d-e401-4962-ac34-631c147a418a"
+      "functionId": "6465ed6d-e401-4962-ac34-631c147a418a"
     }
   },
-  "remoteFunctions": [
-    "UI.Frontend",
-    "UI.Wrap"
-  ],
   "name": "10"
 }

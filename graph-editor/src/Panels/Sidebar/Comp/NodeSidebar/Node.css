@@ -1,0 +1,17 @@
+
+.node-test-result {
+    border: 1px var(--ui-heading) solid;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+    margin: var(--ui-indent);
+}
+
+.node-test-detail span {
+    display: block;
+    padding: 5px;
+}
+
+.node-test-result.danger {
+    background-color: #211;
+}

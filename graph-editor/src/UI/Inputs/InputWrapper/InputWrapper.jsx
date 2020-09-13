@@ -23,9 +23,9 @@ function InputWrapper(props) {
     let label = null;
     
     if (props.label !== null) {
-        if (typeof(props.label) === "undefined" && typeof(props.k) !== "undefined")
+        if (props.label === undefined && props.k !== undefined)
             label = (<Label>{formatKey(props.k)}</Label>);
-        else if (typeof(props.label) !== "undefined")
+        else if (props.label !== undefined)
             label = (<Label>{props.label}</Label>);
     }
 

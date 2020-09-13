@@ -85,7 +85,7 @@ function buildFunction(loaded, buildData, graph, key, functions) {
         type: node.type,
         sides: ['F', 'B'],
         inputs: {},
-        nodeId: key
+        functionId: key
     };
 
     switch(node.type) {
@@ -139,13 +139,7 @@ function buildFunction(loaded, buildData, graph, key, functions) {
             throw new Error(`Cannot compile nodes with the type '${node.type}'`);
     }
     
-    if (fDef.name in functions) {
-        if (fDef.nodeId !== functions[fDef.name].nodeId)
-            throw new Error("Name collision for " + fDef.name);
-    }
-    else {
-        functions[fDef.name] = fDef;
-    }
+    functions[key] = fDef;
 }
 
 
@@ -158,7 +152,7 @@ function propagate(loaded, buildData, graph, inputs, functions) {
 }
 
 function resolveInput(graph, port) {
-    let { links, ports, nodes } = graph;
+    /*let { links, ports, nodes } = graph;
     let sourceName = null;
 
     if (port in links) {
@@ -166,9 +160,10 @@ function resolveInput(graph, port) {
         let sourceNodeKey = ports[sourcePortKey].node;
         let sourceNode = nodes[sourceNodeKey];
         sourceName = sourceNode.name;
-    }
-
-    return graph.meta.name + "." + sourceName;
+    }*/
+    
+    let sourcePortKey = graph.links[port];
+    return graph.ports[sourcePortKey].node;
 }
 
 function resolveInputs(graph, inputs) {

@@ -1,56 +1,77 @@
-import React from 'react';
+import React, { useState } from 'react';
 import UI from '../../../../UI';
-import { useForm } from '../../../../Form';
-import { useGraphDispatch, useGraphSelector } from '../../../../logic/scope';
-import { useCourier } from '../../../../logic/engine';
+import engine from '../../../../logic/engine';
+
 
 function Node(props) {
-    let { data } = useForm();
-    let dispatch = useGraphDispatch();
-    let ports = useGraphSelector(graph => graph.ports);
-
-    let node = props.nodeKey;
-    let inputs = data.inputs;
-
-    let addSample = () => {
-        dispatch({type: "ADD_SAMPLE", node});
-    };
-
     return (
         <UI.Foldout label="Code Properties">
-            <UI.PortsEditor k="inputs" nodeKey={node} typeOptions={["back", "data"]} />
-
-            <UI.List k="samples" handleAdd={addSample}>
-                <Sample inputs={inputs} ports={ports} nodeKey={node} />
-            </UI.List>
+            <UI.PortsEditor k="inputs" nodeKey={props.nodeKey} typeOptions={["back", "data"]} />
+            <NodeTest { ...props }></NodeTest>
         </UI.Foldout>
     );
 }
 
-function Sample({ inputs, ports, nodeKey }) {
-    //let { data } = useForm();
-    let courier = useCourier();
-    //let graph = useGraphSelector(graph => graph.graphId);
+function NodeTest(props) {
+    let courier = engine.useCourier();
+    console.log(props);
+    let [testResults, setTestResults] = new useState();
+    let [loading, setLoading] = new useState(false);
+ 
+    let functionKey = props.nodeKey;
+    let side = { front: "front", back: "back", agno: "back" }[props.data.type];
 
-    /*runTest = () => {
-        courier.test({ functionName: nodeKey)
-    };*/
+    let runTests = async () => {
+        setLoading(true);
+        let results;
+        try {
+            results = await courier.test(functionKey, side);
+            setTestResults(results);
+        }
+        catch (error) {
+            console.error(error)
+        }
+        finally {
+            setLoading(false);
+        }
+    }
 
     return (
-        <UI.Obj>
-            <UI.TextInput k="name" />
-            <UI.JSONInput k="args" /> 
-            <UI.Obj k="inputs">
+        <div>
+            <UI.Button onClick={runTests}>Run Tests</UI.Button><br /><br />
             {
-                inputs.map(input => (
-                    <UI.JSONInput k={input} key={input} label={ports[input].label} />
-                ))
+                loading ? (<span>Loading...</span>) : 
+                testResults && testResults.map((result, i) => {
+                    let errorMsg = null;
+                    let className = "node-test-result";
+
+                    if (result.threw)
+                        errorMsg = <div className="node-test-error">{JSON.stringify(result.error)}</div>
+
+                    if (result.pass)
+                        className += " node-test-passed";
+                    else
+                        className += " danger";
+
+                    if (result.type === "returns") {
+                        return (
+                            <div className={className} key={i}>
+                                <UI.Foldout label={"Test #" + i}>
+                                    { errorMsg }
+                                    <div className="node-test-detail">
+                                        <span>Expected: { JSON.stringify(result.expected) }</span>
+                                        <span>Value: { JSON.stringify(result.value) }</span>
+                                    </div>
+                                </UI.Foldout>
+                            </div>
+                        )
+                    }
+
+                    return null;
+                })
             }
-            </UI.Obj>
-            <UI.Button onClick={runTest}>Test</UI.Button>
-        </UI.Obj>
+        </div>
     )
 }
-
 
 export default Node;

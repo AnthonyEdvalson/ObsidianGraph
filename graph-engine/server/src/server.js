@@ -79,7 +79,7 @@ class Group {
 
         let socket = sockets[0];
 
-        if (this.debug)
+        if (this.debug && eventName != "profile")
             cli.printMessageSent(" " + this.name + "|" + eventName, ...args);
 
         let reply;
@@ -87,10 +87,10 @@ class Group {
             reply = await messaging.send(socket, eventName, ...args);
         } catch (error) {
             console.log(this.name, eventName, "Could not reply", error);
-            //throw error;
+            throw error;
         }
 
-        if (this.debug)
+        if (this.debug && eventName != "profile")
             cli.printMessageReceived("*" + this.name + "|" + eventName, reply)
         
         return reply;
@@ -100,9 +100,10 @@ class Group {
         // TODO Courier has nearly identital code in it's constructor, merge???
 
         this.socketGroup.on("connection", socket => {
+            console.log("new " + this.name + " connected")
             for (let [name, handler] of Object.entries(this.handlers)) {
                 messaging.on(socket, name, async (...args) => {
-                    if (this.debug)
+                    if (this.debug && name != "profile")
                         cli.printMessageReceived(" " + this.name + "|" + name, ...args);
                         
                     let ret;
@@ -110,10 +111,10 @@ class Group {
                         ret = await handler(...args);
                     } catch (error){
                         console.log("Failed to Return", this.name, name, error.stack);
-                        //throw error;
+                        throw error;
                     }
 
-                    if (this.debug)
+                    if (this.debug && name != "profile")
                         cli.printMessageSent("*" + this.name + "|" + name, ret);
                     
                     return ret;

@@ -7,7 +7,7 @@ function Monaco(props) {
     let minimap = mode !== "readOnly";
 	let [model, setModel] = useState(null);
 	
-	if (typeof(defaultValue) === "undefined")
+	if (defaultValue === undefined)
 		defaultValue = value;
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 {
   "functions": {
-    "Table.Input": {
+    "599fc008-3f70-41cc-a47d-7efc61779f83": {
       "name": "Table.Input",
       "type": "in",
       "sides": [
@@ -8,10 +8,10 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "599fc008-3f70-41cc-a47d-7efc61779f83",
+      "functionId": "599fc008-3f70-41cc-a47d-7efc61779f83",
       "label": "Input"
     },
-    "Table.Editor": {
+    "fec66c00-c4a5-4b3d-9504-0c3928955284": {
       "name": "Table.Editor",
       "type": "edit",
       "sides": [
@@ -19,22 +19,22 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "fec66c00-c4a5-4b3d-9504-0c3928955284"
+      "functionId": "fec66c00-c4a5-4b3d-9504-0c3928955284"
     },
-    "Table.Table": {
+    "faa25bc7-001d-4233-9e38-0cc9bb0cb4be": {
       "name": "Table.Table",
       "type": "code",
       "sides": [
         "B"
       ],
       "inputs": {
-        "db": "Table.Input",
-        "schema": "Table.Editor"
+        "db": "599fc008-3f70-41cc-a47d-7efc61779f83",
+        "schema": "fec66c00-c4a5-4b3d-9504-0c3928955284"
       },
-      "nodeId": "faa25bc7-001d-4233-9e38-0cc9bb0cb4be",
+      "functionId": "faa25bc7-001d-4233-9e38-0cc9bb0cb4be",
       "content": "class Table {\n  constructor(db, schema) {\n    this.db = db;\n    this.name = schema.name;\n    this.schema = schema;\n    this.cols = schema.columns;\n    this.colNames = new Set(this.cols.map(c => c.name));\n  }\n\n  async create() {\n    // Ensure the table exists. TODO optimize by making this only run once\n    let query = this.cols.map(col => `\\t${col.name} ${col.fieldType}`);\n    query = `CREATE TABLE IF NOT EXISTS ${this.schema.name} (\\n\\t${query.join(\",\\n\\t\")}\\n)`;\n    this.run(this.db.run, query, []);\n  }\n\n  async get(id, defaultValue) {\n    let res = await this.run(this.db.get, `SELECT * FROM ${this.name} WHERE id = ?`, [id]);\n    return res || defaultValue;\n  }\n\n  async getAll() {\n    return this.run(this.db.all, `SELECT * FROM ${this.name}`, []);\n  }\n  \n  async insert(data) {\n    let keys = [];\n    let vals = [];\n\n    for (let [k, v] of Object.entries(data)) {\n      if (this.colNames.has(k)) {\n        keys.push(k);\n        vals.push(v);\n      }\n    }\n\n    let cols = keys.join(\", \");\n    let valRep = vals.map(() => \"?\").join(\", \");\n    return this.run(this.db.run, `INSERT INTO ${this.name} (${cols}) VALUES(${valRep})`, vals);\n  }\n\n  async upsert(data) {\n    let keys = [];\n    let vals = [];\n\n    for (let [k, v] of Object.entries(data)) {\n      if (this.colNames.has(k)) {\n        keys.push(k);\n        vals.push(v);\n      }\n    }\n\n    let cols = keys.join(\", \");\n    let valRep = vals.map(() => \"?\").join(\", \");\n    let updateRep = keys.map(k => `${k} = excluded.${k}`).join(\",\\n\\t\");\n    return this.run(this.db.run, `INSERT INTO ${this.name} (${cols}) VALUES(${valRep}) ON CONFLICT(id)\n      DO UPDATE SET\n      ${updateRep}`, vals);\n  }\n\n  async run(action, sql, params) {\n    let bound = action.bind(this.db);\n    return new Promise((resolve, reject) => {\n      this.db.serialize(() => {\n        bound(sql, params, (err, row) => {\n          if (err) {\n            console.log(\"!!!\", sql, params);\n            reject(err);\n          } else {\n            console.log(\">>>\", sql, params);\n            resolve(row);\n          }\n        });\n      });\n    });\n  }\n}\n\nfunction main({ db, schema }) {\n    \n    let table = new Table(db(), schema());\n    table.create();\n    \n    return table;\n}\n\nexport default { main };\n"
     },
-    "Table": {
+    "56fc811d-daf4-49c2-8cb4-9fe90ff2d2f7": {
       "name": "Table",
       "type": "out",
       "sides": [
@@ -42,11 +42,11 @@
         "B"
       ],
       "inputs": {
-        "value": "Table.Table"
+        "value": "faa25bc7-001d-4233-9e38-0cc9bb0cb4be"
       },
-      "nodeId": "56fc811d-daf4-49c2-8cb4-9fe90ff2d2f7"
+      "functionId": "56fc811d-daf4-49c2-8cb4-9fe90ff2d2f7"
     },
-    "Database.Editor": {
+    "bb309735-36c6-4ea8-a4f8-8abd4bd60d92": {
       "name": "Database.Editor",
       "type": "edit",
       "sides": [
@@ -54,21 +54,21 @@
         "B"
       ],
       "inputs": {},
-      "nodeId": "bb309735-36c6-4ea8-a4f8-8abd4bd60d92"
+      "functionId": "bb309735-36c6-4ea8-a4f8-8abd4bd60d92"
     },
-    "Database.Database": {
+    "09db63e3-bb1f-4661-ac9e-e5da3cf2c648": {
       "name": "Database.Database",
       "type": "code",
       "sides": [
         "B"
       ],
       "inputs": {
-        "location": "Database.Editor"
+        "location": "bb309735-36c6-4ea8-a4f8-8abd4bd60d92"
       },
-      "nodeId": "09db63e3-bb1f-4661-ac9e-e5da3cf2c648",
+      "functionId": "09db63e3-bb1f-4661-ac9e-e5da3cf2c648",
       "content": "const sqlite = require('sqlite3').verbose();\n\nlet cache = null;\n\nfunction main({ location }) {\n  location = location();\n\n  if (!cache) {\n    console.log(\"!!! New DB Connection to \" + location);\n    cache = new sqlite.Database(location, err => {\n      if (err) throw err;\n    });\n  }\n  \n  return cache;\n}\n\nexport default { main };"
     },
-    "Database": {
+    "0e4c1a56-5429-47f7-845b-d8cc9810ef9b": {
       "name": "Database",
       "type": "out",
       "sides": [
@@ -76,11 +76,10 @@
         "B"
       ],
       "inputs": {
-        "value": "Database.Database"
+        "value": "09db63e3-bb1f-4661-ac9e-e5da3cf2c648"
       },
-      "nodeId": "0e4c1a56-5429-47f7-845b-d8cc9810ef9b"
+      "functionId": "0e4c1a56-5429-47f7-845b-d8cc9810ef9b"
     }
   },
-  "remoteFunctions": [],
   "name": "Sqlite2"
 }

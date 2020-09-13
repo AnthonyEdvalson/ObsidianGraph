@@ -11,3 +11,4 @@ ReactDOM.render((<App />), document.getElementById('root'));
 serviceWorker.unregister();
 
 
+export default { test: 123, x: 4 }

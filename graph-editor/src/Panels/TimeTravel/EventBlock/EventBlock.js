@@ -7,13 +7,21 @@ function EventBlock({event, transform, now}) {
     let eventEnd = event.end;
 
     let end = eventEnd || now;
-    let { start, depth, error, type, location } = event;
+    let { start, depth, error, type, name } = event;
 
-    let left = Math.round((-offset + start) * scale) - 1;
+    let left = ((start - offset) * scale) - 1;
     let top = depth * 20;
-    let width = Math.round(scale * end) - Math.round(scale * start) + 2;
+    let width = (end - start) * scale + 1;
+
+    if (left < -3) {
+        width += left;
+        left = -3;
+    }
 
     return useMemo(() => {
+        if (left + width < 0 || left > 4000)
+            return null;
+
         let style = {
             left: left + "px",
             top: top + "px",
@@ -25,10 +33,10 @@ function EventBlock({event, transform, now}) {
     
         return (
             <div className={"EventBlock block-" + type + (error ? " error" : "") + (small ? " small" : "")} style={style}>
-                { !small && location.functionName }
+                { !small && name }
             </div>
         )
-    }, [left, top, width, error, type, location]);
+    }, [left, top, width, error, type, name]);
 }
 
 export default EventBlock;

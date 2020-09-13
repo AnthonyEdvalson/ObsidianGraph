@@ -7,26 +7,42 @@ import concurrently from "concurrently";
 import util from 'util';
 import fs from 'fs';
 
+
 const obnPath = "main.obn";
+const frontFolder = "../front/src/app/";
+const backFolder = "../back/src/app/";
 
-let loadPromise = loadObn(obnPath);
 
+let loadPromise = loadObn(obnPath, frontFolder, backFolder);
 let server = new Server(["editor", "front", "back"], true);
+
 
 server.on("editor", "loadObn", async (binary) => {
   let buffer = Buffer.from(binary, "base64");
   await util.promisify(fs.writeFile)("./main.obn", buffer);
 });
 
+
+server.on("editor", "test", async req => {
+  if (req.side === "front")
+    return server.emit("front", "test", req);
+    
+  if (req.side === "back")
+    return server.emit("back", "test", req);
+});
+
+
 server.on("front", "eval", async req => {
   req.sudo = false;
   return server.emit("back", "eval", req);
 });
 
+
 server.on("back", "eval", async req => {
   req.sudo = false;
   throw new Error("Not Implemented");
 });
+
 
 server.on("*", "error", error => {
   cli.error("server", "ERROR REPORTED", data);
@@ -34,12 +50,13 @@ server.on("*", "error", error => {
   server.emit("editor", "error", error);
 });
 
+
 server.on("*", "profile", async profile => {
   return server.emit("editor", "profile", profile);
 });
 
-server.publish();
 
+server.publish();
 loadPromise.then(() => {
   cli.info("server", "Running backend and frontend...")
   concurrently([
