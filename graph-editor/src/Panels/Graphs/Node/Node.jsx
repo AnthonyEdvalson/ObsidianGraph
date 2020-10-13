@@ -3,11 +3,14 @@ import './Node.css';
 import Port from './Port';
 import useSelectable from '../useSelectable';
 import { useDrag } from 'react-use-gesture';
-import Monaco from '../../Monaco';
 import Schema, { getDefaultParams } from '../../../UI/Schema';
 import Form from '../../../Form';
 import { useGraphDispatch, useNodeSelector } from '../../../logic/scope';
 import graphs from '../../../logic/graphs';
+import Editor from 'react-simple-code-editor';
+import { highlight, languages } from 'prismjs/components/prism-core';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
 
 function Node(props) {
 	const key = props.k;
@@ -15,7 +18,6 @@ function Node(props) {
 	let { x, y, name, type, inputs, output, content, schema } = data;
 
 	let { selected, setSelect, dragging, error } = useSelectable("node", key);
-	let moving = dragging || props.moving;
 
 	const dispatch = useGraphDispatch();
 
@@ -53,19 +55,24 @@ function Node(props) {
 	// The node moves or has a property changed
 	let preview = useMemo(() => {
 		if (["front", "back", "agno", "data"].includes(type))
-			return <Monaco width="300" height="500" mode="readOnly" value={content} k={key} fontSize={8} />
+			return <div className="code-preview"><Editor 
+				value={ content }
+				highlight={code => highlight(code, languages.js)}
+				tabSize={4}
+			/></div>
 		else if (type === "edit") {
-			let schemaObject;
+			let schemaObject, defaultParams;
 
 			try {
 				schemaObject = JSON.parse(schema);
+				defaultParams = getDefaultParams(schemaObject);
 			}
 			catch {
 				return "- Invalid Schema -";
 			}
 
 			return (
-				<Form.Form data={{ schema: schemaObject, params: getDefaultParams(schemaObject) }} onChange={() => {}}>
+				<Form.Form data={{ schema: schemaObject, params: defaultParams}} onChange={() => {}}>
 					<Schema k="schema" dk="params"/>
 				</Form.Form>
 			);
@@ -78,9 +85,9 @@ function Node(props) {
 		}
 		
 		return null;
-	}, [content, type, key, schema]);
+	}, [content, type, schema]);
 
-	let previewStyle = { ...(moving ? {display: "none"} : {}) };
+	//let previewStyle = { ...(moving ? {display: "none"} : {}) };
 
 	return (
 		<div style={style} className={className} { ...bind() }>
@@ -89,7 +96,7 @@ function Node(props) {
 				<div className="node-info">
 					{name}
 				</div>
-				<div className="node-preview" onDoubleClick={() => handleOpen(data, key, dispatch)} style={previewStyle}>
+				<div className="node-preview" onDoubleClick={() => handleOpen(data, key, dispatch)}>
 					<div className="node-preview-net" />
 					{preview}
 				</div>
@@ -105,6 +112,16 @@ function Node(props) {
 		</div>
 	);
 }
+
+/*
+element.style {
+    font-size: 8px;
+    color: white;
+    background-color: #00081060;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}*/
 
 
 function useNodeMove(handleOpen, setSelect, dispatch, transform) {

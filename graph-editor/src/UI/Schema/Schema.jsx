@@ -14,10 +14,13 @@ function getDefaultParams(schema) {
     switch (schema.type) {
         case "text":
         case "textarea":
+            return schema.default || "";
         case "number":
+            return schema.default || 0;
         case "bool":
-        case "dropdown":
-            return schema.default;
+            return schema.default || false;
+        case "enum":
+            return schema.default || schema.options[0];
         case "list":
             let lis = [];
             let count = schema.defaultCount === undefined ? 1 : schema.defaultCount;
@@ -65,7 +68,7 @@ function SchemaElement(props) {
                     <SchemaElement { ...props.field } />
                 </List>
             );
-        case "dropdown":
+        case "enum":
             return <Dropdown { ...props } />
         case "object":
             return (

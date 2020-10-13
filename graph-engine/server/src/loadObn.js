@@ -43,7 +43,6 @@ async function loadObn(obnPath, frontFolder, backFolder) {
 
 function makeAppIndex() {
     return `import appData from './appData.json';
-import { util } from 'obsidian';
 
 let functions = {};
 
@@ -114,10 +113,12 @@ async function loadFunction(def, side, data, folderPath) {
             await writeFile(folderPath + def.name + ".js", def.content);
     }
     else {
+        console.log(def.functionId, def.inputs);
         data.functions[def.functionId] = {
             type: "remote",
             functionId: def.functionId,
-            name: def.name
+            name: def.name,
+            inputs: def.inputs
         };
     }
 }

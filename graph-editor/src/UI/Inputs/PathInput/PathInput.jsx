@@ -10,18 +10,20 @@ function PathInput(props) {
     let key = props.k;
     let form = useForm(key);
 
-    function handleDialog() {
+    async function handleDialog() {
         let options = {
             ...props.dialogOptions,
             multiSelections: false
         };
 
-        dialog.showSaveDialog(options).then(result => {
-            if (!result.canceled && result.filePaths.length > 0) {
-                let path = result.filePaths[0];
-                form.handleChange(() => path);
-            }
-        });
+        let result = await dialog.showSaveDialog(options);
+
+        console.log(result);
+
+        if (!result.canceled) {
+            let path = result.filePath;
+            form.handleChange(() => path);
+        }
     }
 
     return (

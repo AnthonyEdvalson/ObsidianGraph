@@ -1,13 +1,19 @@
 import graphs from "./graphs";
 import { toast } from "react-toastify";
 import buildProject from "./compileProject";
+import { util as obsidianUtil } from 'obsidian';
 
 const ncp = window.require("ncp").ncp;
 const fs = window.require("fs");
 const path = window.require("path");
 const util = window.require("util");
 
+const minObpVersion = 1;
+const maxObpVersion = 1;
+const currentObpVersion = 1;
+
 async function toastErr(msg, e) {
+    console.error(e);
     toast(msg + ": " + e, {type: "error"});
 }
 
@@ -48,6 +54,7 @@ async function addRecent(obpPath, recents, recentPath) {
 
 async function newProject(dispatch, directory, name, author, description) {
     let folderPath = path.join(directory, name);
+    let obpPath = path.join(folderPath, name + ".obp");
 
     let data = {
         name,
@@ -57,11 +64,11 @@ async function newProject(dispatch, directory, name, author, description) {
         hideInLibrary: false,
         path: folderPath,
         graphs: {},
-        projectId: undefined
+        projectId: obsidianUtil.uuid4()
     };
 
-    dispatch({type: "LOAD_PROJECT", data});
-    dispatch({type: "SET_FOCUS", focus: { projectId: data.projectId } });
+    await save(data);
+    await openProject(obpPath, dispatch);
 }
 
 function serializeObp(data) {
@@ -73,6 +80,7 @@ function serializeObp(data) {
 
     let obpData = {
         ...project,
+        v: currentObpVersion,
         graphs: newGraphs
     };
 
@@ -100,6 +108,11 @@ async function openProject(obpPath, dispatch) {
 
 function deserializeObp(obp, obpPath) {
     let obpData = JSON.parse(obp);
+
+    if (!obpData.v || obpData.v < minObpVersion || obpData.v > maxObpVersion)
+        throw new Error("Could not load " + obpPath + ", it is obp version " + obpData.v + 
+            ", But only " + minObpVersion + " to " + maxObpVersion + " are valid");
+
     let project = { path: path.dirname(obpPath), ...obpData };
 
     let newGraphs = {};
@@ -115,15 +128,22 @@ function deserializeObp(obp, obpPath) {
 async function save(project) {
     let obp = serializeObp(project);
 
-    let folderPath = project.path;
-    let obpPath = path.join(folderPath, project.name + ".obp");
+    let projectPath = project.path;
+    let obpPath = path.join(projectPath, project.name + ".obp");
 
-    if (!fs.existsSync(folderPath)) {
-        try {
-            await util.promisify(fs.mkdir)(folderPath, { recursive: true });
-        } catch (e) {
-            toastErr("Unable to create project folder", e);
-            return;
+    let folders = ["", "pack/", "front/", "back/"]
+
+    for (let folder of folders) {
+        let folderPath = path.join(projectPath, folder);
+
+        if (!fs.existsSync(folderPath)) {
+            try {
+                await util.promisify(fs.mkdir)(folderPath, { recursive: true });
+            } catch (e) {
+                toastErr("Unable to create folder " + folderPath, e);
+                console.error(e);
+                return;
+            }
         }
     }
 

@@ -60,7 +60,7 @@ function TimeTravel() {
 
     let t = {
         scale: transform.s / 20,
-        offset: start - (transform.x - 300) / (transform.s / 20)
+        offset: start - (transform.x - 345) / (transform.s / 20)
     }
 
     return (

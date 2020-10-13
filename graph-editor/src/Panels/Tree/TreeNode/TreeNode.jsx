@@ -17,7 +17,7 @@ function TreeNode(props) {
             <div className="TreeNode tree-node-container">
                 <UI.Foldout label={label} open={false}>
                     {
-                        contents.map(n => <TreeNode data={n} key={n.label} />)
+                        contents.map(n => <TreeNode data={n} key={n.key || n.label} />)
                     }
                 </UI.Foldout>
             </div>

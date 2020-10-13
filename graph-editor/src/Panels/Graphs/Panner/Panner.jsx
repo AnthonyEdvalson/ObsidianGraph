@@ -49,8 +49,8 @@ function Panner(props) {
 			},
 			onWheel: ({delta, first, last }) => {
 				updateMoving(first, last);
-				let dx = delta[0];
-				let dy = delta[1];
+				let dx = -delta[0];
+				let dy = -delta[1];
 				setTransform(move(t, { dx, dy })); 
 			},
 			onDrag: ({event, movement, initial, ctrlKey, tap, buttons, delta, first, last}) => {
@@ -79,7 +79,7 @@ function Panner(props) {
 
 	let style = {};
 	if (!props["no-transform"])
-		style = {transform: `scale(${t.s}) translate(${(t.x - 300) / t.s}px, ${(t.y - 30) / t.s}px)`};
+		style = {transform: `scale(${t.s}) translate(${(t.x - 345) / t.s}px, ${(t.y - 30) / t.s}px)`};
 
 	React.useEffect(bind, [bind])
 

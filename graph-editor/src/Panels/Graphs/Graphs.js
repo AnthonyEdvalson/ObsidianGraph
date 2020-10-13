@@ -10,6 +10,7 @@ import { useGraphDispatch, useGraphSelector } from '../../logic/scope';
 import Panel from '../Panel';
 import EditNode from '../../Modals/EditNode/EditNode';
 import { ActionCreators } from 'redux-undo';
+import NewGraph from '../../Modals/NewGraph/NewGraph';
 
 
 function EditGraphs({ setMenu }) {
@@ -17,17 +18,20 @@ function EditGraphs({ setMenu }) {
   let [editingNodeId, setEditingNodeId] = useState(null);
   let [moving, setMoving] = useState(false);
   let [handleDrag, selectRect] = useGraphDrag();
+  let [showNewGraph, setShowNewGraph] = useState(false);
   let nodes = useGraphSelector(graph => graph.nodes);
   let dispatch = useGraphDispatch();
 
   useEffect(() => {
     const menu = [
         { name: "Undo", shortcut: "Mod+Z", action: () => dispatch(ActionCreators.undo()) },
-        { name: "Redo", shortcut: "Mod+Shift+Z", action: () => dispatch(ActionCreators.redo()) }
+        { name: "Redo", shortcut: "Mod+Shift+Z", action: () => dispatch(ActionCreators.redo()) },
+        null,
+        { name: "New Graph...", shortcut: "Mod+Shift+G", action: () => setShowNewGraph(true) }
     ];
 
     setMenu("Graph", menu);
-  }, [setMenu, dispatch]);
+  }, [setMenu, dispatch, setShowNewGraph]);
 
   let content = null;
   
@@ -53,9 +57,10 @@ function EditGraphs({ setMenu }) {
   return (
     <Panel>
       <div className="Graph">
-        {content}
+        { editingNodeId ?  "" : content }
       </div>
       <EditNode node={editingNodeId} close={() => { setEditingNodeId(null) }}/>
+      <NewGraph open={showNewGraph} handleClose={() => setShowNewGraph(false)} />
     </Panel>
   );
 }

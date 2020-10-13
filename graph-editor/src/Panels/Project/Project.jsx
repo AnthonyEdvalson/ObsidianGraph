@@ -2,15 +2,15 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Tree from '../Tree';
 import './Project.css';
-//import { useSelector, useDispatch } from 'react-redux';
 import UI from '../../UI';
 import graphs from '../../logic/graphs';
 import OpenProject from '../../Modals/OpenProject';
-import Panel from '../Panel';
 import { useProjectSelector } from '../../logic/scope';
 import projects from '../../logic/projects';
 import engine from '../../logic/engine';
+import entropy from '../../logic/entropy';
 import useFSLink from './useFSLink';
+import { toast } from "react-toastify";
 const { shell, dialog } = window.require('electron').remote;
 
 
@@ -45,6 +45,8 @@ function Project({ setMenu }) {
                 projects.save(project);
                 pushProject(loadedProjects, project.projectId);
             }},
+            null,
+            { name: "Calculate Entropy", shortcut: "Mod+P", action: () => toast(entropy.projectEntropy(loadedProjects, project.projectId).join(", ")) },
             { name: "Show In Folder", action: () => { throw new Error("NOT IMPLEMENTED")}},
             { name: "Import Project", shortcut: "Mod+Shift+O", action: () => { throw new Error("NOT IMPLEMENTED")}},
         ];
@@ -63,13 +65,13 @@ function Project({ setMenu }) {
     }
 
     return (
-        <Panel>
+        <>
             <div className="Project">
                 <UI.Button onClick={openInFolder}>Open in folder</UI.Button>
                 <Tree root={tree}/>
             </div>
             <OpenProject open={openProject} handleClose={() => setOpenProject(false)}/>
-        </Panel>
+        </>
     )
 }
 

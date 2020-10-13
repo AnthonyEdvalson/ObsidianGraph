@@ -1,13 +1,14 @@
 .Project {
     height: 300px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    padding-top: 10px;
+    flex-shrink: 0;
     width: 100%;
 
     border-right: #101419 1px solid;
     display: flex;
     flex-flow: column;
+    box-shadow: #00000090 1px 1px 20px;
+    z-index: 100;
 
     overflow-y: auto;
 }

@@ -6,7 +6,7 @@
 }
 
 .Collapse::after {
-    content: "⯈";
+    content: '>';
     float: right;
     margin-right: 6px;
 }
@@ -16,5 +16,5 @@
 }
 
 .Collapse.collapse-open::after {
-    content: "⯆";
+    content: 'v';
 }

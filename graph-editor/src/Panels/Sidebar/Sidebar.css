@@ -1,15 +1,10 @@
 .Sidebar {
     background-color: #1e262e;
-    width: 300px;
+    width: 346px;
     height: 100%;
     z-index: 100;
-
-    border-right: #101419 1px solid;
     display: flex;
-    flex-flow: column;
-    position: relative;
-
-    overflow-y: auto;
+    border-right: #101419 1px solid;
 }
 
 .side-head h1 {
@@ -23,4 +18,52 @@
 
 .side-head {
     padding: 10px 10px 30px 10px;
+}
+
+
+.sidebar-view {
+    display: none;
+    width: 300px;
+    height: 100%;
+    flex-flow: column;
+    position: relative;
+    overflow-y: auto;
+    justify-content: space-between;
+}
+
+.sidebar-view.active {
+    display: flex;
+}
+
+.sidebar-view-selector {
+    height: 100%;
+    background-color: #00000020;
+    width: 45px;
+    display: flex;
+    flex-flow: column;
+    cursor: pointer;
+}
+
+.sidebar-view-selector > div {
+    width: 45px;
+    height: 45px;
+    opacity: 0.4;
+    transition: all 0.2s ease-out;
+    border-left: transparent 2px solid;
+    text-align: center;
+    padding-top: 14px;
+}
+
+.sidebar-view-selector > div:hover,
+.sidebar-view-selector > div.active {
+    opacity: 1;   
+}
+
+.sidebar-view-selector > div.active {
+    border-color: var(--io-bright);
+}
+
+
+.Sidebar .select-info {
+    overflow-y: auto;
 }

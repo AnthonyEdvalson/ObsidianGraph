@@ -1,10 +1,10 @@
 import React from 'react';
-import UI from '../../../../UI';
+import UI from '../../../../../UI';
 
 
 function Node() {
     return (
-        <UI.Foldout label="Input Properties">
+        <UI.Foldout label="Data Properties">
         </UI.Foldout>
     );
 }

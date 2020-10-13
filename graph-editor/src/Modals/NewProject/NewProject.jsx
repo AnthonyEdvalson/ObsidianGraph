@@ -8,7 +8,7 @@ import projects from '../../logic/projects';
 function NewProject(props) {
     let dispatch = useDispatch();
     let open = props.open;// useSelector(state => state.modals.newProject);
-    let libdir = "";//useSelector(state => state.library.path);
+    let libdir = "/Users/work/Documents/ObsidianProjects";//useSelector(state => state.library.path);
     
     const [state, setState] = useState({
         directory: libdir,
@@ -19,7 +19,7 @@ function NewProject(props) {
 
     function handleCreate() {
         projects.newProject(dispatch, state.directory, state.name, state.author, state.description);
-        projects.hideNewProject(dispatch);
+        props.handleClose();
     }
 
     return (
@@ -31,7 +31,7 @@ function NewProject(props) {
                     <UI.TextInput k="author" />
                     <UI.TextArea k="description" />
                     <UI.Button onClick={handleCreate}>Create</UI.Button>
-                    <UI.Button onClick={projects.hideNewProject}>Cancel</UI.Button>
+                    <UI.Button onClick={props.handleClose}>Cancel</UI.Button>
                 </Form.Form>
             </div>
         </UI.Modal>

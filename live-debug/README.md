@@ -1,27 +1,12 @@
-# Hello World Sample
+# Live Debug
 
-This is a Hello World example that shows you how to use VS Code API.
+Live Debug is an extension for use in vscode that adds "life debugging" to obsidian projects.
 
-Guide for this sample: https://code.visualstudio.com/api/get-started/your-first-extension.
+The goal of live debug is to reduce or eliminate the need for traditional deugging tools, as they are awkward to use, time consuming, and reactionary to issues.
 
-## Demo
+# What is Live Debugging?
 
-![demo](demo.gif)
+Live Debugging is the idea that you should be debugging your code as you write it. The way the extension does this, is by running your code every time a change is made, during execution it tracks the values of variables, and the results of expressions in your code. Then the results are displayed alongside your code so you can sanity check everything you do without any work. Live Debug is a guide that helps you write code, not a tool for when things go wrong. It greatly reduces the chance of stupid or silly mistakes that are common when writing large blocks of code. 
 
-## VS Code API
+This only works because Obsidian enforces some requirements that make this possible. Primarily, it requires that all modules have a main function that is pure, meaning the return value is entirely based on the inputs. This means the entire application does not need to be run to use live debugging, only the current module and some test inputs.
 
-### `vscode` module
-
-- [`commands.registerCommand`](https://code.visualstudio.com/api/references/vscode-api#commands.registerCommand)
-- [`window.showInformationMessage`](https://code.visualstudio.com/api/references/vscode-api#window.showInformationMessage)
-
-### Contribution Points
-
-- [`contributes.commands`](https://code.visualstudio.com/api/references/contribution-points#contributes.commands)
-
-## Running the Sample
-
-- Run `npm install` in terminal to install dependencies
-- Run the `Run Extension` target in the Debug View. This will:
-	- Start a task `npm: watch` to compile the code
-	- Run the extension in a new VS Code window

@@ -32,7 +32,7 @@ function Editor() {
     <>
       <MenuBar layout={menuBarLayout}/>
       <div className="app-body">
-        <ToastContainer position="top-center" autoClose={3000} transition={Slide} hideProgressBar />
+        <ToastContainer position="top-center" autoClose={20000} transition={Slide} hideProgressBar />
         <ProjectIdContext.Provider value={focusProject}>
           <GraphIdContext.Provider value={focusGraph}>
             <Panel horizontal>

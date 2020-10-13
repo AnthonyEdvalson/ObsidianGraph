@@ -1,0 +1,301 @@
+{
+  "functions": {
+    "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038": {
+      "name": "CRUD.Table",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038",
+      "label": "Table"
+    },
+    "f7485ef8-ca3e-4564-b3e6-8f0893c00677": {
+      "name": "CRUD.Create",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
+      },
+      "functionId": "f7485ef8-ca3e-4564-b3e6-8f0893c00677",
+      "content": "async function main({table}, cols) {\n\treturn await table().create(cols);\n}\n\nexport default { main };\n"
+    },
+    "d4781c6b-05cf-43bd-b5de-4c73eefbae39": {
+      "name": "CRUD.Read",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
+      },
+      "functionId": "d4781c6b-05cf-43bd-b5de-4c73eefbae39",
+      "content": "async function main({table}, cols) {\n\treturn await table().create(cols);\n}\n\nexport default { main };\n"
+    },
+    "4bd7d87d-b807-44d5-afe4-df15aedde8ad": {
+      "name": "CRUD.Update",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
+      },
+      "functionId": "4bd7d87d-b807-44d5-afe4-df15aedde8ad",
+      "content": "async function main({table}, newColumns) {\n  return await table().update(newColumns);\n}\n\nexport default { main };\n"
+    },
+    "e067e162-16bb-4e8c-9be0-22ff13f3229b": {
+      "name": "CRUD.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "e067e162-16bb-4e8c-9be0-22ff13f3229b"
+    },
+    "40d1f0eb-d1e2-4053-8f9b-17a3094234b0": {
+      "name": "CRUD.Delete",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
+      },
+      "functionId": "40d1f0eb-d1e2-4053-8f9b-17a3094234b0",
+      "content": "async function main({table}, id) {\n  let row = await table().findByPk(id);\n\treturn await row.destroy();\n}\n\nexport default { main };\n"
+    },
+    "def9a217-b20b-42ae-a333-cc76576c61ef": {
+      "name": "CRUD.Read All",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
+      },
+      "functionId": "def9a217-b20b-42ae-a333-cc76576c61ef",
+      "content": "async function main({table}) {\n\treturn await table().findAll();\n}\n\nexport default { main };\n"
+    },
+    "3da837d4-8d02-47d2-8e97-793e8ef87ffb": {
+      "name": "CRUD.Upsert",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
+      },
+      "functionId": "3da837d4-8d02-47d2-8e97-793e8ef87ffb",
+      "content": "async function main({table}, newColumns) {\n  return await table().upsert(newColumns);\n}\n\nexport default { main };\n"
+    },
+    "78c26d0a-5ec0-4d31-8803-ac4b860d1ce2": {
+      "name": "CRUD.Merge",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "create": "f7485ef8-ca3e-4564-b3e6-8f0893c00677",
+        "read": "d4781c6b-05cf-43bd-b5de-4c73eefbae39",
+        "update": "4bd7d87d-b807-44d5-afe4-df15aedde8ad",
+        "perms": "e067e162-16bb-4e8c-9be0-22ff13f3229b",
+        "del": "40d1f0eb-d1e2-4053-8f9b-17a3094234b0",
+        "readAll": "def9a217-b20b-42ae-a333-cc76576c61ef",
+        "upsert": "3da837d4-8d02-47d2-8e97-793e8ef87ffb"
+      },
+      "functionId": "78c26d0a-5ec0-4d31-8803-ac4b860d1ce2",
+      "content": "function main({perms, create, read, update, del, readAll, upsert}) {\n  let allowed = {};\n  perms = perms();\n\n  addIfAllowed(allowed, perms.create, \"Creating new\", {create});\n  addIfAllowed(allowed, perms.read, \"Reading\", {read, readAll});\n  addIfAllowed(allowed, perms.update, \"Updating existing\", {update});\n  addIfAllowed(allowed, perms.del, \"Deleting\", {del});\n  addIfAllowed(allowed, perms.create && perms.update, \"Creating and updating\", {upsert});\n    \n  return allowed;\n}\n\nfunction addIfAllowed(actions, allowed, verb, newActions) {\n  for (let [k, v] of Object.entries(newActions)) {\n    if (allowed)\n      actions[k] = v;\n    else\n      actions[k] = () => { throw new Error(verb + \" entries is not allowed\")}\n  }\n}\n\nexport default { main };\n"
+    },
+    "cbcc957e-f323-4770-ba0c-7efd03fdebc8": {
+      "name": "CRUD",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "78c26d0a-5ec0-4d31-8803-ac4b860d1ce2"
+      },
+      "functionId": "cbcc957e-f323-4770-ba0c-7efd03fdebc8",
+      "description": "Provides CRUD (Create, Read, Update, and Delete) operations for a table. In addition to standard CRUD, it also has readAll and upsert."
+    },
+    "28754be2-4455-400d-91ca-ba482239d980": {
+      "name": "Table.Database",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "28754be2-4455-400d-91ca-ba482239d980",
+      "label": "Database"
+    },
+    "fb87980c-d023-4bfd-af4d-f4cd0785e23d": {
+      "name": "Table.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "fb87980c-d023-4bfd-af4d-f4cd0785e23d"
+    },
+    "fff9dc31-49ec-4ea4-80c3-950fae79c755": {
+      "name": "Table.Model",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "db": "28754be2-4455-400d-91ca-ba482239d980",
+        "config": "fb87980c-d023-4bfd-af4d-f4cd0785e23d"
+      },
+      "functionId": "fff9dc31-49ec-4ea4-80c3-950fae79c755",
+      "content": "const { DataTypes } = require('sequelize');\n\nlet table;\n\nfunction main({config, db}) {\n  return table;\n}\n\nfunction start({config, db}) {\n  config = config();\n  db = db();\n\n  let columns = {};\n\n  for (let colDef of config.columns) {\n    columns[colDef.name] = {\n      type:         DataTypes[colDef.type],\n      defaultValue: colDef.defaultValue,\n      allowNull:    colDef.allowNull,\n      primaryKey:   colDef.primaryKey\n    }\n  }\n\n  table = db.define(config.name, columns, {\n    timestamps: config.timestamps\n  });\n\n  table.sync();\n}\n\nexport default { main, start };\n"
+    },
+    "09791cc2-ceda-4733-8b3a-e11d17fad58b": {
+      "name": "Table",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "fff9dc31-49ec-4ea4-80c3-950fae79c755"
+      },
+      "functionId": "09791cc2-ceda-4733-8b3a-e11d17fad58b",
+      "description": "Defines a sequelize table via Sequelize.define(), returns a sequelize model.\n\n[https://sequelize.org/master/manual/model-basics.html](Sequelize.define() documentation)"
+    },
+    "e4de85eb-bd70-426b-9310-70aa666cba0c": {
+      "name": "Database Connection.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "e4de85eb-bd70-426b-9310-70aa666cba0c"
+    },
+    "275401ba-0906-44a8-abe8-89b434946bad": {
+      "name": "Database Connection.Sequelize",
+      "type": "code",
+      "sides": [
+        "B"
+      ],
+      "inputs": {
+        "config": "e4de85eb-bd70-426b-9310-70aa666cba0c"
+      },
+      "functionId": "275401ba-0906-44a8-abe8-89b434946bad",
+      "content": "const { Sequelize } = require('sequelize');\n\nlet db;\n\nfunction main() {\n  return db;\n}\n\nfunction start({config}) {\n  config = config();\n\n  console.log(config);\n\n  db = new Sequelize(config.databaseName, config.userName, config.password, {\n    dialect: config.dialect,\n    storage: config.storage\n  });\n}\n\nexport default { main, start };\n"
+    },
+    "ee4fb122-57ae-4ff9-b58f-a7160355c078": {
+      "name": "Database Connection",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "275401ba-0906-44a8-abe8-89b434946bad"
+      },
+      "functionId": "ee4fb122-57ae-4ff9-b58f-a7160355c078",
+      "description": "Creates a connection to the database. Default connection URI will create an in-memory SQLite database. Returns a sequelize instance.\n\n[https://sequelize.org/master/manual/getting-started.html#connecting-to-a-database](How to connect)"
+    },
+    "3eb69732-54c6-4e2d-b0d8-c70bd7ad7c3a": {
+      "name": "Main.Database Connection",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "3eb69732-54c6-4e2d-b0d8-c70bd7ad7c3a",
+      "parameters": {
+        "databaseName": "database",
+        "userName": "username",
+        "password": "",
+        "dialect": "sqlite",
+        "storage": ":memory:"
+      },
+      "root": "ee4fb122-57ae-4ff9-b58f-a7160355c078"
+    },
+    "fa6978fd-017f-484b-a02a-0de6b3dc6252": {
+      "name": "Main.Task Table",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "db": "3eb69732-54c6-4e2d-b0d8-c70bd7ad7c3a"
+      },
+      "functionId": "fa6978fd-017f-484b-a02a-0de6b3dc6252",
+      "parameters": {
+        "name": "Tasks",
+        "columns": [
+          {
+            "name": "title",
+            "type": "TEXT",
+            "defaultValue": "",
+            "allowNull": false
+          },
+          {
+            "name": "description",
+            "type": "TEXT",
+            "defaultValue": "...",
+            "allowNull": true
+          }
+        ],
+        "timestamps": true
+      },
+      "root": "09791cc2-ceda-4733-8b3a-e11d17fad58b"
+    },
+    "3719baa6-884e-41c1-8332-4882f6cc0af7": {
+      "name": "Main.Task CRUD",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Table": "fa6978fd-017f-484b-a02a-0de6b3dc6252"
+      },
+      "functionId": "3719baa6-884e-41c1-8332-4882f6cc0af7",
+      "parameters": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "del": true
+      },
+      "root": "cbcc957e-f323-4770-ba0c-7efd03fdebc8"
+    },
+    "69b5f55c-41db-421a-a881-5bf7973661b0": {
+      "type": "remote",
+      "functionId": "69b5f55c-41db-421a-a881-5bf7973661b0",
+      "name": "Main.Frontend",
+      "inputs": {
+        "tasks": "3719baa6-884e-41c1-8332-4882f6cc0af7"
+      }
+    },
+    "5dc7568a-5627-4b5f-83d4-a4bc6cd3dccb": {
+      "name": "Main",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "69b5f55c-41db-421a-a881-5bf7973661b0"
+      },
+      "functionId": "5dc7568a-5627-4b5f-83d4-a4bc6cd3dccb",
+      "description": ""
+    }
+  },
+  "name": "Database"
+}

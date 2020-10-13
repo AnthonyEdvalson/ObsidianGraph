@@ -1,13 +1,9 @@
-import { Engine } from 'obsidian';
+import obsidian from 'obsidian';
 import testMod from './test.js';
-//let Engine = require('obsidian').default.Engine;
-//let testMod = require("./test.js");
 
-let engine = new Engine(null, () => {}, {}, {
-    appData: {
-        root: "test",
-        name: "test",
-    },
+let engine = new obsidian.Engine(null, () => {}, {}, {
+    root: "test",
+    name: "test",
     functions: {
         "test": {
             name: "",
@@ -19,8 +15,12 @@ let engine = new Engine(null, () => {}, {}, {
     }
 }, true);
 
-engine.test();
+async function main() {
+    await engine.test();
 
-let data = testMod.__data;
-console.log("\n*=#=@=#=@=O=@=#=@=#=*");
-console.log(JSON.stringify(data));
+    let data = testMod.__data;
+    console.log("\n-=(#)=-");
+    console.log(JSON.stringify(data));
+}
+
+main();

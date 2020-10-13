@@ -1,10 +1,9 @@
 {
-  "root": "6465ed6d-e401-4962-ac34-631c147a418a",
+  "root": "5dc7568a-5627-4b5f-83d4-a4bc6cd3dccb",
   "projects": [
-    "10",
-    "Sqlite2"
+    "Database"
   ],
-  "name": "10",
+  "name": "Database",
   "author": "",
   "description": ""
 }

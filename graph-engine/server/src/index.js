@@ -17,42 +17,46 @@ let loadPromise = loadObn(obnPath, frontFolder, backFolder);
 let server = new Server(["editor", "front", "back"], true);
 
 
-server.on("editor", "loadObn", async (binary) => {
+server.on("editor", "loadObn", async (_, binary) => {
   let buffer = Buffer.from(binary, "base64");
   await util.promisify(fs.writeFile)("./main.obn", buffer);
 });
 
 
-server.on("editor", "test", async req => {
-  if (req.side === "front")
-    return server.emit("front", "test", req);
+server.on("editor", "test", async (_, req) => {
+  throw new Error("Not Implemented");
+  /*
+  if (req.side === "front"
+    return server.emitAny("front", "test", req);
     
   if (req.side === "back")
-    return server.emit("back", "test", req);
+    return server.emitAny("back", "test", req);*/
 });
 
 
-server.on("front", "eval", async req => {
+server.on("front", "eval", async (source, req) => {
   req.sudo = false;
-  return server.emit("back", "eval", req);
+  req.source = source.id;
+  return await server.emitAny("back", "eval", req);
 });
 
 
-server.on("back", "eval", async req => {
+server.on("back", "eval", async (source, req) => {
   req.sudo = false;
-  throw new Error("Not Implemented");
+  req.source = source.id;
+  return await server.emit("front", req.target, "eval", req);
 });
 
 
-server.on("*", "error", error => {
+server.on("*", "error", (_, error) => {
   cli.error("server", "ERROR REPORTED", data);
   cli.warn("server", "Reporting Error: ", error);
-  server.emit("editor", "error", error);
+  server.emitAll("editor", "error", error);
 });
 
 
-server.on("*", "profile", async profile => {
-  return server.emit("editor", "profile", profile);
+server.on("*", "profile", async (_, profile) => {
+  server.emitAll("editor", "profile", profile);
 });
 
 

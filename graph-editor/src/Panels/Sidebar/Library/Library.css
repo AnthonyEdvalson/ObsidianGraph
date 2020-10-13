@@ -1,0 +1,54 @@
+.Library {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.library-graphs {
+    flex-grow: 1;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: flex-start;
+}
+
+.library-projects {
+    height: 300px;
+    flex-grow: 0;
+}
+
+.library-graph-icon {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+    border-radius: 100%;
+    background-color: var(--io-bright);
+}
+
+.library-graph-label {
+    text-align: center;
+}
+
+.library-graphs > div {
+    width: 90px;
+    height: 90px;
+    margin: 5px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    border-radius: 10px;
+    padding: 5px;
+    justify-content: center;
+    opacity: 0.6;
+    transition: all 0.1s cubic-bezier(0.22, 0.61, 0.36, 1);
+    cursor: pointer;
+}
+
+.library-graphs > div:hover {
+    opacity: 1;
+    background-color: #689bd620;
+    /*box-shadow: 0 0 2px 1px var(--io-dim);*/
+    box-shadow: 0 0 0 1px var(--io-dim) inset;
+}

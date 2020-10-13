@@ -60,13 +60,13 @@ function Item(props) {
     let foldoutActions = (
         <>
             <div className="heading-action-right" onClick={e => props.handleDelete(i)}>−</div>
-            {i > 0 && <div className="heading-action-right" onClick={e => props.handleUp(i)}>🠅</div> }
+            {i > 0 && <div className="heading-action-right" onClick={e => props.handleUp(i)}>^</div> }
         </>
     )
 
     return (
         <div className="list-item">
-            <Foldout label={"Index " + i.toString()} actions={foldoutActions} open={false}>
+            <Foldout label={i.toString()} actions={foldoutActions} open={false}>
                 <Form.Accessor k={i}>
                     {React.cloneElement(props.child, { key: i })}
                 </Form.Accessor>

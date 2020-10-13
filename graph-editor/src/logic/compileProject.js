@@ -39,7 +39,7 @@ function buildProject(loaded, projectId) {
 
     zip.addFile("app.json", JSON.stringify(appData, null, 2));
 
-    return [zip, project.name];
+    return [zip, project.name, buildData];
 }
 
 function buildGraph(loaded, buildData, projectId, graphId) {

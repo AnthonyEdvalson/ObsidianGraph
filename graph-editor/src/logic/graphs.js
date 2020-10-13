@@ -2,6 +2,7 @@ import { newHistory } from "redux-undo";
 import { useSelector } from "react-redux";
 import { useCallback } from "react";
 import { useGraphDispatch } from './scope';
+import { util } from 'obsidian';
 const { getDefaultParams } = require("../UI/Schema");
 
 
@@ -88,16 +89,19 @@ function packForSerialization(graph) {
 }
 
 function unpackFromSerialization(data, graphId) {
-    return newHistory([], {
-        ...makeEmptyGraph(null, graphId),
-        ...data
-    }, []);
+    
+    // We create fullGraph by merging a blank graph with the stored one to replace
+    // any lost fields, and to add new properties to outdated graphs.
+    let template = makeEmptyGraph(null, graphId);
+    let fullGraph = util.merge(template, data);
+    return newHistory([], fullGraph, []);
 }
 
 function makeEmptyGraph(name, graphId) {
     return {
         meta: {
             name,
+            description: "",
             tags: "",
             hideInLibrary: false
         },

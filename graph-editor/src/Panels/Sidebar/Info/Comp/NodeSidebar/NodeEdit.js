@@ -1,11 +1,11 @@
 import React from 'react';
-import UI from '../../../../UI';
+import UI from '../../../../../UI';
 
 
 function Node() {
     return (
         <UI.Foldout label="Editor Properties">
-            <UI.TextArea k="schema" />
+            <UI.JSONInput k="schema" />
         </UI.Foldout>
     );
 }

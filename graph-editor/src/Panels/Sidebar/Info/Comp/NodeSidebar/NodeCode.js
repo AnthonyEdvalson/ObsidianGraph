@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import UI from '../../../../UI';
-import engine from '../../../../logic/engine';
+import UI from '../../../../../UI';
+import engine from '../../../../../logic/engine';
 
 
 function Node(props) {
@@ -14,7 +14,7 @@ function Node(props) {
 
 function NodeTest(props) {
     let courier = engine.useCourier();
-    console.log(props);
+
     let [testResults, setTestResults] = new useState();
     let [loading, setLoading] = new useState(false);
  

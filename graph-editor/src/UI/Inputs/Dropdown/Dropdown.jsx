@@ -17,8 +17,8 @@ function Dropdown(props) {
             <div className="Dropdown ui-line-elem">
                 <select className="ui-line-elem" value={JSON.stringify(form.data)} onChange={handleChange}>
                     {
-                        props.options.map(v => (
-                          <option key={v} value={JSON.stringify(v)}>{v}</option>  
+                        props.options.map(([value, label]) => (
+                          <option key={label} value={JSON.stringify(value)}>{label}</option>  
                         ))
                     }
                 </select>

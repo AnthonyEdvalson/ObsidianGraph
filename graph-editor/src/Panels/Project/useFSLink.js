@@ -21,7 +21,8 @@ function useFSLink() {
                 for (let [nodeId, node] of Object.entries(graph.present.nodes)) {
                     if (["front", "back", "agno"].includes(node.type)) {
                         let content = fs.readFileSync(graphDir + node.name + ".js").toString("utf-8");
-                        dispatch({ type: "SET_CONTENT", nodeId, graphId, content });
+                        if (node.content !== content)
+                            dispatch({ type: "SET_CONTENT", nodeId, graphId, content });
                     }
                 }
             }

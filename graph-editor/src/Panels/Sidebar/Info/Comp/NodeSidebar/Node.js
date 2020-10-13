@@ -5,9 +5,9 @@ import NodeIn from './NodeIn';
 import NodeOut from './NodeOut';
 import NodeGraph from './NodeGraph';
 import NodeEdit from './NodeEdit';
-import UI from '../../../../UI';
-import Form from '../../../../Form';
-import { useGraphDispatch } from '../../../../logic/scope';
+import UI from '../../../../../UI';
+import Form from '../../../../../Form';
+import { useGraphDispatch } from '../../../../../logic/scope';
 import './Node.css';
 
 

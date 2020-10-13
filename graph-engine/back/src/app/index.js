@@ -1,5 +1,4 @@
 import appData from './appData.json';
-import { util } from 'obsidian';
 
 let functions = {};
 

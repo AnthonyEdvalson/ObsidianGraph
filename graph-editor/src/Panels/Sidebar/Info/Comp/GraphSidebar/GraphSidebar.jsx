@@ -1,10 +1,10 @@
 import React from 'react';
-import UI from '../../../../UI';
-import Form from '../../../../Form';
-import { useDispatch } from 'react-redux';
+import UI from '../../../../../UI';
+import Form from '../../../../../Form';
+import { useGraphDispatch } from '../../../../../logic/scope';
 
 function GraphSidebar(props) {
-    let dispatch = useDispatch();
+    let dispatch = useGraphDispatch();
 
     function onChange(change) {
         dispatch({type: "CHANGE_SELECTION", change });
@@ -12,10 +12,13 @@ function GraphSidebar(props) {
     
     return (
         <Form.Form data={props.data} onChange={onChange}>
-            <UI.TextInput k="name" />
-            <UI.Checkbox k="hideInLibrary" />
-            <UI.TextInput k="tags" />
-            <UI.Label>Tags are spearated by spaces or commas</UI.Label>
+            <UI.Foldout label="Graph Settings">
+                <UI.TextInput k="name" />
+                <UI.TextArea k="description" />
+                <UI.Checkbox k="hideInLibrary" />
+                <UI.TextInput k="tags" />
+                <UI.Label>Tags are spearated by spaces or commas</UI.Label>
+            </UI.Foldout>
             {/*<UI.Button onClick={showPackages}>Edit Packages</UI.Button>
             <UI.Button onClick={openTerminal}>Show in Terminal</UI.Button>
     <UI.Button onClick={openFolder}>Show in File System</UI.Button>*/}

@@ -52,8 +52,16 @@ class Server {
             group.publish();
     }
 
-    async emit(groupName, eventName, ...args) {
-        return this.groups[groupName].emit(eventName, ...args);
+    async emit(groupName, socketId, eventName, ...args) {
+        return this.groups[groupName].emit(socketId, eventName, ...args);
+    }
+
+    async emitAll(groupName, eventName, ...args) {
+        return this.groups[groupName].emitAll(eventName, ...args);
+    }
+
+    async emitAny(groupName, eventName, ...args) {
+        return this.groups[groupName].emitAny(eventName, ...args);
     }
 }
 
@@ -69,15 +77,13 @@ class Group {
         this.handlers[eventName] = handler;
     }
 
-    async emit(eventName, ...args) {
-        let sockets = Object.values(this.socketGroup.sockets);
+    async emit(socket, eventName, ...args) {
+        if (typeof(socket) === "string")
+            socket = this.socketGroup.connected[socket];
 
-        if (sockets.length === 0) {
-            cli.warn("server", "Cannot emit " + eventName + " to " + this.name + ", none are connected.");
-            return;
-        }
 
-        let socket = sockets[0];
+        if (!socket)
+            throw new Error("Could not find socket '" + socket + "' in the " + this.name + " group");
 
         if (this.debug && eventName != "profile")
             cli.printMessageSent(" " + this.name + "|" + eventName, ...args);
@@ -86,7 +92,7 @@ class Group {
         try {
             reply = await messaging.send(socket, eventName, ...args);
         } catch (error) {
-            console.log(this.name, eventName, "Could not reply", error);
+            console.log(this.name, eventName, "Could not reply because of the following error:\n", error);
             throw error;
         }
 
@@ -94,6 +100,23 @@ class Group {
             cli.printMessageReceived("*" + this.name + "|" + eventName, reply)
         
         return reply;
+    }
+
+    async emitAny(eventName, ...args) {
+        let sockets = Object.values(this.socketGroup.sockets);
+
+        if (sockets.length === 0) {
+            cli.warn("server", "Cannot emit event '" + eventName + "' to " + this.name + ", none are connected.");
+            return;
+        }
+
+        return this.emit(sockets[0], eventName, ...args);
+    }
+
+    async emitAll(eventName, ...args) {
+        let sockets = Object.values(this.socketGroup.sockets);
+
+        sockets.map(s => this.emit(s, eventName, ...args));
     }
 
     publish() {
@@ -108,7 +131,7 @@ class Group {
                         
                     let ret;
                     try {
-                        ret = await handler(...args);
+                        ret = await handler(socket, ...args);
                     } catch (error){
                         console.log("Failed to Return", this.name, name, error.stack);
                         throw error;

@@ -1,73 +1,49 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './Sidebar.css';
-import NodeSidebar from './Comp/NodeSidebar/Node';
-import GraphSidebar from './Comp/GraphSidebar';
 import Project from '../Project';
-import { useGraphSelector } from '../../logic/scope';
+import Info from './Info';
+import Library from './Library';
+import { useState } from 'react';
 
-// TODO turn sidebar into a split panel that contains Project and Info panels
 function Sidebar({ setMenu }) {
-    let selection = useGraphSelector(graph => {
-        if (!graph.meta)
-            return null;
-
-        let items = graph.selection.items;
-        return items.length === 1 ? items[0] : null;
-    })
-
-    let selected = useGraphSelector(graph => {
-        if (selection) {
-            if (selection.type === "node")
-                return {type: "node", data: graph.nodes[selection.key], nodeKey: selection.key};
-
-            if (selection.type === "graph")
-                return {type: "graph", data: graph};
+    let [currentView, setView] = useState("Info");
+    
+    let views = {
+        "Info": {
+            content: (
+                <>
+                    <div className="select-info">
+                        <Info setMenu={setMenu} />
+                    </div>
+                    <Project setMenu={setMenu} />
+                </>
+            )
+        },
+        "Library": {
+            content: (
+                <Library setMenu={setMenu} />
+            )
         }
-
-        return {type: null, data: null};
-    });
-
-    let [oldSelection, setOldSelection] = useState(selection);
-    if (selection && (oldSelection !== selection)) {
-        document.activeElement.blur();
-        setOldSelection(selection);
-    }
-
-    let content = null;
-
-    if (selected && selected.type === "node") {
-        let node = selected.data;
-        content = (
-            <>
-                <div className="side-head">
-                    <h1>{node.name}</h1>
-                    <small>{selection.key}</small>
-                    <small>NODE: {node.type.toUpperCase()}</small>
-                </div>
-                <NodeSidebar data={node} nodeKey={selected.nodeKey} />
-            </>
-        );
-    }
-    else if (selected && selected.type === "graph") {
-        let meta = selected.data.meta;
-        let id = selected.data.graphId;
-
-        content = (
-            <>
-                <div className="side-head">
-                    <h1>{meta.name}</h1>
-                    <small>{id}</small>
-                    <small>{meta.description}</small>
-                </div>
-                <GraphSidebar data={meta} />
-            </>
-        );
     }
 
     return (
         <div className="Sidebar">
-            {content}
-            <Project setMenu={setMenu} />
+            <div className="sidebar-view-selector">
+                {
+                    Object.entries(views).map(([name, v]) => (
+                        <div key={name} className={name === currentView ? "active" : ""} onClick={() => setView(name)}>
+                            {name}
+                        </div>
+                    ))
+                }
+            </div>
+            { 
+                Object.entries(views).map(([k, v]) => (
+                    <div key={k} className={"sidebar-view" + (k === currentView ? " active" : "")}>
+                        {v.content}
+                    </div>
+                ))
+            }
         </div>
     );
 }

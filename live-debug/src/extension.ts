@@ -1,33 +1,52 @@
 import * as vscode from 'vscode';
-import * as escodegen from 'escodegen';
-import * as esprima from 'esprima';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as babel from "@babel/core";
-import { StringDecoder } from 'string_decoder';
+import traverse, { Node } from "@babel/traverse";
+import * as t from "@babel/types";
+
 var exec = require('child_process').exec;
 
+let babelrc = <any>babel.loadOptions({
+	presets: [
+		path.resolve(__dirname, '../node_modules/@babel/preset-react'),
+	]
+});
 
-function parseModule(code: string): any {
-	let ast = esprima.parseModule(code, { jsx: true, loc: true, range: true, comment: true, tokens: true });
-	return escodegen.attachComments(ast, ast.comments, ast.tokens);
+const decorationType = vscode.window.createTextEditorDecorationType({
+	isWholeLine: true,
+	
+	after: {
+		color: "#FFFFFF40",
+		width: "100%"
+	}
+});
+
+
+function parseModule(code: string, filename: string): any {
+	return babel.parseSync(code, { ...babelrc, filename, parserOpts: { sourceType: "module"} });
 }
 
 function parseScript(code: string): any {
-	let ast = esprima.parseScript(code, { jsx: true, loc: true, range: true, comment: true, tokens: true });
-	return escodegen.attachComments(ast, ast.comments, ast.tokens);
+	return babel.parseSync(code, { ...babelrc, parserOpts: { sourceType: "script"} });
 }
  
 export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
+	
+	const updateDeco = () => {
 		if (!vscode.workspace.workspaceFolders)
 			return;
 
-		let source = vscode.window.activeTextEditor?.document.getText();
-		let currentFileName = vscode.window.activeTextEditor?.document.fileName;
+		let editor = vscode.window.activeTextEditor;
+
+		if (!editor)
+			return;
+
+		let source = editor.document.getText();
+		let currentFileName = editor.document.fileName ?? "";
 
 		if (!source) {
 			vscode.window.showWarningMessage("No code to preview");
@@ -35,19 +54,22 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		let cwd = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		babelrc.cwd = cwd;
 		let ldb = path.join(cwd, ".ldb");
+		
 		try {
-			let ast = parseModule(source);
-			ast = cleanAst(ast, source);
+			let ast = parseModule(source, currentFileName);
+			
+			ast = cleanAst(ast, currentFileName);
 			console.log(ast);
-			let { code, map } = <any>escodegen.generate(ast, {
-				comment: true,
-				sourceMap: currentFileName,
-				sourceMapWithCode: true,
-				verbatim: "x-verbatim"
-			});
 
-			vscode.window.showInformationMessage(code);
+			const babelResult = babel.transformFromAstSync(ast, source, babelrc);
+
+			if (!babelResult)
+				return;
+
+			let code = <string>babelResult.code;
+			let map = <object>babelResult.map;
 
 			if (!fs.existsSync(ldb))
 				fs.mkdirSync(ldb);
@@ -57,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
 			let testIndex = fs.readFileSync(path.resolve(__dirname, '../testIndex.js'), 'utf8');
 			let testPackage = fs.readFileSync(path.resolve(__dirname, '../testPackage.json'), 'utf8');
 			fs.writeFileSync(path.join(ldb, "index.js"), testIndex);
-			fs.writeFileSync(path.join(ldb, "package.json"), testPackage);
+			fs.writeFileSync(path.join(ldb, "package.json"), testPackage); 
 			
 			exec(
 				'node index.js', 
@@ -67,86 +89,120 @@ export function activate(context: vscode.ExtensionContext) {
 					windowHide: true
 				},
 				(error: string, stdout: string, stderr: string) => {
-					console.log(stdout, stderr);
+					if (error) {
+						console.error(error);
+						return;
+					}
+
+					console.log(stdout, stdout.lastIndexOf("-=(#)=-"), stdout.substr(stdout.lastIndexOf("-=(#)=-") + 7))
+					let data = JSON.parse(stdout.substr(stdout.lastIndexOf("-=(#)=-") + 7));
+					console.log(data);
+
+
+					let decorationsArray: vscode.DecorationOptions[] = []
+
+					for (let [line, value] of Object.entries(data)) {
+						let lineno = parseInt(line) - 1;
+
+						decorationsArray.push({
+							range: new vscode.Range(lineno, 0, lineno, 0),
+							renderOptions: {
+								after: {
+									contentText: JSON.stringify(value),
+									margin: `0 0 0 40px`
+								}
+							}
+						});
+
+						editor?.setDecorations(decorationType, decorationsArray);
+					}
 				}
 			);
 		}
 		catch (e) {
-			vscode.window.showErrorMessage(e.stack);
+			//vscode.window.showErrorMessage(e.stack);
+			console.error(e);
 		}
-	});
+	};
 
-	context.subscriptions.push(disposable);
+
+	vscode.workspace.onDidOpenTextDocument(updateDeco);
+	vscode.workspace.onDidChangeTextDocument(updateDeco);
+
+	//context.subscriptions.push(disposable);
 }
 
 
-function cleanAst(o: any, source: string): any {
-	if (Array.isArray(o)) {
-		let newArray: any[] = [];
-		for (let v of o)
-			newArray.push(cleanAst(v, source));
-		
-		return newArray;
-	}
+function cleanAst(ast: Node, fileName: string) {
 
-	if (o && typeof(o) === "object") {
-		if (o.type === "JSXElement") {
-			let jsx = source.substr(o.range[0], o.range[1] - o.range[0]);
-			return  {type: "Literal", value: null, raw: "null", "x-verbatim": jsx};
+	// FIRST PASS
+	// Modify existing code
+
+	traverse(ast, {
+		ExpressionStatement: (p) => {
+			// Wrap all expressions with __trace() to store the result in __data
+			let innerExp = p.node.expression;
+			if (t.isCallExpression(innerExp) && t.isIdentifier(innerExp.callee) && innerExp.callee.name === "__trace")
+				return;
+
+			let newExp = t.expressionStatement(wrapTrace(p.node.loc, innerExp));
+			p.replaceWith(newExp);
+		},
+		ImportDeclaration: (p) => {
+			// Convert relative imports to absolute, since the file will be executed in a different folder
+			if (t.isStringLiteral(p.node.source)) {
+				let source = p.node.source.value;
+				p.node.source.value = require.resolve(source, { paths: [fileName] });
+			}
+		},
+		VariableDeclaration: (p) => {
+			let init = p.node.declarations[0].init;
+
+			if (init)
+				p.node.declarations[0].init = wrapTrace(init.loc, init);
+		},
+		ReturnStatement: (p) => {
+			let arg = p.node.argument;
+
+			if (arg)
+				p.node.argument = wrapTrace(p.node.loc, arg);
 		}
+	});
 
-		if (o.type === "ExpressionStatement") {
-			let id = o.loc.start.line;
-			let trace = parseScript("__trace(" + id.toString() + ")").body[0];
-			trace.expression.arguments.push(cleanAst(o.expression, source));
+	// SECOND PASS
+	// Add new code that should not be effected by the above transformations
 
-			return trace;
-		}
-
-		if (o.type === "ExportDefaultDeclaration") {
-			return {
-				...o,
-				declaration: {
-					...o.declaration,
-					properties: [
-						...o.declaration.properties,
-						{
-							type: "Property",
-							key: {
-								type: "Identifier",
-								name: "__data",
-							},
-							computed: false,
-							value: {
-								type: "Identifier",
-								name: "__data",
-							},
-							kind: "init",
-							method: false,
-							shorthand: true
-						}
-					]
-				}
+	traverse(ast, {
+		Program: (p) => {
+			// Insert the __data and __trace declarations to the top of the file
+			p.node.body.unshift(
+				...parseScript("let __data = {}; function __trace(id, v) { return __data[id] = v;}").program.body
+			);
+		},
+		ExportDefaultDeclaration: (p) => {
+			// Add __data as an export
+			let decl = p.node.declaration;
+			if (t.isObjectExpression(decl)) {
+				decl.properties.push(
+					t.objectProperty(
+						t.stringLiteral("__data"), 
+						t.identifier("__data")
+					)
+				);
 			}
 		}
+	});
 
-		if (o.type === "Program") {
-			return {
-				...o,
-				body: [
-					parseScript("let __data = {}; function __trace(id, v) { return __data[id] = v;}"),
-					...cleanAst(o.body, source)
-				]
-			}
-		}
+	return ast
+}
 
-		let newObject: any = {};
-		for (let [k, v] of Object.entries(o)) {
-			newObject[k] = cleanAst(v, source);
-		}
 
-		return newObject;
-	}
+function wrapTrace(loc: babel.types.SourceLocation | null, innerExp: babel.types.Expression): babel.types.Expression {
+	if (!loc)
+		return innerExp;
 
-	return o;
+	let line = loc.start.line;
+	const newExp = parseScript("__trace(" + line + ");").program.body[0].expression;
+	newExp.arguments.push(innerExp);
+	return newExp;
 }

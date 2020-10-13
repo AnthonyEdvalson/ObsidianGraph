@@ -6,7 +6,7 @@ import { performance } from 'perf_hooks';
 
 let courier = new Courier("http://localhost:5000/back", {
   onConnect: () => { console.log("Connected!"); },
-  onEval: req => { return engine.eval(req.functionId, req.args, req.ctx) },
+  onEval: req => { return engine.evalFromRemote(req) },
   onTest: req => { return engine.test(req.functionId) }
 }, true);
 let highPrecisionTime = () => performance.timeOrigin + performance.now();

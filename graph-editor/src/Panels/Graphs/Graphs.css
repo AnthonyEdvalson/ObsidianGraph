@@ -4,6 +4,7 @@
   height: 100%;
   flex-grow: 1;
   overflow: hidden;
+  background-color: #14191f;
 
   --node-width: 300px;
   --port-width: 20px;

@@ -1,5 +1,28 @@
 {
   "functions": {
+    "6752b9a7-80a8-43d2-b079-b944c1587591": {
+      "name": "UI.Clock",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "6752b9a7-80a8-43d2-b079-b944c1587591",
+      "label": "Clock"
+    },
+    "dc67df04-e00d-49a8-95fc-e2362ac8eba6": {
+      "name": "UI.ClockUI",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "clock": "6752b9a7-80a8-43d2-b079-b944c1587591"
+      },
+      "functionId": "dc67df04-e00d-49a8-95fc-e2362ac8eba6",
+      "content": "import React, {useState} from 'react';\n\nfunction Main({clock}) {\n  let [t, setT] = useState(\"___\");\n\n  clock(1000, v => {\n    setT(v);\n    console.log(\"tock\");\n    return 123;\n  });\n\n\treturn (\n    <div>{t}</div>\n  )\n}\n\nexport default { main: Main }\n"
+    },
     "3c73609c-e966-4029-af2c-2f760d6cd9e7": {
       "name": "UI.Input",
       "type": "in",
@@ -35,14 +58,27 @@
       "functionId": "ea243e7b-52f8-4d3f-8b61-2312678c127c",
       "content": "import React, { useEffect, useCallback } from 'react'\n\nfunction Main({ input, insert }) {\n  let [state, setState] = React.useState(null);\n  let [val, setVal] = React.useState(\"Hello, \");\n    \n  let refresh = useCallback(() => {\n    input().then(value => {\n      console.log(\"GOT\", value);\n      setState(value);\n    });\n  }, []);\n  \n  let sendVal = async () => {\n    await insert(val);\n    refresh();\n  }\n\n  useEffect(() => {\n    refresh();\n  }, [refresh])\n  \n  return (\n    <div>\n      {state || \"Loading...\"}\n      <button onClick={refresh}>Refresh</button>\n      <input type=\"text\" value={val} onChange={e => setVal(e.target.value)} />\n      <button onClick={sendVal}>SEND</button>\n    </div>\n  );\n}\n\n\n\nexport default { main: Main }"
     },
-    "679060db-00be-4771-930e-7d6efc0a2ddb": {
-      "name": "UI.Wrap",
+    "309b01af-22ac-414a-82cd-11495fa683eb": {
+      "name": "UI.Layout",
       "type": "code",
       "sides": [
         "F"
       ],
       "inputs": {
-        "input": "ea243e7b-52f8-4d3f-8b61-2312678c127c"
+        "a": "dc67df04-e00d-49a8-95fc-e2362ac8eba6",
+        "b": "ea243e7b-52f8-4d3f-8b61-2312678c127c"
+      },
+      "functionId": "309b01af-22ac-414a-82cd-11495fa683eb",
+      "content": "import React from 'react';\n\nfunction Main({a, b}) {\n\treturn (\n    <div>\n      {a()}\n      <br />\n      {b()}\n    </div>\n  )\n}\n\nexport default { main: Main }\n"
+    },
+    "679060db-00be-4771-930e-7d6efc0a2ddb": {
+      "name": "UI.App",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "input": "309b01af-22ac-414a-82cd-11495fa683eb"
       },
       "functionId": "679060db-00be-4771-930e-7d6efc0a2ddb",
       "content": "import React from 'react';\n\nfunction main({input}) {\n  let Input = input;\n\treturn <Input />;\n}\n\nexport default { main }"
@@ -118,7 +154,46 @@
       "functionId": "f9158b7c-559b-44e4-8798-299cbc4ebd79",
       "name": "Main.Concat"
     },
-    "bcd85477-616a-4771-b59f-f85c878874f5": {
+    "44ef5efa-8436-418b-b36f-a8f82cc962a0": {
+      "name": "Clock.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "44ef5efa-8436-418b-b36f-a8f82cc962a0"
+    },
+    "b7d9cadc-844e-4fa3-ae0f-a0bb02cd95a2": {
+      "type": "remote",
+      "functionId": "b7d9cadc-844e-4fa3-ae0f-a0bb02cd95a2",
+      "name": "Clock.Backend"
+    },
+    "9a2b76c7-680c-4b2f-b928-05c99e4c733b": {
+      "name": "Clock",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "b7d9cadc-844e-4fa3-ae0f-a0bb02cd95a2"
+      },
+      "functionId": "9a2b76c7-680c-4b2f-b928-05c99e4c733b"
+    },
+    "69fb54a7-221a-461b-98df-83a6057ba806": {
+      "name": "Main.Clock",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "69fb54a7-221a-461b-98df-83a6057ba806",
+      "parameters": 5000,
+      "root": "9a2b76c7-680c-4b2f-b928-05c99e4c733b"
+    },
+    "f7ea7914-9d49-446a-9777-2c23ccd23e8e": {
       "name": "Main.UI",
       "type": "call",
       "sides": [
@@ -127,9 +202,10 @@
       ],
       "inputs": {
         "Insert": "7f3d5bcc-ee2a-4cc3-9e09-61dcefb263dd",
-        "Input": "f9158b7c-559b-44e4-8798-299cbc4ebd79"
+        "Input": "f9158b7c-559b-44e4-8798-299cbc4ebd79",
+        "Clock": "69fb54a7-221a-461b-98df-83a6057ba806"
       },
-      "functionId": "bcd85477-616a-4771-b59f-f85c878874f5",
+      "functionId": "f7ea7914-9d49-446a-9777-2c23ccd23e8e",
       "parameters": null,
       "root": "67257eb7-2796-4b1f-a452-dfc8c317179f"
     },
@@ -141,7 +217,7 @@
         "B"
       ],
       "inputs": {
-        "value": "bcd85477-616a-4771-b59f-f85c878874f5"
+        "value": "f7ea7914-9d49-446a-9777-2c23ccd23e8e"
       },
       "functionId": "6465ed6d-e401-4962-ac34-631c147a418a"
     }

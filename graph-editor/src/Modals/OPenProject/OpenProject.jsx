@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import UI from '../../UI';
 import { useDispatch } from 'react-redux';
+import NewProject from '../NewProject';
+
 import './OpenProject.css';
 import projects from '../../logic/projects';
 const { dialog } = window.require("electron").remote;
@@ -8,6 +10,7 @@ const { dialog } = window.require("electron").remote;
 function OpenProject({ open, defaultDirectory, handleClose }) {
     let dispatch = useDispatch();
     let [recents, setRecents] = useState([]);
+    let [showNewProject, setShowNewProject] = useState(false);
     const recentPath = "./recents.json";
 
     useEffect(() => {
@@ -36,21 +39,23 @@ function OpenProject({ open, defaultDirectory, handleClose }) {
     }
 
     function handleNew() {
-        handleClose();
-        projects.showNewProject(dispatch);
+        setShowNewProject(true);
     }
  
     return (
-        <UI.Modal open={open} header="Open Project">
-            <div className="OpenProject" style={{overflow: "auto"}}>
-                <div className="recents">
-                    {recents.map(recent => <RecentEntry key={recent.path} {...recent} handleOpen={handleOpen} />)}
+        <>
+            <UI.Modal open={open && !showNewProject} header="Open Project">
+                <div className="OpenProject" style={{overflow: "auto"}}>
+                    <div className="recents">
+                        {recents.map(recent => <RecentEntry key={recent.path} {...recent} handleOpen={handleOpen} />)}
+                    </div>
+                    <UI.Button onClick={handleOpenFile}>Open Project From File</UI.Button>
+                    <UI.Button onClick={handleNew}>Create New Project</UI.Button>
+                    <UI.Button onClick={handleClose}>Cancel</UI.Button>
                 </div>
-                <UI.Button onClick={handleOpenFile}>Open Project From File</UI.Button>
-                <UI.Button onClick={handleNew}>Create New Project</UI.Button>
-                <UI.Button onClick={() => projects.hideOpenProject(dispatch)}>Cancel</UI.Button>
-            </div>
-        </UI.Modal>
+            </UI.Modal>
+            <NewProject open={open && showNewProject} handleClose={() => setShowNewProject(false)} />
+        </>
     );
 }
 

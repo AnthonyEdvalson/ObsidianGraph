@@ -49,6 +49,7 @@ function CHANGE_SELECTION(state, action) {
         newState.meta = { ...newState.meta };
         let oldMeta = newState.meta;
         newState.meta = action.change(oldMeta);
+        console.log(action.change(oldMeta));
     }
 
     return newState;
