@@ -25,3 +25,7 @@
     display: flex;
     justify-content: center;
 }
+
+.Button.button-submit button{
+    border-color: var(--ui-highlight);
+}

@@ -43,7 +43,6 @@ function TimeTravel() {
     let profiles = useSelector(state => state.profiles);
 
     engine.useListener("profile", useCallback(profile => {
-        console.log("PROFILE", profile)
         dispatch({type: "LOAD_PROFILE", data: profile });
         //setProfiles(prevState => util.graft(prevState, profile.id, profile));
     }, [dispatch]));

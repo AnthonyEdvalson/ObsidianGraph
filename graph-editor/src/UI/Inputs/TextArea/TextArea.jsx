@@ -2,10 +2,12 @@ import React from 'react';
 import { useForm } from '../../../Form';
 import './TextArea.css';
 import InputWrapper from '../InputWrapper';
+import useAutoFocus from '../useAutoFocus';
 
 function MultilineEdit(props) {
     let key = props.k;
     let form = useForm(key);
+    let focus = useAutoFocus(props.autoFocus);
 
     let updateOn = props.updateOn || "change";
 
@@ -25,7 +27,7 @@ function MultilineEdit(props) {
 
     return (
         <InputWrapper {...props}>
-            <textarea className="TextArea ui-elem" value={form.data} onChange={onChange} onBlur={onBlur}></textarea>
+            <textarea className="TextArea ui-elem" value={form.data} onChange={onChange} onBlur={onBlur} ref={focus}></textarea>
         </InputWrapper>
     );
 }

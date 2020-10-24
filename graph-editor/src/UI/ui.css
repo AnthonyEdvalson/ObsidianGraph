@@ -4,6 +4,7 @@ body {
 
     --ui-heading: #303d4c;
     --ui-background: #1e262e;
+    --ui-highlight: #9ba9b7;
 }
 
 .ui-elem, .ui-line-elem {

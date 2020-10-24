@@ -1,0 +1,251 @@
+{
+  "functions": {
+    "62a00a98-d41b-4f41-a0b0-9fd40bcaf4b1": {
+      "name": "Column.Item",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "62a00a98-d41b-4f41-a0b0-9fd40bcaf4b1",
+      "label": "Item"
+    },
+    "3387422d-4b23-4b06-bb09-7f72b0216368": {
+      "name": "Column.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "3387422d-4b23-4b06-bb09-7f72b0216368"
+    },
+    "9b9c1bfd-b490-4f0f-9d7d-8740915625f3": {
+      "name": "Column.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "Item": "62a00a98-d41b-4f41-a0b0-9fd40bcaf4b1",
+        "config": "3387422d-4b23-4b06-bb09-7f72b0216368"
+      },
+      "functionId": "9b9c1bfd-b490-4f0f-9d7d-8740915625f3",
+      "content": "import React from 'react';\n\nfunction Main({Item, config}) {\n  let style = config();\n  console.log(style);\n\n  let classes = [\"ui-Column\"]\n  if (style.wrapping)\n    classes.push(\"ui-Column-\" + style.wrapping);\n  \n  if (style.justify)\n    classes.push(\"ui-Column-justify-\" + style.justify);\n\n  if (style.horizontalAlign)\n    classes.push(\"ui-Column-items-\" + style.horizontalAlign);\n  \n  if (style.columnJustify)\n    classes.push(\"ui-Column-content-\" + style.columnJustify);\n\n\treturn (\n        <div className={classes.join(\" \")}>\n            <Item />\n        </div>\n    )\n}\n\nexport default { main: Main };\n"
+    },
+    "98ba40b2-ffcf-47f4-a272-fa3117bd3d02": {
+      "name": "Column",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "9b9c1bfd-b490-4f0f-9d7d-8740915625f3"
+      },
+      "functionId": "98ba40b2-ffcf-47f4-a272-fa3117bd3d02",
+      "description": ""
+    },
+    "bd7354e7-623f-4530-b1c3-81dbc24401b9": {
+      "name": "Button.On Click",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "bd7354e7-623f-4530-b1c3-81dbc24401b9",
+      "label": "On Click"
+    },
+    "92410c92-69be-4b12-b485-138cb549d6ae": {
+      "name": "Button.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "92410c92-69be-4b12-b485-138cb549d6ae"
+    },
+    "24e08bae-54d9-4f8e-9308-f7a3f2fd03b8": {
+      "name": "useAutoFocus.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {},
+      "functionId": "24e08bae-54d9-4f8e-9308-f7a3f2fd03b8",
+      "content": "import { useEffect, useRef } from \"react\";\n\nfunction useAutoFocus(_, enable) {\n    let ref = useRef(null);\n\n    useEffect(() => {\n        if (enable && ref.current)\n            ref.current.focus();\n    }, [enable]);\n\n    return ref;\n}\n\nexport default { main: useAutoFocus }"
+    },
+    "46c7bbc7-fcda-4432-80b1-c81cb54e2784": {
+      "name": "useAutoFocus",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "24e08bae-54d9-4f8e-9308-f7a3f2fd03b8"
+      },
+      "functionId": "46c7bbc7-fcda-4432-80b1-c81cb54e2784",
+      "description": ""
+    },
+    "14e06950-6d61-4a71-8b40-9a9cf9303dee": {
+      "name": "Button.useAutoFocus",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "14e06950-6d61-4a71-8b40-9a9cf9303dee",
+      "parameters": null,
+      "root": "46c7bbc7-fcda-4432-80b1-c81cb54e2784"
+    },
+    "da5444dd-d29c-4f1c-8afd-67460a64ca2c": {
+      "name": "Button.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "onClick": "bd7354e7-623f-4530-b1c3-81dbc24401b9",
+        "config": "92410c92-69be-4b12-b485-138cb549d6ae",
+        "useAutoFocus": "14e06950-6d61-4a71-8b40-9a9cf9303dee"
+      },
+      "functionId": "da5444dd-d29c-4f1c-8afd-67460a64ca2c",
+      "content": "import React from 'react';\n\nfunction Button({config, onClick, useAutoFocus}, props) {\n  config = config();\n  \n  let focus = useAutoFocus(config.autoFocus);\n  let type = config.type;\n\n  let className = \"ui-Button\";\n  if (type === \"submit\")\n    className += \" ui-button-submit\";\n\n  return (\n    <div className={className}>\n      <button onClick={onClick} ref={focus} type={type}>{config.label}</button>\n    </div>\n  );\n}\n\nexport default { main: Button };\n"
+    },
+    "855c6d78-e3d4-4948-93e3-f45037efaec2": {
+      "name": "Button",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "da5444dd-d29c-4f1c-8afd-67460a64ca2c"
+      },
+      "functionId": "855c6d78-e3d4-4948-93e3-f45037efaec2",
+      "description": ""
+    },
+    "b81def46-18ed-43ac-9269-f0c50a00837c": {
+      "name": "Main.Click Event",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {},
+      "functionId": "b81def46-18ed-43ac-9269-f0c50a00837c",
+      "content": "export default { \n  main: () => { window.alert(\"Hey\")} \n};\n"
+    },
+    "c159c67f-c478-4bcc-bd40-cf064c182058": {
+      "name": "Main.Button",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "On Click": "b81def46-18ed-43ac-9269-f0c50a00837c"
+      },
+      "functionId": "c159c67f-c478-4bcc-bd40-cf064c182058",
+      "parameters": {
+        "label": "Submit",
+        "autoFocus": false,
+        "type": [
+          "button",
+          "Default"
+        ]
+      },
+      "root": "855c6d78-e3d4-4948-93e3-f45037efaec2"
+    },
+    "81386c1f-ccd0-42d9-b491-70f61d6f920e": {
+      "name": "Main.Button",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "On Click": "b81def46-18ed-43ac-9269-f0c50a00837c"
+      },
+      "functionId": "81386c1f-ccd0-42d9-b491-70f61d6f920e",
+      "parameters": {
+        "label": "Submit",
+        "autoFocus": false,
+        "type": "submit"
+      },
+      "root": "855c6d78-e3d4-4948-93e3-f45037efaec2"
+    },
+    "af5925cd-e6a8-4442-b8fe-7c328e3bf70d": {
+      "name": "Main.Button",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "On Click": "b81def46-18ed-43ac-9269-f0c50a00837c"
+      },
+      "functionId": "af5925cd-e6a8-4442-b8fe-7c328e3bf70d",
+      "parameters": {
+        "label": "Submit",
+        "autoFocus": false,
+        "type": [
+          "button",
+          "Default"
+        ]
+      },
+      "root": "855c6d78-e3d4-4948-93e3-f45037efaec2"
+    },
+    "f5718777-ad64-4a6b-b74c-f88cc2494f4f": {
+      "name": "Main.Join",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "A": "c159c67f-c478-4bcc-bd40-cf064c182058",
+        "B": "81386c1f-ccd0-42d9-b491-70f61d6f920e",
+        "C": "af5925cd-e6a8-4442-b8fe-7c328e3bf70d"
+      },
+      "functionId": "f5718777-ad64-4a6b-b74c-f88cc2494f4f",
+      "content": "import React from 'react';\n\nfunction Main({A, B, C}) {\n  return (\n    <>\n      <A></A>\n      <B></B>\n      <C></C>\n    </>\n  )\n}\n\nexport default { main: Main };\n"
+    },
+    "c69c8887-26db-4aef-838c-6a675a8f3546": {
+      "name": "Main.Column",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Item": "f5718777-ad64-4a6b-b74c-f88cc2494f4f"
+      },
+      "functionId": "c69c8887-26db-4aef-838c-6a675a8f3546",
+      "parameters": {
+        "wrapping": "wrap",
+        "justify": "Right",
+        "horizontalAlign": null,
+        "columnJustify": null
+      },
+      "root": "98ba40b2-ffcf-47f4-a272-fa3117bd3d02"
+    },
+    "9a0068f8-dc33-46f8-97e3-74cb88fa05ff": {
+      "name": "Main",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "c69c8887-26db-4aef-838c-6a675a8f3546"
+      },
+      "functionId": "9a0068f8-dc33-46f8-97e3-74cb88fa05ff",
+      "description": ""
+    }
+  },
+  "name": "UI"
+}

@@ -31,4 +31,21 @@ function indexedReducerFactory(itemReducer, itemId) {
     }
 }
 
-export { lookupReducerFactory, indexedReducerFactory };
+function combineReducers(reducers) {
+    // First get an array with all the keys of the reducers (the reducer names)
+    const reducerKeys = Object.keys(reducers);
+  
+    return function combination(state = {}, action, ...args) {
+        const nextState = {}  
+        for (let i = 0; i < reducerKeys.length; i++) {
+            const key = reducerKeys[i];
+            const reducer = reducers[key];
+            const previousStateForKey = state[key];
+            const nextStateForKey = reducer(previousStateForKey, action, ...args);
+            nextState[key] = nextStateForKey;
+        }
+        return nextState;
+    }
+  }
+
+export { lookupReducerFactory, indexedReducerFactory, combineReducers };

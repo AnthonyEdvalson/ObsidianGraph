@@ -4,6 +4,7 @@ const fs = window.require('fs');
 const Path = window.require('path');
 const { app } = window.require('electron').remote;
 
+
 function useFSLink() {
     let project = useProjectSelector();
     let dispatch = useProjectDispatch();
@@ -16,15 +17,22 @@ function useFSLink() {
             console.log("Welcome back!");
 
             for (let [graphId, graph] of Object.entries(project.graphs)) {
-                let graphDir = "./project/" + graph.present.meta.name + "/";
+                graph = graph.present;
+                let graphDir = "./project/" + graph.meta.name + "/";
 
-                for (let [nodeId, node] of Object.entries(graph.present.nodes)) {
+                let pullFile = (name) => fs.readFileSync(graphDir + name).toString("utf-8");
+
+                for (let [nodeId, node] of Object.entries(graph.nodes)) {
                     if (["front", "back", "agno"].includes(node.type)) {
-                        let content = fs.readFileSync(graphDir + node.name + ".js").toString("utf-8");
+                        let content = pullFile(node.name + ".js");
                         if (node.content !== content)
                             dispatch({ type: "SET_CONTENT", nodeId, graphId, content });
                     }
                 }
+
+                let css = pullFile("_css.css");
+                if (graph.css !== css)
+                    dispatch({ type: "SET_GRAPH_CSS", css, graphId });
             }
         };
         
@@ -33,15 +41,20 @@ function useFSLink() {
             fs.mkdirSync("./project");
 
             for (let graph of Object.values(project.graphs)) {
-                let graphDir = "./project/" + graph.present.meta.name + "/";
+                graph = graph.present
+                let graphDir = "./project/" + graph.meta.name + "/";
 
                 if (!fs.existsSync(graphDir))
                     fs.mkdirSync(graphDir);
+                
+                let pushFile = (name, content) => fs.writeFileSync(graphDir + name, content); 
 
-                for (let node of Object.values(graph.present.nodes)) {
+                for (let node of Object.values(graph.nodes)) {
                     if (["front", "back", "agno"].includes(node.type))
-                        fs.writeFileSync(graphDir + node.name + ".js", node.content);
+                        pushFile(node.name + ".js", node.content);
                 }
+
+                pushFile("_css.css", graph.css);
             }
         };
 

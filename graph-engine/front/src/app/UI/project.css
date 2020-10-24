@@ -1,0 +1,207 @@
+/* Project: UI */
+
+/* Graph: Main */
+
+body {
+  --ui-primary: #F00;
+}
+
+/* Graph: Column */
+
+.ui-Column {
+  display: flex;
+}
+
+
+/* Wrap */
+
+.ui-Column-wrap {
+    flex-wrap: wrap;
+}
+.ui-Column-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+/* Justify */
+
+.ui-Column-justify-center {
+  justify-content: center;
+}
+.ui-Column-justify-left {
+  justify-content: flex-start;
+}
+.ui-Column-justify-right {
+  justify-content: flex-end;
+}
+.ui-Column-justify-between {
+  justify-content: space-between;
+}
+.ui-Column-justify-around {
+  justify-content: space-around;
+}
+.ui-Column-justify-evenly {
+  justify-content: space-evenly;
+}
+
+
+/* Align Items */
+
+.ui-Column-items-left {
+  align-items: flex-start;
+}
+.ui-Column-items-right {
+  align-items: flex-end;
+}
+.ui-Column-items-center {
+  align-items: center;
+}
+.ui-Column-items-baseline {
+  align-items: baseline;
+}
+
+/* Align Content */
+
+.ui-Column-content-start {
+  align-content: flex-start;
+}
+.ui-Column-content-left {
+  align-content: flex-end;
+}
+.ui-Column-content-right {
+  align-content: center;
+}
+.ui-Column-content-stretch {
+  align-content: stretch;
+}
+.ui-Column-content-around {
+  align-content: space-around;
+}
+.ui-Column-content-between {
+  align-content: space-between;
+}
+.ui-Column-content-evenly {
+  align-content: space-evenly;
+}
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+* {
+
+}
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+* {
+
+}
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+* {
+
+}

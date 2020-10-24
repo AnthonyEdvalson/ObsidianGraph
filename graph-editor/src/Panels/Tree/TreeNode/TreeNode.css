@@ -1,7 +1,7 @@
 .TreeNode.tree-node-item {
     padding-left: 8px;
     height: 22px;
-    padding-top: 1px;
+    padding-top: 3px;
     cursor: pointer;
     white-space: nowrap;
     text-overflow: ellipsis;

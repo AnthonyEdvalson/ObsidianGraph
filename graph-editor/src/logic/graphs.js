@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useCallback } from "react";
 import { useGraphDispatch } from './scope';
 import { util } from 'obsidian';
-const { getDefaultParams } = require("../UI/Schema");
+import nodes from './nodes';
 
 
 function openGraph(dispatch, graphId, projectId) {
@@ -23,40 +23,24 @@ function useImportGraph() {
 
     return useCallback((location) => {
         let graphData = getGraphFromLocation(state, location);
-        let data = transformImportedGraph(graphData, location);
+        let data = {
+            node: { 
+                name: graphData.meta.name,
+                location
+            },
+            output: null,
+        };
 
-        dispatch({ type: "NEW_NODE", nodeType: "graph", location, data});
+        dispatch({ type: "NEW_NODE", nodeType: "graph", data});
     }, [state, dispatch]);
 }
 
-
-function transformImportedGraph(graph, location) {  
-    let data = {
-        node: {
-            location,
-            parameters: null,
-            schema: null,
-            name: graph.meta.name,
-            meta: graph.meta
-        },
-        inputs: [],
-        output: null
-    };
-
-    for (let node of Object.values(graph.nodes)) {
-        if (node.type === "in")
-            data.inputs.push({ label: node.name, type: node.output.type });
-
-        if (node.type === "out")
-            data.output = { label: node.name, type: node.inputs[0].type };
-
-        if (node.type === "edit") {
-            data.node.schema = JSON.parse(node.schema);
-            data.node.parameters = getDefaultParams(data.node.schema);
-        }
+function refreshInterfaces(graph, state) {
+    for (let nodeId of Object.keys(graph.nodes)) {
+        graph = nodes.refreshInterface(nodeId, graph, state);
     }
-    
-    return data;
+
+    return graph;
 }
 
 function traversePort(graph, port) {
@@ -84,12 +68,12 @@ function packForSerialization(graph) {
         nodes: graph.present.nodes,
         ports: graph.present.ports,
         links: graph.present.links,
-        transform: graph.present.transform
+        transform: graph.present.transform,
+        css: graph.present.css
     };
 }
 
 function unpackFromSerialization(data, graphId) {
-    
     // We create fullGraph by merging a blank graph with the stored one to replace
     // any lost fields, and to add new properties to outdated graphs.
     let template = makeEmptyGraph(null, graphId);
@@ -105,6 +89,7 @@ function makeEmptyGraph(name, graphId) {
             tags: "",
             hideInLibrary: false
         },
+        css: `.${name} {\n\n}`,
         nodes: {},
         links: {},
         ports: {},
@@ -122,5 +107,6 @@ export default {
     useImportGraph,
     getGraphFromLocation,
     makeEmptyGraph,
-    traversePort
+    traversePort,
+    refreshInterfaces
 }

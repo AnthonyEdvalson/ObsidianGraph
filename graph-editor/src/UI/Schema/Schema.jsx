@@ -20,7 +20,7 @@ function getDefaultParams(schema) {
         case "bool":
             return schema.default || false;
         case "enum":
-            return schema.default || schema.options[0];
+            return schema.default || (Array.isArray(schema.options[0]) ? schema.options[0][0] : schema.options[0]);
         case "list":
             let lis = [];
             let count = schema.defaultCount === undefined ? 1 : schema.defaultCount;
@@ -37,6 +37,30 @@ function getDefaultParams(schema) {
     }
 }
 
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = { hasError: false };
+    }
+  
+    static getDerivedStateFromError(error) {
+      // Update state so the next render will show the fallback UI.
+      return { hasError: true };
+    }
+  
+    componentDidCatch(error, errorInfo) {
+        console.error(error);
+    }
+  
+    render() {
+      if (this.state.hasError) {
+        // You can render any custom fallback UI
+        return <h1>Something went wrong.</h1>;
+      }
+  
+      return this.props.children; 
+    }
+  }
 
 function Schema(props) {
     let data = useForm(props.dk);
@@ -46,9 +70,11 @@ function Schema(props) {
         return null;
     
     return (
-        <Form.Form onChange={data.handleChange} data={data.data}>
-            <SchemaElement { ...schema.data } />
-        </Form.Form>
+        <ErrorBoundary>
+            <Form.Form onChange={data.handleChange} data={data.data}>
+                <SchemaElement { ...schema.data } />
+            </Form.Form>
+        </ErrorBoundary>
     );
 }
 

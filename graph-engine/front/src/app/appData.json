@@ -1,9 +1,9 @@
 {
-  "root": "5dc7568a-5627-4b5f-83d4-a4bc6cd3dccb",
+  "root": "9a0068f8-dc33-46f8-97e3-74cb88fa05ff",
   "projects": [
-    "Database"
+    "UI"
   ],
-  "name": "Database",
-  "author": "",
-  "description": ""
+  "name": "UI",
+  "author": "Obsidian",
+  "description": "Standard UI library for creating interfaces in Obsidian"
 }

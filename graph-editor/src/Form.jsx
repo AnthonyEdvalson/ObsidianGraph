@@ -51,10 +51,18 @@ function Form(props) {
         path: []
     }
     
+    let onSubmit = (event) => {
+        event.preventDefault();
+        if (props.onSubmit)
+            props.onSubmit();
+    }
+
     return (
-        <FormContext.Provider value={formData}>
-            {props.children}
-        </FormContext.Provider>
+        <form className="Form" onSubmit={onSubmit}>
+            <FormContext.Provider value={formData}>
+                {props.children}
+            </FormContext.Provider>
+        </form>
     )
 }
 

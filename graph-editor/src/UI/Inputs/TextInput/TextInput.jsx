@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useForm } from '../../../Form';
 import './TextInput.css';
 import InputWrapper from '../InputWrapper';
+import useAutoFocus from '../useAutoFocus';
 
 function TextEdit(props) {
     let key = props.k;
     let form = useForm(key);
     let data = form.data;
     let [buffer, setBuffer] = useState(data);
+    let focus = useAutoFocus(props.autoFocus);
 
     function save(v) {
         form.handleChange(() => v);
@@ -38,7 +40,15 @@ function TextEdit(props) {
     
     return (
         <InputWrapper {...props}>
-            <input className="TextInput ui-line-elem" type="text" value={value} onChange={onChange} onBlur={onBlur}></input>
+            <input 
+                className="TextInput ui-line-elem" 
+                type="text" 
+                value={value} 
+                onChange={onChange} 
+                onBlur={onBlur} 
+                ref={focus}
+                placeholder={props.placeholder}
+            ></input>
             {props.children}
         </InputWrapper>
     );

@@ -40,7 +40,7 @@ function formatKey(key) {
 
 function InputWrapper(props) {
     let label = null;
-    
+
     if (props.label !== null) {
         if (props.label === undefined && props.k !== undefined)
             label = (<Label>{formatKey(props.k)}</Label>);
@@ -63,3 +63,4 @@ function InputWrapper(props) {
 }
 
 export default InputWrapper;
+export { formatKey }

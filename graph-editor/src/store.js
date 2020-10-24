@@ -1,7 +1,7 @@
-import { createStore, combineReducers } from 'redux';
+import { createStore } from 'redux';
 import projectReducer from './reducers/project';
 import focusReducer from './reducers/focus';
-import { indexedReducerFactory } from './reducers/util';
+import { indexedReducerFactory, combineReducers } from './reducers/util';
 import { util } from 'obsidian';
 
 
@@ -43,7 +43,7 @@ function rootReducer(state, action) {
     let showDebug = ["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE", "SET_DRAGGING"].indexOf(action.type) === -1;
     if (showDebug)
         console.log(action);
-        
+
     let newState = mainReducer(state, action, state);
 
     if (showDebug) {

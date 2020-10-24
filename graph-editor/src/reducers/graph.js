@@ -4,8 +4,18 @@ import nodeReducer from './node';
 import portReducer from './port';
 import linkReducer from './link';
 import selectionReducer from './selection';
+import graphs from "../logic/graphs";
 
-let graphReducer = lookupReducerFactory({});
+function SET_GRAPH_CSS(state, action) {
+    let newState = {
+        ...state,
+        css: action.css
+    };
+
+    return newState;
+}
+
+let graphReducer = lookupReducerFactory({ SET_GRAPH_CSS });
 
 // TODO bookmark undo, add a bookmark button, then you can jump back or forward to bookmarks in the undo stack
 // The last 5 bookmarks are saved and will be preserved no matter what happens in the undo stack
@@ -15,6 +25,9 @@ let graphSuperReducer = undoable((state, action, fullState) => {
         r = portReducer(r, action, fullState);
         r = linkReducer(r, action, fullState);
         r = selectionReducer(r, action, fullState);
+
+        if (action.type === "SET_SELECTION")
+            r = graphs.refreshInterfaces(r, fullState);
         
         return r;
     }, 

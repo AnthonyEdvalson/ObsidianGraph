@@ -6,7 +6,7 @@ import Indent from '../../Indent';
 import Form, { useForm } from '../../../Form';
 
 function Dictionary(props) {
-    let { data, handleChange } = useForm()
+    let { data, handleChange } = useForm();
 
     function renameKey(oldName, newName) {
         if (oldName === newName || Object.keys(data).includes(newName))

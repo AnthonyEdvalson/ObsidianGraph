@@ -3,6 +3,7 @@ import './Sidebar.css';
 import Project from '../Project';
 import Info from './Info';
 import Library from './Library';
+import CSS from './CSS';
 import { useState } from 'react';
 
 function Sidebar({ setMenu }) {
@@ -22,6 +23,11 @@ function Sidebar({ setMenu }) {
         "Library": {
             content: (
                 <Library setMenu={setMenu} />
+            )
+        },
+        "CSS": {
+            content: (
+                <CSS setMenu={setMenu} />
             )
         }
     }

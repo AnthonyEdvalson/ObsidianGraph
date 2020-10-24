@@ -2,10 +2,12 @@ import React from 'react';
 import { useForm } from '../../../Form';
 import './NumberInput.css';
 import InputWrapper from '../InputWrapper';
+import useAutoFocus from '../useAutoFocus';
 
 function NumberInput(props) {
     let key = props.k;
     let form = useForm(key);
+    let focus = useAutoFocus(props.autoFocus);
     
     let value = parseInt(form.data);
 
@@ -16,7 +18,7 @@ function NumberInput(props) {
 
     return (
         <InputWrapper {...props}>
-            <input className="NumberInput ui-line-elem" type="number" value={value} onChange={handleChange}></input>
+            <input className="NumberInput ui-line-elem" type="number" value={value} onChange={handleChange} ref={focus}></input>
         </InputWrapper>
     );
 }

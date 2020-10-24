@@ -26,7 +26,6 @@ function Project({ setMenu }) {
         let [zip, name] = projects.build(loadedProjects, projectId);
         let data = zip.admZip.toBuffer().toString("base64");
         
-        console.log(courier)
         courier.loadObn(data, name);
     }, [courier]);
 

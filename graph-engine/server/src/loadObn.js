@@ -58,17 +58,22 @@ export default {
 
 async function loadProject(projectData, frontFolder, backFolder) {
     let data = JSON.parse(projectData["project.json"].entry.getData().toString("utf-8"));
+    let css = projectData["project.css"].entry.getData().toString("utf-8");
 
     if (frontFolder)
-        await loadProjectSide(data, "F", frontFolder, projectData["front_node_modules"]);
+        await loadProjectSide(data, "F", frontFolder, projectData["front_node_modules"], css);
     
     if (backFolder)
         await loadProjectSide(data, "B", backFolder, projectData["back_node_modules"]);
 }
 
-async function loadProjectSide(project, side, folder, node_modules) {
+async function loadProjectSide(project, side, folder, node_modules, css) {
     let folderPath = folder + project.name + "/";
     await mkdir(folderPath, { recursive: true });
+
+    if (side === "F") {
+        await writeFile(folderPath + "project.css", css);
+    }
 
     let data = { 
         functions: {},
@@ -79,7 +84,7 @@ async function loadProjectSide(project, side, folder, node_modules) {
         await loadFunction(fDef, side, data, folderPath);
 
     await writeFile(folderPath + "projectData.json", JSON.stringify(data, null, 2));
-    await writeFile(folderPath + "index.js", makeProjectIndex());
+    await writeFile(folderPath + "index.js", makeProjectIndex(side === "F"));
 
     if (node_modules)
         await zipUtil.extract(node_modules, folderPath + "node_modules/");
@@ -87,9 +92,11 @@ async function loadProjectSide(project, side, folder, node_modules) {
     return data;
 }
 
-function makeProjectIndex() {
+function makeProjectIndex(includeCSS) {
     return `import projectData from './projectData';
 import { util } from 'obsidian';
+${includeCSS ? "\nimport './project.css'" : ""};
+
 
 export default {
     ...projectData,

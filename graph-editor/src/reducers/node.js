@@ -1,22 +1,23 @@
 import { lookupReducerFactory } from "./util";
 import { util } from 'obsidian';
+import nodes from '../logic/nodes';
 
-function NEW_NODE(state, action) {
+function NEW_NODE(state, action, fullState) {
     let type = action.nodeType;
     let data = {
-        back: () => ({node: {name: "Backend", content: "function main({input}) {\n\t\n}\n\nexport default { main };\n"}, inputs: [{label: "input", type: "back"}]}),
-        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nexport default { main: Main };\n"}, inputs: [{label: "input", type: "front"}]}),
-        agno: () => ({node: {name: "Code", content: "function main({input}) {\n\t\n}\n\nexport default { main };\n"}, inputs: [{label: "input", type: "back"}]}),
+        back: () => ({node: {name: "Backend", content: "function main({input}) {\n\t\n}\n\nexport default { main };\n"}, inputs: [{label: "input"}]}),
+        front: () => ({node: {name: "Frontend", content: "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nexport default { main: Main };\n"}, inputs: [{label: "input"}]}),
+        agno: () => ({node: {name: "Code", content: "function main({input}) {\n\t\n}\n\nexport default { main };\n"}, inputs: [{label: "input"}]}),
         data: () => ({node: {name: "Data", content: ""}}),
-        in: () => ({node: {name: "Input"}, output: {label: "value", type: "data"}}),
-        out: () => ({node: {name: "Output"}, inputs: [{label: "value", type: "data"}], output: null}),
-        edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value", type: "data"}}),
+        in: () => ({node: {name: "Input"}, output: {label: "value"}}),
+        out: () => ({node: {name: "Output"}, inputs: [{label: "value"}], output: null}),
+        edit: () => ({node: {name: "Editor", schema: ""}, output: {label: "value"}}),
         graph: () => action.data
     }[type]();
 
     data = {
         inputs: [],
-        output: {label: "out", type: "data"},
+        output: {label: "out"},
         ...data,
     }
 
@@ -50,7 +51,9 @@ function NEW_NODE(state, action) {
     }
 
     newState.nodes[nodeKey] = newNode;
-    return newState;
+
+    console.log(newNode)
+    return nodes.refreshInterface(nodeKey, newState, fullState);
 };
 
 function hasNameConflict(nodes, name, nodeKey) {

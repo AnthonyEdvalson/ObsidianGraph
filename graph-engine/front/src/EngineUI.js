@@ -20,6 +20,9 @@ function EngineUI() {
 
 	let res = engine.evalRoot();
 
+	if (res === undefined)
+		throw new Error("The ouptut of the graph 'Main' is undefined")
+
 	if (!React.isValidElement(res))
 		return <p>{JSON.stringify(res, null, 2)}</p>
 	

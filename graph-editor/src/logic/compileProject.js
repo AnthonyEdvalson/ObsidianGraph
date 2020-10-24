@@ -4,7 +4,7 @@ const fs = window.require("fs");
 const path = window.require("path");
 
 function buildProject(loaded, projectId) {
-    let buildData = {};
+    let buildData = { };
     let project = loaded[projectId];
 
     let startup = project.startup || Object.entries(project.graphs).find(g => g[1].present.meta.name.toLowerCase() === "main")[0];
@@ -13,7 +13,6 @@ function buildProject(loaded, projectId) {
         throw new Error("Cannot build " + project.name + ". It has no startup graph");
 
     let root = buildGraph(loaded, buildData, projectId, startup);
-    console.log(buildData);
     
     let zip = new ZipBetter();
 
@@ -27,6 +26,7 @@ function buildProject(loaded, projectId) {
             projectFolder.importFolder(project.backNodeModulesPath, "back_node_modules");
 
         projectFolder.addFile("project.json", JSON.stringify(project.data, null, 2));
+        projectFolder.addFile("project.css", project.css);
     }
 
     let appData = {
@@ -48,7 +48,7 @@ function buildGraph(loaded, buildData, projectId, graphId) {
     let name = project.name
 
     if (!(name in buildData)) {
-
+        // Move to buildProject
         let frontNodeModulesPath = path.join(project.path, "front", "node_modules");
         let backNodeModulesPath = path.join(project.path, "back", "node_modules");
 
@@ -61,15 +61,18 @@ function buildGraph(loaded, buildData, projectId, graphId) {
         buildData[name] = {
             frontNodeModulesPath,
             backNodeModulesPath,
+            css: "/* Project: " + name + " */",
             data: {
                 functions: { },
                 name,
                 author: project.author,
-                description: project.description
+                description: project.description,
             }
         };
     }
     let outKey = Object.entries(graph.nodes).find(([k, v]) => v.type === "out")[0];
+
+    buildData[name].css += "\n\n/* Graph: " + graph.meta.name + " */\n\n" + graph.css
     buildFunction(loaded, buildData, graph, outKey, buildData[name].data.functions);
 
     // Return the id of the root function of the graph

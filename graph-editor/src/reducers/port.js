@@ -4,8 +4,18 @@ import { lookupReducerFactory } from './util';
 
 function DELETE_PORT(state, action) {
     let key = action.key;
+    let parentNode = state.ports[key].node;
+
+    let isOutput = state.nodes[parentNode].output === key;
+
     let newState = {
         ...state,
+        nodes: {
+            ...state.nodes,
+            [parentNode]: {
+                ...state.nodes[parentNode]
+            }
+        },
         ports: {
             ...state.ports
         },
@@ -14,9 +24,17 @@ function DELETE_PORT(state, action) {
         }
     };
 
-    for (let [sink, source] of Object.entries(newState.links)) {
-        if (source === key || sink === key)
+    if (isOutput)
+        newState.nodes[parentNode].output = null;
+    else {
+        let node = newState.nodes[parentNode];
+        node.inputs = node.inputs.filter(i => i !== key);
+    }
+
+    for (let [sink, source] of Object.entries(state.links)) {
+        if (source === key || sink === key) {
             newState = DELETE_LINK(newState, {sink});
+        }
     }
 
     delete newState.ports[key];
@@ -28,20 +46,26 @@ function ADD_PORT(state, action) {
     let key = util.uuid4();
     let node = state.nodes[action.node];
 
+
     let newState = {
         ...state,
         nodes: { 
             ...state.nodes,
             [action.node]: {
-                ...node,
-                inputs: [...node.inputs, key],
+                ...node
             }
         },
         ports: { 
             ...state.ports,
-            [key]: {label: "label", node: action.node, type: "data"}
+            [key]: { label: action.label || "label", node: action.node , interId: action.interId }
         }
     };
+
+    if (action.output)
+        newState.nodes[action.node].output = key;
+    else
+        newState.nodes[action.node].inputs = [...node.inputs, key];
+
 
     return newState;
 }
@@ -57,4 +81,4 @@ function CHANGE_PORT(state, action) {
 }
 
 export default lookupReducerFactory({ DELETE_PORT, ADD_PORT, CHANGE_PORT });
-export { DELETE_PORT }
+export { DELETE_PORT, ADD_PORT, CHANGE_PORT }
