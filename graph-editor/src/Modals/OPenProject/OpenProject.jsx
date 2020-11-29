@@ -28,7 +28,7 @@ function OpenProject({ open, defaultDirectory, handleClose }) {
     function handleOpenFile() {
         dialog.showOpenDialog({
             defaultPath: defaultDirectory,
-            filters: [{name: "Obsidian Project File", extensions: ["obp"]}],
+            filters: [{name: "Obsidian Project File", extensions: ["obp", "bak"]}],
             properties: ["openFile"]
         }).then(result => {
             if (result.canceled || !result.filePaths)

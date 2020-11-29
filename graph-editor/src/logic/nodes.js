@@ -1,13 +1,15 @@
 import { DELETE_PORT, ADD_PORT, CHANGE_PORT } from "../reducers/port";
+import { conformToSchema } from "../UI/Schema/Schema";
 import graphs from './graphs';
 
-function refreshInterface(nodeId, graph, state) {
-    let node = graph.nodes[nodeId];
+function refreshInterface(oldNodeId, graph, state) {
+    let oldNode = graph.nodes[oldNodeId];
 
-    if (node.type !== "graph")
+    if (oldNode.type !== "graph")
         return graph;
 
-    let ref = graphs.getGraphFromLocation(state, node.location);
+    let ref = graphs.getGraphFromLocation(state, oldNode.location);
+    let newNode = { ...oldNode };
 
     // Update ports
 
@@ -16,66 +18,78 @@ function refreshInterface(nodeId, graph, state) {
         output: null,
         schema: null
     };
+    
     for (let [nodeId, node] of Object.entries(ref.nodes)) {
         if (node.type === "in")
-            inter.inputs[nodeId] = node.name;
+            inter.inputs[nodeId] = { label: node.name, valueType: node.valueType };
 
         if (node.type === "out")
             inter.output = node.name;
         
-        if (node.type === "schema")
+        if (node.type === "edit")
             inter.schema = JSON.parse(node.schema);
     }
-
+    
     let unused = new Set(Object.keys(inter.inputs));
-    for (let portId of node.inputs) {
+    for (let portId of newNode.inputs) {
         let port = graph.ports[portId];
 
         // Resolve Input
 
         if (port.interId in inter.inputs) {
-            if (inter.inputs[port.interId] !== port.label) {
+            let portDef = inter.inputs[port.interId];
+
+            if (port.label !== portDef.label || port.valueType !== portDef.valueType ||
+                (port.pin && port.valueType === "list") || (port.pins && port.valueType !== "list")) {
                 graph = CHANGE_PORT(graph, { port: portId, change: port => ({
                     ...port,
-                    label: inter.inputs[port.interId]
+                    ...portDef
                 })});
+                newNode = graph.nodes[oldNodeId];
             }
             unused.delete(port.interId)
         }
         else {
             graph = DELETE_PORT(graph, { key: portId });
+            newNode = graph.nodes[oldNodeId];
         }
     }
 
     for (let interId of unused) {
-        graph = ADD_PORT(graph, { node: nodeId, label: inter.inputs[interId], interId });
+        graph = ADD_PORT(graph, { node: oldNodeId, ...inter.inputs[interId], interId });
+        newNode = graph.nodes[oldNodeId];
     }
     
     // Update Output
 
-    if (node.output) {
-        let outPort = graph.ports[node.output];
+    if (oldNode.output) {
+        let outPort = graph.ports[oldNode.output];
 
         if (inter.output) {
             if (inter.output !== outPort.label) {
-                graph = CHANGE_PORT(graph, { port: node.output, change: port => ({
+                graph = CHANGE_PORT(graph, { port: newNode.output, change: port => ({
                         ...port,
                         label: inter.output
                 })});
+                newNode = graph.nodes[oldNodeId];
             }
         }
         else {
-            graph = DELETE_PORT(graph, { key: node.output })
+            graph = DELETE_PORT(graph, { key: newNode.output })
+            newNode = graph.nodes[oldNodeId];
         }
     }
     else if (inter.output) {
-        graph = ADD_PORT(graph, { node: nodeId, label: inter.output, output: true})
+        graph = ADD_PORT(graph, { node: oldNodeId, label: inter.output, inout: "out" })
+        newNode = graph.nodes[oldNodeId];
     }
 
     // Update Parameters & Schema
 
+    newNode.schema = inter.schema;
+    newNode.parameters = conformToSchema(inter.schema, newNode.parameters);
     
-
+    graph.nodes[oldNodeId] = newNode;
     return graph;
 }
 

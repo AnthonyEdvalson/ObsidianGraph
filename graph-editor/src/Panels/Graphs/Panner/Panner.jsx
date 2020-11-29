@@ -15,9 +15,9 @@ function move(t, { dx, dy, ds, pivot }) {
 	if (ds) {
 		let [x, y] = clientToGraph(pivot.x, pivot.y, t);
 		newT.s = Math.exp(Math.log(t.s) + ds);
-		let ms = newT.s / t.s;
-		newT.x -= (1 - 1 / ms) * x * newT.s;
-		newT.y -= (1 - 1 / ms) * y * newT.s;
+		let ms = t.s / newT.s - 1;
+		newT.x += ms * x * newT.s;
+		newT.y += ms * y * newT.s;
 	}
 
 	newT.x += dx || 0;
@@ -68,30 +68,45 @@ function Panner(props) {
 				if (props.handleDrag) {
 					let [x, y] = clientToGraph(...initial, t);
 					let [width, height] = clientToGraph(...movement, t, false);
+
+					x = Math.min(x, x + width);
+					y = Math.min(y, y + height);
+					width = Math.abs(width);
+					height = Math.abs(height);
+
 					let region = { x, y, width, height };
 
-					props.handleDrag(event.button, region, ctrlKey, tap, last);
+					event.stopPropagation();
+					props.handleDrag(event.buttons, region, ctrlKey, tap, last);
 				}
 			},
 		},
-		{ drag: { filterTaps: true }, eventOptions: { passive: false }, domTarget: ref }
+		{ 
+			drag: { filterTaps: true }, 
+			//eventOptions: { passive: false }, 
+			//domTarget: ref 
+		}
 	);
 
 	let style = {};
 	if (!props["no-transform"])
 		style = {transform: `scale(${t.s}) translate(${(t.x - 345) / t.s}px, ${(t.y - 30) / t.s}px)`};
 
-	React.useEffect(bind, [bind])
+	//React.useEffect(bind, [bind])
 
 	return (
-		<div className="Panner" ref={ref} style={style}>
+		<div>
 			<div className="navigation-bar">
-				<button onClick={() => setTransform(prev => ({ ...prev, s: prev.s + 0.1 }))}>+</button>
-				<button onClick={() => setTransform(prev => ({ ...prev, s: prev.s - 0.1 }))}>-</button>
+				<button onClick={() => setTransform(move(t, { ds:  0.25, pivot: {x:0, y:0} }))}>+</button>
+				<button onClick={() => setTransform(move(t, { ds: -0.25, pivot: {x:0, y:0} }))}>-</button>
+				<button onClick={() => setTransform({ x: 0, y: 0, s: 1 })}>h</button>
 			</div>
-			{ props.children }
+			<div className="Panner" {...bind()} ref={ref} style={style}>
+				{ props.children }
+			</div>
 		</div>
 	)
 }
 
 export default Panner;
+export { clientToGraph };

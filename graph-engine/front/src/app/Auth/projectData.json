@@ -1,0 +1,190 @@
+{
+  "functions": {
+    "fe815f5d-4db2-4bd7-ab35-7ef011c2aa18": {
+      "name": "AuthSystem.Database Connection",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "fe815f5d-4db2-4bd7-ab35-7ef011c2aa18",
+      "parameters": {
+        "databaseName": "Auth",
+        "userName": "username",
+        "password": "",
+        "dialect": "sqlite",
+        "storage": "auth.db"
+      },
+      "root": "ee4fb122-57ae-4ff9-b58f-a7160355c078"
+    },
+    "27835770-340b-4fb6-88bf-ecb12ff5dc59": {
+      "name": "AuthSystem.Database",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Default": "fe815f5d-4db2-4bd7-ab35-7ef011c2aa18"
+      },
+      "functionId": "27835770-340b-4fb6-88bf-ecb12ff5dc59",
+      "label": "Database"
+    },
+    "dcbd6a5a-6cc4-4d53-87e6-4ec8e093bbf4": {
+      "name": "AuthSystem.User",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Database": "27835770-340b-4fb6-88bf-ecb12ff5dc59"
+      },
+      "functionId": "dcbd6a5a-6cc4-4d53-87e6-4ec8e093bbf4",
+      "parameters": {
+        "name": "user",
+        "columns": [
+          {
+            "name": "username",
+            "type": "TEXT",
+            "defaultValue": "",
+            "allowNull": false,
+            "primaryKey": false,
+            "foreignKey": ""
+          },
+          {
+            "name": "password",
+            "type": "TEXT",
+            "defaultValue": "",
+            "allowNull": true,
+            "primaryKey": false,
+            "foreignKey": ""
+          },
+          {
+            "name": "emailAddress",
+            "type": "TEXT",
+            "defaultValue": "",
+            "allowNull": true,
+            "primaryKey": false,
+            "foreignKey": ""
+          }
+        ],
+        "timestamps": true,
+        "simpleId": true
+      },
+      "root": "09791cc2-ceda-4733-8b3a-e11d17fad58b"
+    },
+    "c262d2b5-d690-4d39-a9b1-830d0eaf5990": {
+      "name": "AuthSystem.User Table",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Default": "dcbd6a5a-6cc4-4d53-87e6-4ec8e093bbf4"
+      },
+      "functionId": "c262d2b5-d690-4d39-a9b1-830d0eaf5990",
+      "label": "User Table"
+    },
+    "ebe0ba50-8476-4c04-ac8b-04b348fc0105": {
+      "type": "remote",
+      "functionId": "ebe0ba50-8476-4c04-ac8b-04b348fc0105",
+      "name": "AuthSystem.Authenticate",
+      "inputs": {
+        "input": "c262d2b5-d690-4d39-a9b1-830d0eaf5990"
+      }
+    },
+    "fc5d0ce2-ae9d-4439-99e3-1567462f85cd": {
+      "name": "AuthSystem.Auth Controller",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "authenticate": "ebe0ba50-8476-4c04-ac8b-04b348fc0105"
+      },
+      "functionId": "fc5d0ce2-ae9d-4439-99e3-1567462f85cd",
+      "content": "function main({authenticate}) {\n  return { authenticate };\n}\n\nexport default { main };\n"
+    },
+    "4ee93e16-708c-44e0-bbf0-d5e801e9c921": {
+      "name": "AuthSystem.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "4ee93e16-708c-44e0-bbf0-d5e801e9c921"
+    },
+    "b9457fbb-52bb-4e0e-9d2e-8a39228aadb5": {
+      "name": "AuthSystem.Login",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "authController": "fc5d0ce2-ae9d-4439-99e3-1567462f85cd",
+        "config": "4ee93e16-708c-44e0-bbf0-d5e801e9c921"
+      },
+      "functionId": "b9457fbb-52bb-4e0e-9d2e-8a39228aadb5",
+      "content": "import React, { useState, useCallback } from 'react';\n\nfunction Login({authController, config}) {\n    authController = authController();\n    //config = config();\n\n    let [username, setUsername] = useState(\"\");\n    let [password, setPassword] = useState(\"\");\n    let [error, setError] = useState(\"\");\n\n    let login = useCallback(e => {\n        e.preventDefault();\n\n        authController.authenticate(username, password).then(({success, cookie}) => {\n            setError(\"\");\n            if (success) {\n                alert(cookie);\n            }\n            else {\n                setError(\"That username and password is not assicated with any account.\");\n                setPassword(\"\");\n            }\n        }).catch(error => {\n            console.error(error);\n            setError(\"We are unable to log you in at this time.\");\n        });\n\n        return false;\n    });\n\n    return (\n        <form className=\"Login\" onSubmit={login}>\n            <input type=\"text\" value={username} onChange={e => setUsername(e.target.value)} />\n            <input type=\"password\" value={password} onChange={e => setPassword(e.target.value)} />\n            { error && <span className=\"login-error\">{error}</span>}\n            <button type=\"submit\">Login</button>\n        </form>\n    )\n}\n\nexport default { main: Login };\n"
+    },
+    "6815e0f1-5223-441f-9931-0c64583911be": {
+      "name": "AuthSystem",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "b9457fbb-52bb-4e0e-9d2e-8a39228aadb5"
+      },
+      "functionId": "6815e0f1-5223-441f-9931-0c64583911be",
+      "description": ""
+    },
+    "18616cb3-b94c-4336-aa32-aa05a3167b9f": {
+      "name": "Main.AuthSystem",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Database": null,
+        "User Table": null
+      },
+      "functionId": "18616cb3-b94c-4336-aa32-aa05a3167b9f",
+      "parameters": {},
+      "root": "6815e0f1-5223-441f-9931-0c64583911be"
+    },
+    "123cb865-059a-4864-b1b5-1ce4b1dcd5f1": {
+      "name": "Main.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "Value": "18616cb3-b94c-4336-aa32-aa05a3167b9f"
+      },
+      "functionId": "123cb865-059a-4864-b1b5-1ce4b1dcd5f1",
+      "content": "import React from 'react';\n\nfunction Main({Value}) {\n\treturn <Value/>\n}\n\nexport default { main: Main };\n"
+    },
+    "f507feb3-b07c-46e5-b222-dbe3026132df": {
+      "name": "Main",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "123cb865-059a-4864-b1b5-1ce4b1dcd5f1"
+      },
+      "functionId": "f507feb3-b07c-46e5-b222-dbe3026132df",
+      "description": ""
+    }
+  },
+  "name": "Auth"
+}

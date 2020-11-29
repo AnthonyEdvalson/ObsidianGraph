@@ -8,7 +8,7 @@ function useNodeSelector(key, selector = x => x) {
     return useGraphSelector(graph => selector(graph.nodes[key]));
 }
 
-function useGraphSelector(selector) {
+function useGraphSelector(selector, equal) {
     let graphId = useContext(GraphIdContext);
 
     return useProjectSelector(project => {
@@ -22,7 +22,7 @@ function useGraphSelector(selector) {
             return graph;
 
         return selector(graph);
-    });
+    }, equal);
 }
 
 function useGraphDispatch() {
@@ -34,7 +34,7 @@ function useGraphDispatch() {
     }, [graphId, dispatch]);
 }
 
-function useProjectSelector(selector) {
+function useProjectSelector(selector, equal) {
     let projectId = useProjectId();
 
     return useSelector(state => {
@@ -47,7 +47,7 @@ function useProjectSelector(selector) {
             return project;
 
         return selector(project);
-    });
+    }, equal);
 }
 
 function useProjectDispatch() {

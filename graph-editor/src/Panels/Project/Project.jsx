@@ -5,20 +5,21 @@ import './Project.css';
 import UI from '../../UI';
 import graphs from '../../logic/graphs';
 import OpenProject from '../../Modals/OpenProject';
-import { useProjectSelector } from '../../logic/scope';
 import projects from '../../logic/projects';
 import engine from '../../logic/engine';
 import entropy from '../../logic/entropy';
 import useFSLink from './useFSLink';
 import { toast } from "react-toastify";
+import { useProjectSelector } from '../../logic/scope';
 const { shell, dialog } = window.require('electron').remote;
 
 
 function Project({ setMenu }) {
+    let rootProject = useSelector(state => state.projects[state.focus.rootProjectId]);
     let project = useProjectSelector();
     let [openProject, setOpenProject] = useState(true);
     let dispatch = useDispatch();
-    let tree = useProjectTree(project, dispatch);
+    let tree = useProjectTree(rootProject, dispatch);
     let loadedProjects = useSelector(state => state.projects);
     let courier = engine.useCourier();
 
@@ -75,7 +76,7 @@ function Project({ setMenu }) {
 }
 
 function useProjectTree(project, dispatch) {
-    let importGraph = graphs.useImportGraph();
+    let importGraph = graphs.useImportGraph(0, 0);
     let [packs, setPacks] = useState([]);
     let path = project && project.path;
     

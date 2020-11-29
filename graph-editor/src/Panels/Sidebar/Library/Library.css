@@ -42,7 +42,6 @@
     padding: 5px;
     justify-content: center;
     opacity: 0.6;
-    transition: all 0.1s cubic-bezier(0.22, 0.61, 0.36, 1);
     cursor: pointer;
 }
 

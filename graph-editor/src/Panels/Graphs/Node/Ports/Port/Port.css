@@ -1,0 +1,134 @@
+
+
+.Port {
+  cursor: pointer;
+  z-index: 10;  
+  box-sizing: content-box;
+  width: var(--port-width);
+  margin-bottom: var(--port-width);
+  --above: calc(var(--port-width) / 2);
+  --below: calc(var(--port-width) / 2);
+  position: relative;
+}
+
+.Port:first-child {
+  --above: calc(var(--port-width) * 2);
+}
+
+.Port:last-child {
+  margin-bottom: 0;
+  --below: calc(var(--port-width) * 2);
+}
+
+.Port.port-list {
+  background-color: #34465cc0;
+  border-radius: var(--port-width);
+}
+
+.port-ring {
+  background-color: var(--io-bright);
+  box-shadow: 0 0 0 5px #212a35b0 inset;
+  width: var(--port-width);
+  height: var(--port-width);
+  border-radius: 50%;
+  position: relative;
+}
+
+.Port:hover .port-ring {
+  box-shadow: 0 0 0 5px #fff inset;
+}
+
+.port-label {
+  overflow: visible;
+  white-space: nowrap;
+  opacity: 0;
+  user-select: none;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  font-size: 27px;
+  margin-top: -3px;
+  position: absolute;
+  top: 50%;
+  right: calc(10px + var(--port-width));
+}
+
+.Node:hover .port-label {
+  opacity: 1;
+}
+
+.Port:hover .port-label {
+  color: #fff;
+}
+
+.port-group-in .port-label {
+  margin-right: 10px;
+  float: right;
+}
+
+.ports-in .port-label {
+  right: calc(10px + var(--port-width));
+}
+
+.ports-out .port-label {
+  left: calc(10px + var(--port-width));
+}
+
+.ports-in .Port:hover .port-label {
+  right: calc(15px + var(--port-width));
+}
+
+.ports-out .Port:hover .port-label{
+  left: calc(15px + var(--port-width));
+}
+
+.port-group-out .port-label {
+  margin-left: var(--port-width);
+  float: left;
+}
+
+
+/* PORT COLORS */
+.Port.node-back>.port-ring {
+  background-color: var(--back-bright);
+}
+.Port.node-front>.port-ring {
+  background-color: var(--front-bright);
+}
+.Port.node-agno>.port-ring {
+  background-color: var(--agno-bright);
+}
+.Port.node-data>.port-ring {
+  background-color: var(--data-bright);
+}
+
+
+/* NODE INFO COLORS */
+.Node.node-graph .node-info {
+  background-color: var(--graph-dim);
+}
+.Node.node-edit .node-info {
+  background-color: var(--edit-dim);
+}
+.Node.node-in .node-info,
+.Node.node-out .node-info,
+.Node.node-io .node-info {
+  background-color: var(--io-dim);
+}
+.Node.node-data .node-info {
+  background-color: var(--data-dim);
+}
+.Node.node-front .node-info {
+  background-color: var(--front-dim);
+}
+.Node.node-agno .node-info {
+  background-color: var(--agno-dim);
+}
+.Node.node-back .node-info {
+  background-color: var(--back-dim);
+}
+
+
+
+

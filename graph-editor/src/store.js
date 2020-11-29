@@ -3,6 +3,7 @@ import projectReducer from './reducers/project';
 import focusReducer from './reducers/focus';
 import { indexedReducerFactory, combineReducers } from './reducers/util';
 import { util } from 'obsidian';
+import clipboardReducer from'./reducers/clipboard';
 
 
 function errorReducer(state={}, action) {
@@ -34,7 +35,8 @@ let reducers = {
     projects: projectsReducer,
     errors: errorReducer,
     focus: focusReducer,
-    profiles: profilesReducer
+    profiles: profilesReducer,
+    clipboard: clipboardReducer
 };
 
 let mainReducer = combineReducers(reducers);

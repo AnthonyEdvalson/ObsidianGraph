@@ -26,12 +26,19 @@ function Dropdown(props) {
                             if (typeof(o) === "string"){
                                 value = o;
                                 label = formatKey(o);
-                                console.log(value, label)
                             }
                             else if (Array.isArray(o)) {
                                 value = o[0];
                                 label = o[1];
                             }
+
+                            let isValType = !["function", "object", "undefined", "symbol"].includes(typeof(value));
+                            if (value === null)
+                                isValType = true;
+
+                            if (props.onlyValueTypes && !isValType)
+                                throw new Error("This dropdown only allows value values, no objects, functions, etc.\n" +
+                                                "Dropdown was given the data " + JSON.stringify(value) + " with the label " + label);
                             
                             return <option key={label} value={JSON.stringify(value)}>{label}</option>  
                         })

@@ -1,3 +1,5 @@
-export default { 
-  main: () => { window.alert("Hey")} 
-};
+function main() {
+  window.alert("Hey");
+}
+
+export default { main };

@@ -5,7 +5,6 @@ import { useGraphDispatch } from './scope';
 import { util } from 'obsidian';
 import nodes from './nodes';
 
-
 function openGraph(dispatch, graphId, projectId) {
     if (projectId)
         dispatch({ type: "SET_FOCUS", focus: { projectId, graphId} });
@@ -17,7 +16,7 @@ function getGraphFromLocation(state, location) {
     return state.projects[location.projectId].graphs[location.graphId].present;
 }
 
-function useImportGraph() {
+function useImportGraph(x, y) {
     let state = useSelector(state => state);
     let dispatch = useGraphDispatch();
 
@@ -31,8 +30,8 @@ function useImportGraph() {
             output: null,
         };
 
-        dispatch({ type: "NEW_NODE", nodeType: "graph", data});
-    }, [state, dispatch]);
+        dispatch({ type: "NEW_NODE", nodeType: "graph", x, y, data});
+    }, [state, dispatch, x, y]);
 }
 
 function refreshInterfaces(graph, state) {
@@ -67,15 +66,17 @@ function packForSerialization(graph) {
         meta: graph.present.meta,
         nodes: graph.present.nodes,
         ports: graph.present.ports,
+        inputs: graph.present.inputs,
         links: graph.present.links,
         transform: graph.present.transform,
+        pins: graph.present.pins,
         css: graph.present.css
     };
 }
 
 function unpackFromSerialization(data, graphId) {
-    // We create fullGraph by merging a blank graph with the stored one to replace
-    // any lost fields, and to add new properties to outdated graphs.
+    // We create fullGraph by merging a blank graph with the stored one to add
+    // attributes that are not serialized, like selection and newLink information.
     let template = makeEmptyGraph(null, graphId);
     let fullGraph = util.merge(template, data);
     return newHistory([], fullGraph, []);
@@ -93,6 +94,7 @@ function makeEmptyGraph(name, graphId) {
         nodes: {},
         links: {},
         ports: {},
+        pins: {},
         newLink: null,
         selection: { all: [], items: [], dragging: false },
         graphId

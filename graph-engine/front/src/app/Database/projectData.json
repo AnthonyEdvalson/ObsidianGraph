@@ -1,106 +1,5 @@
 {
   "functions": {
-    "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038": {
-      "name": "CRUD.Table",
-      "type": "in",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {},
-      "functionId": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038",
-      "label": "Table"
-    },
-    "f7485ef8-ca3e-4564-b3e6-8f0893c00677": {
-      "type": "remote",
-      "functionId": "f7485ef8-ca3e-4564-b3e6-8f0893c00677",
-      "name": "CRUD.Create",
-      "inputs": {
-        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
-      }
-    },
-    "d4781c6b-05cf-43bd-b5de-4c73eefbae39": {
-      "type": "remote",
-      "functionId": "d4781c6b-05cf-43bd-b5de-4c73eefbae39",
-      "name": "CRUD.Read",
-      "inputs": {
-        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
-      }
-    },
-    "4bd7d87d-b807-44d5-afe4-df15aedde8ad": {
-      "type": "remote",
-      "functionId": "4bd7d87d-b807-44d5-afe4-df15aedde8ad",
-      "name": "CRUD.Update",
-      "inputs": {
-        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
-      }
-    },
-    "e067e162-16bb-4e8c-9be0-22ff13f3229b": {
-      "name": "CRUD.Editor",
-      "type": "edit",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {},
-      "functionId": "e067e162-16bb-4e8c-9be0-22ff13f3229b"
-    },
-    "40d1f0eb-d1e2-4053-8f9b-17a3094234b0": {
-      "type": "remote",
-      "functionId": "40d1f0eb-d1e2-4053-8f9b-17a3094234b0",
-      "name": "CRUD.Delete",
-      "inputs": {
-        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
-      }
-    },
-    "def9a217-b20b-42ae-a333-cc76576c61ef": {
-      "type": "remote",
-      "functionId": "def9a217-b20b-42ae-a333-cc76576c61ef",
-      "name": "CRUD.Read All",
-      "inputs": {
-        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
-      }
-    },
-    "3da837d4-8d02-47d2-8e97-793e8ef87ffb": {
-      "type": "remote",
-      "functionId": "3da837d4-8d02-47d2-8e97-793e8ef87ffb",
-      "name": "CRUD.Upsert",
-      "inputs": {
-        "table": "0bee7cc7-6091-4a8e-9ea1-cc6bd671d038"
-      }
-    },
-    "78c26d0a-5ec0-4d31-8803-ac4b860d1ce2": {
-      "name": "CRUD.Merge",
-      "type": "code",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {
-        "create": "f7485ef8-ca3e-4564-b3e6-8f0893c00677",
-        "read": "d4781c6b-05cf-43bd-b5de-4c73eefbae39",
-        "update": "4bd7d87d-b807-44d5-afe4-df15aedde8ad",
-        "perms": "e067e162-16bb-4e8c-9be0-22ff13f3229b",
-        "del": "40d1f0eb-d1e2-4053-8f9b-17a3094234b0",
-        "readAll": "def9a217-b20b-42ae-a333-cc76576c61ef",
-        "upsert": "3da837d4-8d02-47d2-8e97-793e8ef87ffb"
-      },
-      "functionId": "78c26d0a-5ec0-4d31-8803-ac4b860d1ce2",
-      "content": "function main({perms, create, read, update, del, readAll, upsert}) {\n  let allowed = {};\n  perms = perms();\n\n  addIfAllowed(allowed, perms.create, \"Creating new\", {create});\n  addIfAllowed(allowed, perms.read, \"Reading\", {read, readAll});\n  addIfAllowed(allowed, perms.update, \"Updating existing\", {update});\n  addIfAllowed(allowed, perms.del, \"Deleting\", {del});\n  addIfAllowed(allowed, perms.create && perms.update, \"Creating and updating\", {upsert});\n    \n  return allowed;\n}\n\nfunction addIfAllowed(actions, allowed, verb, newActions) {\n  for (let [k, v] of Object.entries(newActions)) {\n    if (allowed)\n      actions[k] = v;\n    else\n      actions[k] = () => { throw new Error(verb + \" entries is not allowed\")}\n  }\n}\n\nexport default { main };\n"
-    },
-    "cbcc957e-f323-4770-ba0c-7efd03fdebc8": {
-      "name": "CRUD",
-      "type": "out",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {
-        "value": "78c26d0a-5ec0-4d31-8803-ac4b860d1ce2"
-      },
-      "functionId": "cbcc957e-f323-4770-ba0c-7efd03fdebc8",
-      "description": "Provides CRUD (Create, Read, Update, and Delete) operations for a table. In addition to standard CRUD, it also has readAll and upsert."
-    },
     "28754be2-4455-400d-91ca-ba482239d980": {
       "name": "Table.Database",
       "type": "in",
@@ -108,7 +7,9 @@
         "F",
         "B"
       ],
-      "inputs": {},
+      "inputs": {
+        "Default": null
+      },
       "functionId": "28754be2-4455-400d-91ca-ba482239d980",
       "label": "Database"
     },
@@ -174,99 +75,6 @@
       },
       "functionId": "ee4fb122-57ae-4ff9-b58f-a7160355c078",
       "description": "Creates a connection to the database. Default connection URI will create an in-memory SQLite database. Returns a sequelize instance.\n\n[https://sequelize.org/master/manual/getting-started.html#connecting-to-a-database](How to connect)"
-    },
-    "3eb69732-54c6-4e2d-b0d8-c70bd7ad7c3a": {
-      "name": "Main.Database Connection",
-      "type": "call",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {},
-      "functionId": "3eb69732-54c6-4e2d-b0d8-c70bd7ad7c3a",
-      "parameters": {
-        "databaseName": "database",
-        "userName": "username",
-        "password": "",
-        "dialect": "sqlite",
-        "storage": ":memory:"
-      },
-      "root": "ee4fb122-57ae-4ff9-b58f-a7160355c078"
-    },
-    "fa6978fd-017f-484b-a02a-0de6b3dc6252": {
-      "name": "Main.Task Table",
-      "type": "call",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {
-        "db": "3eb69732-54c6-4e2d-b0d8-c70bd7ad7c3a"
-      },
-      "functionId": "fa6978fd-017f-484b-a02a-0de6b3dc6252",
-      "parameters": {
-        "name": "Tasks",
-        "columns": [
-          {
-            "name": "title",
-            "type": "TEXT",
-            "defaultValue": "",
-            "allowNull": false
-          },
-          {
-            "name": "description",
-            "type": "TEXT",
-            "defaultValue": "...",
-            "allowNull": true
-          }
-        ],
-        "timestamps": true
-      },
-      "root": "09791cc2-ceda-4733-8b3a-e11d17fad58b"
-    },
-    "3719baa6-884e-41c1-8332-4882f6cc0af7": {
-      "name": "Main.Task CRUD",
-      "type": "call",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {
-        "Table": "fa6978fd-017f-484b-a02a-0de6b3dc6252"
-      },
-      "functionId": "3719baa6-884e-41c1-8332-4882f6cc0af7",
-      "parameters": {
-        "create": true,
-        "read": true,
-        "update": false,
-        "del": true
-      },
-      "root": "cbcc957e-f323-4770-ba0c-7efd03fdebc8"
-    },
-    "69b5f55c-41db-421a-a881-5bf7973661b0": {
-      "name": "Main.Frontend",
-      "type": "code",
-      "sides": [
-        "F"
-      ],
-      "inputs": {
-        "tasks": "3719baa6-884e-41c1-8332-4882f6cc0af7"
-      },
-      "functionId": "69b5f55c-41db-421a-a881-5bf7973661b0",
-      "content": "import React, { useState, useEffect } from 'react';\n\nfunction Main({tasks}) {\n  let [data, setData] = useState(null);\n  let refresh = () => tasks().readAll().then(setData);\n  useEffect(refresh, []);\n  return data ? (\n      <div>\n        { data.map(item => (\n          <div>\n            {item.title} - {item.description}\n            <button onClick={() => tasks().del(item.id).then(refresh)}>Delete</button>\n          </div>\n        ))}\n        <button onClick={() => tasks().create({title: \"ABC\", description: new Date().toString()}).then(refresh)}>Add</button>\n      </div>\n    ) : \"Loading...\";\n}\n\nexport default { main: Main };"
-    },
-    "5dc7568a-5627-4b5f-83d4-a4bc6cd3dccb": {
-      "name": "Main",
-      "type": "out",
-      "sides": [
-        "F",
-        "B"
-      ],
-      "inputs": {
-        "value": "69b5f55c-41db-421a-a881-5bf7973661b0"
-      },
-      "functionId": "5dc7568a-5627-4b5f-83d4-a4bc6cd3dccb",
-      "description": ""
     }
   },
   "name": "Database"

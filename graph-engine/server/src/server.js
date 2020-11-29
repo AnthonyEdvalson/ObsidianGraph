@@ -2,6 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import socketIO from 'socket.io';
+import http from 'http';
 import { cli, util, messaging } from 'obsidian';
 
 const app = express();
@@ -29,7 +30,8 @@ class Server {
     constructor(groups, debug) {
         this.debug = debug;
         this.app = express();
-        this.app.use(cors(corsOptions));
+        this.app.use(express.json());
+        //this.app.use(cors(corsOptions));
 
         this.expressServer = app.listen(port, () => cli.info("server", `Listening on port ${port}`));
         this.socketServer = socketIO(this.expressServer, {
@@ -50,6 +52,8 @@ class Server {
     publish() {
         for (let group of Object.values(this.groups))
             group.publish();
+        
+        http.createServer(this.app).listen(5001);
     }
 
     async emit(groupName, socketId, eventName, ...args) {

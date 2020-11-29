@@ -18,8 +18,6 @@ function PathInput(props) {
 
         let result = await dialog.showSaveDialog(options);
 
-        console.log(result);
-
         if (!result.canceled) {
             let path = result.filePath;
             form.handleChange(() => path);

@@ -2,15 +2,17 @@ import graphs from "./graphs";
 import { toast } from "react-toastify";
 import buildProject from "./compileProject";
 import { util as obsidianUtil } from 'obsidian';
+import version from '../logic/version';
 
 const ncp = window.require("ncp").ncp;
 const fs = window.require("fs");
 const path = window.require("path");
 const util = window.require("util");
 
-const minObpVersion = 1;
-const maxObpVersion = 1;
-const currentObpVersion = 1;
+async function toastWarn(msg) {
+    console.warn(msg);
+    toast(msg, {type: "warn"});
+}
 
 async function toastErr(msg, e) {
     console.error(e);
@@ -80,7 +82,6 @@ function serializeObp(data) {
 
     let obpData = {
         ...project,
-        v: currentObpVersion,
         graphs: newGraphs
     };
 
@@ -92,9 +93,9 @@ async function openProject(obpPath, dispatch) {
 
     try {
         let obp = await util.promisify(fs.readFile)(obpPath, "utf-8");
-        data = deserializeObp(obp, obpPath);
+        data = await deserializeObp(obp, obpPath);
         dispatch({type: "LOAD_PROJECT", data});
-        dispatch({type: "SET_FOCUS", focus: { projectId: data.projectId } });
+        dispatch({type: "SET_FOCUS", focus: { projectId: data.projectId, rootProjectId: data.projectId } });
     } catch (e) {
         toastErr("Unable to open that project", e);
         return;
@@ -106,12 +107,20 @@ async function openProject(obpPath, dispatch) {
     }
 }
 
-function deserializeObp(obp, obpPath) {
+async function deserializeObp(obp, obpPath, ingoreOutdated) {
     let obpData = JSON.parse(obp);
 
-    if (!obpData.v || obpData.v < minObpVersion || obpData.v > maxObpVersion)
-        throw new Error("Could not load " + obpPath + ", it is obp version " + obpData.v + 
-            ", But only " + minObpVersion + " to " + maxObpVersion + " are valid");
+    if (version.outdated(obpData.v)) {
+        if (ingoreOutdated)
+            return null;
+
+        // example/project.obp -> example/project_v1_0_2.obn.bak
+        let backupPath = obpPath.replace(/\.[^/.]+$/, "") + "_v" + obpData.v.toString().replace(".", "_") + ".obn.bak";
+        await backup(obpPath, backupPath);
+        toastWarn(path.basename(obpPath) + " is outdated, a backup has been made at " + path.basename(backupPath));
+
+        obpData = version.upgrade(obpData);
+    }
 
     let project = { path: path.dirname(obpPath), ...obpData };
 
@@ -119,10 +128,11 @@ function deserializeObp(obp, obpPath) {
     for (let [id, graph] of Object.entries(obpData.graphs))
         newGraphs[id] = graphs.unpackFromSerialization(graph, id);
 
+    // Save before return???
     return {
         ...project,
         graphs: newGraphs
-    }
+    };
 }
 
 async function save(project) {
@@ -148,11 +158,17 @@ async function save(project) {
     }
 
     try {
+        await backup(obpPath, obpPath + ".bak");
         await util.promisify(fs.writeFile)(obpPath, obp);
         toast("Saved " + project.name + ".obp", {type: "success"});
     } catch (e) {
         toastErr("Unable to save obp file", e);
     }
+}
+
+async function backup(src, dest) {
+    if (src && fs.existsSync(src))
+        await util.promisify(fs.copyFile)(src, dest, fs.constants.COPYFILE_FICLONE);
 }
         
 
@@ -178,7 +194,7 @@ async function importPackage(obpPath, targetProjectPath) {
     }
 
     //let obp = await util.promisify(fs.readFile)(obpPath, "utf-8");
-    //let data = deserializeObp(obp, obpPath);
+    //let data = await deserializeObp(obp, obpPath);
 
     //dispatch({type: "IMPORT_PROJECT", data});
 
@@ -196,7 +212,7 @@ async function getPackages(projectPath) {
 
         let obpPath = path.join(packFolder, packName, packName + ".obp");
         let obp = await util.promisify(fs.readFile)(obpPath, "utf-8");
-        let data = deserializeObp(obp, obpPath);
+        let data = await deserializeObp(obp, obpPath);
 
         packs[packName] = data;
     }

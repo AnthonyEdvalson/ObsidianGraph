@@ -1,0 +1,24 @@
+.Links {
+    position: absolute;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.Link .link-interact {
+    pointer-events: stroke;
+    stroke-width: 12px;
+    stroke: transparent;
+}
+
+.Link .link-visible {
+    pointer-events: none;
+    stroke-width: 5px;
+}
+
+.Link.link-selected .link-interact {
+    stroke: #ddd;
+}
+
+.Link.link-selected .link-visible {
+    stroke-width: 7px;
+}

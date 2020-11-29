@@ -64,7 +64,7 @@ function TimeTravel() {
 
     return (
         <div className="TimeTravel">
-            <Panner transform={transform} setTransform={setTransform} zoomSensitivity={4} no-transform>
+            <Panner transform={transform} setTransform={setTransform} zoomSensitivity={4} no-transform >
                 <div className="timeline">
                     {
                         Object.entries(profiles).map(([id, event]) => (

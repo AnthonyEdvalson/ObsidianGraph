@@ -7,7 +7,7 @@
     border-right: #101419 1px solid;
     display: flex;
     flex-flow: column;
-    box-shadow: #00000090 1px 1px 20px;
+    border-top: solid 2px #8ec2d580;
     z-index: 100;
 
     overflow-y: auto;

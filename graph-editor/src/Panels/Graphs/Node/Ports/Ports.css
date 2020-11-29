@@ -1,0 +1,21 @@
+.Ports {
+    z-index: 10;
+    background-color: #34465c30;
+    border: 2px solid #34465c70;
+    border-radius: var(--port-width);
+    width: var(--port-width);
+    box-sizing: content-box;
+    position: absolute;
+}
+
+.ports-in {
+    margin-left: calc(var(--port-width) / -2);
+    left: -5px;
+}
+
+.ports-out {
+    margin-right: calc(var(--port-width) / -2);
+    right: -5px;
+}
+
+

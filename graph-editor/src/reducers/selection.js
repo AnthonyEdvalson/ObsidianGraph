@@ -1,5 +1,6 @@
 import { DELETE_LINK } from './link';
-import { DELETE_PORT } from './port';
+import { DELETE_NODE } from './node';
+import { CHANGE_PORT } from './port';
 import { lookupReducerFactory } from './util';
 
 
@@ -43,7 +44,18 @@ function CHANGE_SELECTION(state, action) {
     if (select.type === "node") {
         newState.nodes = { ...newState.nodes };
         let oldNode = newState.nodes[select.key];
-        newState.nodes[select.key] = action.change(oldNode);
+        let newNode = action.change(oldNode);
+
+        newState.nodes[select.key] = newNode;
+
+        if (newNode.type === "in") {
+            let dPortId = newNode.inputs[0];
+            let dPort = state.ports[dPortId];
+            console.log(dPort, newNode)
+            if (dPort.valueType !== newNode.valueType)
+                newState = CHANGE_PORT(newState, { port: dPortId, change: p => ({ ...p, valueType: newNode.valueType }) });
+        }
+
     }
     else if (select.type === "graph") {
         newState.meta = { ...newState.meta };
@@ -63,16 +75,7 @@ function DELETE_SELECTION(state, action) {
 
     for (let item of state.selection.items) {
         if (item.type === "node") {
-            let target = state.nodes[item.key];
-            
-            if (target.output)
-                newState = DELETE_PORT(newState, { key: target.output });
-                
-            for (let key of target.inputs)
-                newState = DELETE_PORT(newState, {key});
-    
-            newState.nodes = { ...newState.nodes };
-            delete newState.nodes[item.key];
+            newState = DELETE_NODE(newState, { nodeId: item.key });
         }
         if (item.type === "link") {
             newState.links = { ...newState.links };

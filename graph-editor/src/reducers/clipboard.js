@@ -1,4 +1,4 @@
-import { makeLookupReducer } from "./util";
+import { lookupReducerFactory } from "./util";
 import { cleanName } from './node';
 import { util } from 'obsidian';
 
@@ -6,6 +6,7 @@ function copy(graph) {
     let clip = {
         nodes: {},
         ports: {},
+        pins: {},
         links: {}
     };
 
@@ -15,13 +16,19 @@ function copy(graph) {
                 let node = graph.nodes[key];
                 clip.nodes[key] = {...node};
                 
-                for (let portKey of [...node.inputs, node.output]) {
-                    let port = graph.ports[portKey];
-                    clip.ports[portKey] = {...port};
+                for (let portId of [...node.inputs, node.output]) {
+                    let port = graph.ports[portId];
+                    clip.ports[portId] = {...port};
 
-                    if (portKey in graph.links) {
-                        let link = graph.links[portKey];
-                        clip.links[portKey] = link;
+                    let pinIds = port.pins || [port.pin];
+
+                    for (let pinId of pinIds) {
+                        clip.pins[pinId] = { ...graph.pins[pinId] }; 
+
+                        if (pinId in graph.links) {
+                            let link = graph.links[portId];
+                            clip.links[portId] = link;
+                        }
                     }
                 }
                 break;
@@ -40,19 +47,20 @@ function paste(graph, clip) {
         ...graph,
         nodes: { ...graph.nodes },
         ports: { ...graph.ports },
+        pins: { ...graph.pins},
         links: { ...graph.links },
         selection: { ...graph.selection, items: [] }
     };
 
-    let portMap = {};
+    let pinMap = {};
 
-    for (let [, node] of Object.entries(clip.nodes)) {
+    for (let node of Object.values(clip.nodes)) {
         let newNodeKey = util.uuid4();
 
         let nodeCopy = {
             ...node,
-            inputs: node.inputs.map(input => pastePort(clip, newGraph, input, newNodeKey, portMap)),
-            output: pastePort(clip, newGraph, node.output, newNodeKey, portMap),
+            inputs: node.inputs.map(input => pastePort(clip, newGraph, input, newNodeKey, pinMap)),
+            output: pastePort(clip, newGraph, node.output, newNodeKey, pinMap),
             x: node.x + 20,
             y: node.y + 20,
             name: cleanName(newGraph.nodes, node.name, newNodeKey)
@@ -63,8 +71,8 @@ function paste(graph, clip) {
     }
 
     for (let [sink, source] of Object.entries(clip.links)) {
-        let newSink = portMap[sink];
-        let newSource = portMap[source];
+        let newSink = pinMap[sink];
+        let newSource = pinMap[source];
 
         if (newSink && newSource) {
             newGraph.links[newSink] = newSource;
@@ -74,49 +82,43 @@ function paste(graph, clip) {
     return newGraph;
 }
 
-function pastePort(clip, newGraph, key, nodeKey, portMap) {
+function pastePort(clip, newGraph, key, nodeKey, pinMap) {
     let newPortKey = util.uuid4();
 
-    let port = clip.ports[key];
+    let port = { ...clip.ports[key] };
     port.node = nodeKey;
-    newGraph.ports[newPortKey] = port;
 
-    portMap[key] = newPortKey;
+    if (port.pin)
+        port.pin = pastePin(clip, newGraph, port.pin, newPortKey, nodeKey, pinMap);
+    if (port.pins)
+        port.pins = port.pins.map(p => pastePin(clip, newGraph, p, newPortKey, nodeKey, pinMap));
+    
+    newGraph.ports[newPortKey] = port;
 
     return newPortKey;
 }
 
-function COPY(state, action) {
-    return {
-        ...state,
-        clipboard: copy(state.project.graphs[action.graphId].present)
-    }
-}
+function pastePin(clip, newGraph, pinId, portId, nodeId, pinMap) {
+    let newPinId = util.uuid4();
 
-function PASTE(state, action, fullState) {
-    let newState = {
-        ...state,
-        project: {
-            ...state.project,
-            graphs: {
-                ...state.project.graphs
-            }
-        }
-    }
-    let graphs = newState.project.graphs;
-    let graphId = action.graphId;
-    let clipboard = state.clipboard;
+    let pin = { ...clip.pins[pinId] };
+    pin.port = portId;
+    pin.node = nodeId;
 
-    graphs[graphId].present = paste(graphs.graphId.present, clipboard);
+    pinMap[pinId] = newPinId;
 
-    return newState;
-}
+    newGraph.pins[newPinId] = pin;
 
-function DUPLICATE(state, action, fullState) {
-    let clip = copy(state);
-    return paste(state, clip);
+    return newPinId;
 }
 
 
-export default makeLookupReducer({ COPY, PASTE, DUPLICATE }, { nodes: {}, ports: {}, links: {} });
-export { copy };
+function COPY(state, action, fullState) {
+    let focused = fullState.projects[action.projectId].graphs[action.graphId].present
+
+    return copy(focused);
+}
+
+
+export default lookupReducerFactory({ COPY }, { nodes: {}, ports: {}, pins: {}, links: {} });
+export { copy, paste };

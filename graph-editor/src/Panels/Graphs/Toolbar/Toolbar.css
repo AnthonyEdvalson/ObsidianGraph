@@ -1,7 +1,7 @@
 .Toolbar {
     background-color: #1e262e;
     height: 30px;
-    position: absolute;
+    position: relative;
     top: 0;
     right: 0;
     left: 0;
@@ -19,7 +19,6 @@
     font-weight: 600;
     letter-spacing: 1px;
     background-color: var(--io-dim);
-    transition: background-color 0.2s ease-out;
     cursor: pointer;
 }
 .ToolbarNodeButton:hover {

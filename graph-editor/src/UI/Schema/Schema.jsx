@@ -11,6 +11,9 @@ import './Schema.css';
 
 
 function getDefaultParams(schema) {
+    if (schema === null)
+        return null;
+
     switch (schema.type) {
         case "text":
         case "textarea":
@@ -31,6 +34,44 @@ function getDefaultParams(schema) {
             let obj = {};
             for (let [k, v] of Object.entries(schema.fields))
                 obj[k] = getDefaultParams(v);
+            return obj;
+        default:
+            throw new Error("Unknown type " + schema.type + " in " + JSON.stringify(schema, null, 2));
+    }
+}
+
+function conformToSchema(schema, param) {
+    let pType = typeof(param);
+    let forceType = type => (type === pType) ? param : getDefaultParams(schema);
+
+    if (schema == null)
+        return null;
+
+    switch (schema.type){
+        case "text":
+        case "textarea":
+            return forceType("string");
+        case "number":
+            return forceType("number");
+        case "bool":
+            return forceType("boolean");
+        case "enum":
+            if (schema.options.some(x => (Array.isArray(x) ? x[0] : x) === param ))
+                return param;
+
+            return getDefaultParams(schema);
+        case "list":
+            if (Array.isArray(param))
+                return param.map(i => conformToSchema(schema.field, i));
+
+            return getDefaultParams(schema);
+        case "object":
+            if (pType !== "object")
+                return getDefaultParams(schema);
+            
+            let obj = {};  
+            for (let [k, v] of Object.entries(schema.fields))
+                obj[k] = conformToSchema(v, param[k]);
             return obj;
         default:
             throw new Error("Unknown type " + schema.type + " in " + JSON.stringify(schema, null, 2));
@@ -95,7 +136,7 @@ function SchemaElement(props) {
                 </List>
             );
         case "enum":
-            return <Dropdown { ...props } />
+            return <Dropdown { ...props } onlyValueTypes />
         case "object":
             return (
                 <Obj { ...props }>
@@ -108,4 +149,4 @@ function SchemaElement(props) {
 }
 
 export default Schema;
-export { getDefaultParams };
+export { getDefaultParams, conformToSchema };

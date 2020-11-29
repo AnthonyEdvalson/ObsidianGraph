@@ -1,9 +1,10 @@
 {
-  "root": "9a0068f8-dc33-46f8-97e3-74cb88fa05ff",
+  "root": "f507feb3-b07c-46e5-b222-dbe3026132df",
   "projects": [
-    "UI"
+    "Auth",
+    "Database"
   ],
-  "name": "UI",
+  "name": "Auth",
   "author": "Obsidian",
-  "description": "Standard UI library for creating interfaces in Obsidian"
+  "description": "Simple authentication system"
 }

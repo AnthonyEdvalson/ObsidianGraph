@@ -30,7 +30,7 @@ function exportProject(state, dispatch) {
 
 function importProjects(state, dispatch) {
     dialog.showOpenDialog({
-        filters: [{name: "Obsidian Project File", extensions: ["obp"]}],
+        filters: [{name: "Obsidian Project File", extensions: ["obp", "bak"]}],
         properties: ["openFile", "multiSelections"]
     }).then(result => {
         if (result.canceled)

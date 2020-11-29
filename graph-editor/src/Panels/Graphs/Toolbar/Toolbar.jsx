@@ -10,7 +10,7 @@ function ToolbarNodeButton(props) {
 
     function MakeNode() {
         if (!disabled)
-            dispatch({type: "NEW_NODE", nodeType: t});
+            dispatch({type: "NEW_NODE", nodeType: t, x: props.x, y: props.y });
     }
 
     return (
@@ -20,14 +20,14 @@ function ToolbarNodeButton(props) {
     )
 }
 
-function Toolbar() {
+function Toolbar({ center }) {
     const outputExists = useGraphSelector(graph => Object.values(graph.nodes).some(n => n.type === "out"));
 
     return (
         <div className="Toolbar">
             {
-                ["back", "front", "agno", "data", "edit", "in", "out"].map(v => {
-                    return <ToolbarNodeButton key={v} t={v} outputExists={outputExists} />
+                ["back", "agno", "front", "data", "edit", "in", "out"].map(v => {
+                    return <ToolbarNodeButton key={v} t={v} outputExists={outputExists} x={center[0]} y={center[1]} />
                 })
             }
         </div>

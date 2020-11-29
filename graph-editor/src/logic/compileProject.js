@@ -38,6 +38,7 @@ function buildProject(loaded, projectId) {
     };
 
     zip.addFile("app.json", JSON.stringify(appData, null, 2));
+    console.log(appData, buildData)
 
     return [zip, project.name, buildData];
 }
@@ -80,6 +81,7 @@ function buildGraph(loaded, buildData, projectId, graphId) {
 }
 
 function buildFunction(loaded, buildData, graph, key, functions) {
+    console.log(graph, key)
     let node = graph.nodes[key];
     let name = node.name;
 
@@ -103,6 +105,8 @@ function buildFunction(loaded, buildData, graph, key, functions) {
 
         case "in":
             fDef.label = name;
+            fDef.inputs = resolveInputs(graph, node.inputs);
+            propagate(loaded, buildData, graph, node.inputs, functions);
             break;
 
         case "edit":
@@ -129,9 +133,8 @@ function buildFunction(loaded, buildData, graph, key, functions) {
             // Load the graph's data and compile it
             let root = buildGraph(loaded, buildData, node.location.projectId, node.location.graphId);
 
-            let inputs = resolveInputs(graph, node.inputs);
             fDef.type = "call";
-            fDef.inputs = inputs;
+            fDef.inputs = resolveInputs(graph, node.inputs);
             fDef.parameters = node.parameters;
             fDef.root = root;
 
@@ -149,12 +152,25 @@ function buildFunction(loaded, buildData, graph, key, functions) {
 function propagate(loaded, buildData, graph, inputs, functions) {
     // Compile all inputting nodes
     for (let input of inputs) {
-        let key = graph.ports[graph.links[input]].node;
-        buildFunction(loaded, buildData, graph, key, functions);
+        let source = resolveInput(graph, input);
+
+        if (Array.isArray(source))
+            source.forEach(s => buildFunction(loaded, buildData, graph, s, functions));
+        else if (source)
+            buildFunction(loaded, buildData, graph, source, functions);
     }
 }
 
-function resolveInput(graph, port) {
+function resolvePinInput(graph, pinId) {
+    if (!(pinId in graph.links)) 
+        return null;
+
+    let sourcePinId = graph.links[pinId];
+    let sourceNodeId = graph.pins[sourcePinId].node;
+    return sourceNodeId;// graph.nodes[sourceNodeId].name;
+}
+
+function resolveInput(graph, portId) {
     /*let { links, ports, nodes } = graph;
     let sourceName = null;
 
@@ -165,17 +181,25 @@ function resolveInput(graph, port) {
         sourceName = sourceNode.name;
     }*/
     
-    let sourcePortKey = graph.links[port];
-    return graph.ports[sourcePortKey].node;
+    let port = graph.ports[portId];
+
+    let source;
+
+    if (port.pin)
+        source = resolvePinInput(graph, port.pin);
+    else if (port.pins)
+        source = port.pins.map(pinId => resolvePinInput(graph, pinId)).filter(x => x);
+
+    return source;
 }
 
 function resolveInputs(graph, inputs) {
     let result = {};
 
-    for (let key of inputs) {
-        let { label } = graph.ports[key];
-        let sourceName = resolveInput(graph, key);
-        result[label] = sourceName;
+    for (let portId of inputs) {
+        let { label } = graph.ports[portId];
+        let source = resolveInput(graph, portId);
+        result[label] = source;
     }
 
     return result;

@@ -1,0 +1,54 @@
+{
+  "functions": {
+    "449cb57a-4756-4665-aec2-d0f5354bb922": {
+      "name": "Default Value.Default",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "449cb57a-4756-4665-aec2-d0f5354bb922",
+      "label": "Default"
+    },
+    "eee1bf62-8511-4c12-9520-a16f50ba77d7": {
+      "name": "Default Value.Override",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "eee1bf62-8511-4c12-9520-a16f50ba77d7",
+      "label": "Override"
+    },
+    "a8d9fbe0-c452-421f-a703-f67a70efd452": {
+      "name": "Default Value.Code",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "defaultValue": "449cb57a-4756-4665-aec2-d0f5354bb922",
+        "override": "eee1bf62-8511-4c12-9520-a16f50ba77d7"
+      },
+      "functionId": "a8d9fbe0-c452-421f-a703-f67a70efd452",
+      "content": "function main({defaultValue, override}, ...args) {\n  let o = override(...args);\n  \n  if (o !== undefined)\n    return o;\n  \n  return defaultValue(...args);\n}\n\nfunction test(check) {\n  check({\n    defaultValue: 10,\n    override: 5\n  }).returns(5);\n\n  check({\n    defaultValue: 10\n  }).returns(10);\n}\n\nexport default { main, test };\n"
+    },
+    "1ff1e717-fb1d-4ba7-a914-ea804b2fdff1": {
+      "name": "Default Value",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "a8d9fbe0-c452-421f-a703-f67a70efd452"
+      },
+      "functionId": "1ff1e717-fb1d-4ba7-a914-ea804b2fdff1",
+      "description": ""
+    }
+  },
+  "name": "Util"
+}

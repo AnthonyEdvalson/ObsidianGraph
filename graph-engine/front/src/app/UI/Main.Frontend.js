@@ -1,13 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-function Main({A, B, C}) {
-  return (
-    <>
-      <A></A>
-      <B></B>
-      <C></C>
-    </>
-  )
+function Main({Check}) {
+  console.log(4);
+  let [checked, setChecked] = useState(false);
+  return <Check checked={checked} onClick={() => setChecked(s => !s)}/>
 }
 
 export default { main: Main };

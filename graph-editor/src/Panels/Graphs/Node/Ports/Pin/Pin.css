@@ -1,0 +1,103 @@
+.pin-ring {
+  background-color: var(--io-bright);
+  box-shadow: 0 0 0 5px #212a35b0 inset;
+  width: var(--port-width);
+  height: var(--port-width);
+  border-radius: 50%;
+  position: relative;
+}
+
+.Pin {
+  width: var(--port-width);
+  height: var(--port-width);
+  margin-bottom: 10px;
+  color: #00000070;
+}
+
+.Pin:hover {
+  color: #fff;
+}
+
+.Port:last-child .Pin:last-of-type {
+  margin-bottom: 0px;
+}
+
+.Pin:hover .pin-ring {
+  box-shadow: 0 0 0 5px #fff inset;
+}
+
+/* PORT COLORS */
+.pin-ring {
+  background-color: var(--io-bright);
+}
+
+.pin-ring::after {
+  position: absolute;
+  font-size: 20px;
+  font-weight: 800;
+  text-align: center;
+  top: 3px;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}
+
+.pin-create .pin-ring::after {
+  top: 2px;
+  content: '+' !important;
+}
+
+.pin-capture {
+  width: var(--port-width);
+  height: var(--port-width);
+  position: absolute;
+  box-sizing: content-box;
+  padding-top: var(--above);
+  padding-bottom: var(--below);
+  margin-top: calc(var(--above) * -1);
+}
+
+.ports-in .pin-capture {
+  padding-left: calc(var(--port-width) * 3);
+  margin-left: calc(var(--port-width) * -3);
+  padding-right: calc(var(--port-width) * 1);
+}
+
+
+.ports-out .pin-capture {
+  padding-right: calc(var(--port-width) * 3);
+  margin-left: calc(var(--port-width) * -1);
+  padding-left: calc(var(--port-width) * 1);
+}
+
+
+.port-list .Pin:nth-child(1):hover .pin-ring:after {
+  content: '0';
+}
+.port-list .Pin:nth-child(2):hover .pin-ring:after {
+  content: '1';
+}
+.port-list .Pin:nth-child(3):hover .pin-ring:after {
+  content: '2';
+}
+.port-list .Pin:nth-child(4):hover .pin-ring:after {
+  content: '3';
+}
+.port-list .Pin:nth-child(5):hover .pin-ring:after {
+  content: '4';
+}
+.port-list .Pin:nth-child(6):hover .pin-ring:after {
+  content: '5';
+}
+.port-list .Pin:nth-child(7):hover .pin-ring:after {
+  content: '6';
+}
+.port-list .Pin:nth-child(8):hover .pin-ring:after {
+  content: '7';
+}
+.port-list .Pin:nth-child(8):hover .pin-ring:after {
+  content: '8';
+}
+.port-list .Pin:nth-child(8):hover .pin-ring:after {
+  content: '9';
+}

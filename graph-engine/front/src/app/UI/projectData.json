@@ -1,5 +1,90 @@
 {
   "functions": {
+    "9fd7268b-4b47-4a32-b8de-226c37c1f282": {
+      "name": "Modal.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "9fd7268b-4b47-4a32-b8de-226c37c1f282"
+    },
+    "e48b37b8-6097-4f3d-9b49-07e97fb51d74": {
+      "name": "Modal.Header Default",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "config": "9fd7268b-4b47-4a32-b8de-226c37c1f282"
+      },
+      "functionId": "e48b37b8-6097-4f3d-9b49-07e97fb51d74",
+      "content": "import React from 'react';\n\nfunction Main({config}) {\n\treturn config().header;\n}\n\nexport default { main: Main };\n"
+    },
+    "b6a539d7-285d-4a70-9388-72a38145fda5": {
+      "name": "Modal.Header",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "b6a539d7-285d-4a70-9388-72a38145fda5",
+      "label": "Header"
+    },
+    "c2274cbc-fd36-4267-838a-ba9453c572ed": {
+      "name": "Modal.Default Value",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Default": "e48b37b8-6097-4f3d-9b49-07e97fb51d74",
+        "Override": "b6a539d7-285d-4a70-9388-72a38145fda5"
+      },
+      "functionId": "c2274cbc-fd36-4267-838a-ba9453c572ed",
+      "parameters": null,
+      "root": "1ff1e717-fb1d-4ba7-a914-ea804b2fdff1"
+    },
+    "c6dc197a-9e89-4cfd-882a-ae7f02f14387": {
+      "name": "Modal.Content",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "c6dc197a-9e89-4cfd-882a-ae7f02f14387",
+      "label": "Content"
+    },
+    "d5aeb4ee-fe8b-4806-b9a0-deced82804c7": {
+      "name": "Modal.Body",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "Header": "c2274cbc-fd36-4267-838a-ba9453c572ed",
+        "Content": "c6dc197a-9e89-4cfd-882a-ae7f02f14387"
+      },
+      "functionId": "d5aeb4ee-fe8b-4806-b9a0-deced82804c7",
+      "content": "import React from 'react';\n\nfunction Main({Content, Header}, props) {\n\treturn (\n    <div className=\"ui-Modal\">\n      <div className=\"ui-modal-header\">\n        <Header { ...props }/>\n      </div>\n      <div className=\"ui-modal-body\">\n        <Content { ...props }/>\n      </div>\n    </div>\n  )\n}\n\nexport default { main: Main };\n"
+    },
+    "cb6e21f2-a41f-4c04-bf3a-e93082ea025f": {
+      "name": "Modal",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "d5aeb4ee-fe8b-4806-b9a0-deced82804c7"
+      },
+      "functionId": "cb6e21f2-a41f-4c04-bf3a-e93082ea025f",
+      "description": ""
+    },
     "62a00a98-d41b-4f41-a0b0-9fd40bcaf4b1": {
       "name": "Column.Item",
       "type": "in",
@@ -45,6 +130,53 @@
         "value": "9b9c1bfd-b490-4f0f-9d7d-8740915625f3"
       },
       "functionId": "98ba40b2-ffcf-47f4-a272-fa3117bd3d02",
+      "description": ""
+    },
+    "95201b14-5779-4047-8cb6-28910ef1d0d7": {
+      "name": "Row.Item",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "95201b14-5779-4047-8cb6-28910ef1d0d7",
+      "label": "Item"
+    },
+    "acf84cc6-7ef7-4542-8b2c-f5b0ae81b279": {
+      "name": "Row.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "acf84cc6-7ef7-4542-8b2c-f5b0ae81b279"
+    },
+    "e94c718f-17ca-4c44-8d7b-90c1f80b7e2e": {
+      "name": "Row.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "Item": "95201b14-5779-4047-8cb6-28910ef1d0d7",
+        "config": "acf84cc6-7ef7-4542-8b2c-f5b0ae81b279"
+      },
+      "functionId": "e94c718f-17ca-4c44-8d7b-90c1f80b7e2e",
+      "content": "import React from 'react';\n\nfunction Main({Item, config}) {\n  let style = config();\n  console.log(style);\n\n  let classes = [\"ui-Row\"]\n  if (style.wrapping)\n    classes.push(\"ui-Row-\" + style.wrapping);\n  \n  if (style.justify)\n    classes.push(\"ui-Row-justify-\" + style.justify);\n\n  if (style.horizontalAlign)\n    classes.push(\"ui-Row-items-\" + style.horizontalAlign);\n  \n  if (style.rowJustify)\n    classes.push(\"ui-Row-content-\" + style.rowJustify);\n\n\treturn (\n        <div className={classes.join(\" \")}>\n            <Item />\n        </div>\n    )\n}\n\nexport default { main: Main };\n"
+    },
+    "97e64ad2-8d66-44fd-83d6-0e15e48cdc50": {
+      "name": "Row",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "e94c718f-17ca-4c44-8d7b-90c1f80b7e2e"
+      },
+      "functionId": "97e64ad2-8d66-44fd-83d6-0e15e48cdc50",
       "description": ""
     },
     "bd7354e7-623f-4530-b1c3-81dbc24401b9": {
@@ -138,7 +270,7 @@
       ],
       "inputs": {},
       "functionId": "b81def46-18ed-43ac-9269-f0c50a00837c",
-      "content": "export default { \n  main: () => { window.alert(\"Hey\")} \n};\n"
+      "content": "function main() {\n  window.alert(\"Hey\");\n}\n\nexport default { main };\n"
     },
     "c159c67f-c478-4bcc-bd40-cf064c182058": {
       "name": "Main.Button",
@@ -154,10 +286,7 @@
       "parameters": {
         "label": "Submit",
         "autoFocus": false,
-        "type": [
-          "button",
-          "Default"
-        ]
+        "type": "button"
       },
       "root": "855c6d78-e3d4-4948-93e3-f45037efaec2"
     },
@@ -193,10 +322,7 @@
       "parameters": {
         "label": "Submit",
         "autoFocus": false,
-        "type": [
-          "button",
-          "Default"
-        ]
+        "type": "submit"
       },
       "root": "855c6d78-e3d4-4948-93e3-f45037efaec2"
     },
@@ -214,8 +340,8 @@
       "functionId": "f5718777-ad64-4a6b-b74c-f88cc2494f4f",
       "content": "import React from 'react';\n\nfunction Main({A, B, C}) {\n  return (\n    <>\n      <A></A>\n      <B></B>\n      <C></C>\n    </>\n  )\n}\n\nexport default { main: Main };\n"
     },
-    "c69c8887-26db-4aef-838c-6a675a8f3546": {
-      "name": "Main.Column",
+    "dc4a8687-0d29-4c6e-a425-2f0e45dc201f": {
+      "name": "Main.Row",
       "type": "call",
       "sides": [
         "F",
@@ -224,14 +350,177 @@
       "inputs": {
         "Item": "f5718777-ad64-4a6b-b74c-f88cc2494f4f"
       },
+      "functionId": "dc4a8687-0d29-4c6e-a425-2f0e45dc201f",
+      "parameters": {
+        "wrapping": null,
+        "justify": "right",
+        "horizontalAlign": null,
+        "rowJustify": null
+      },
+      "root": "97e64ad2-8d66-44fd-83d6-0e15e48cdc50"
+    },
+    "83fb19e1-1062-40e1-8afa-3b11d52c7ff3": {
+      "name": "Main.Row",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Item": "f5718777-ad64-4a6b-b74c-f88cc2494f4f"
+      },
+      "functionId": "83fb19e1-1062-40e1-8afa-3b11d52c7ff3",
+      "parameters": {
+        "wrapping": null,
+        "justify": "between",
+        "horizontalAlign": null,
+        "rowJustify": null
+      },
+      "root": "97e64ad2-8d66-44fd-83d6-0e15e48cdc50"
+    },
+    "3fb38202-0dd4-49fc-95d7-9d103c7a74e4": {
+      "name": "Main.Row",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Item": "f5718777-ad64-4a6b-b74c-f88cc2494f4f"
+      },
+      "functionId": "3fb38202-0dd4-49fc-95d7-9d103c7a74e4",
+      "parameters": {
+        "wrapping": null,
+        "justify": "right",
+        "horizontalAlign": null,
+        "rowJustify": null
+      },
+      "root": "97e64ad2-8d66-44fd-83d6-0e15e48cdc50"
+    },
+    "b813f72e-57c8-495e-a636-ea25472afcc9": {
+      "name": "Main.Join2",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "A": "dc4a8687-0d29-4c6e-a425-2f0e45dc201f",
+        "B": "83fb19e1-1062-40e1-8afa-3b11d52c7ff3",
+        "C": "3fb38202-0dd4-49fc-95d7-9d103c7a74e4"
+      },
+      "functionId": "b813f72e-57c8-495e-a636-ea25472afcc9",
+      "content": "import React from 'react';\n\nfunction Main({A, B, C}) {\n  return (\n    <>\n      <A></A>\n      <B></B>\n      <C></C>\n    </>\n  )\n}\n\nexport default { main: Main };\n"
+    },
+    "c69c8887-26db-4aef-838c-6a675a8f3546": {
+      "name": "Main.Column",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Item": "b813f72e-57c8-495e-a636-ea25472afcc9"
+      },
       "functionId": "c69c8887-26db-4aef-838c-6a675a8f3546",
       "parameters": {
-        "wrapping": "wrap",
-        "justify": "Right",
+        "wrapping": null,
+        "justify": "between",
         "horizontalAlign": null,
         "columnJustify": null
       },
       "root": "98ba40b2-ffcf-47f4-a272-fa3117bd3d02"
+    },
+    "6cc29ce9-fa6d-4543-93b7-55d4de38b0ab": {
+      "name": "Checkbox.Editor",
+      "type": "edit",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "6cc29ce9-fa6d-4543-93b7-55d4de38b0ab"
+    },
+    "e6840a14-25fb-4428-976b-91babc28251e": {
+      "name": "Checkbox.useAutoFocus",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "e6840a14-25fb-4428-976b-91babc28251e",
+      "parameters": null,
+      "root": "46c7bbc7-fcda-4432-80b1-c81cb54e2784"
+    },
+    "8e162216-e354-403e-88e8-08ca4a75e21f": {
+      "name": "Checkbox.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "config": "6cc29ce9-fa6d-4543-93b7-55d4de38b0ab",
+        "useAutoFocus": "e6840a14-25fb-4428-976b-91babc28251e"
+      },
+      "functionId": "8e162216-e354-403e-88e8-08ca4a75e21f",
+      "content": "import React from 'react';\n\nfunction Main({ config, useAutoFocus }, props) {\n  config = config();\n  let focus = useAutoFocus(config.autoFocus);\n\n  return (\n    <div className=\"ui-Checkbox\">\n      <input type=\"checkbox\" { ...props } ref={focus} />\n      <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 22 22\"><path className=\"ui-check\" fill=\"none\" d=\"M3.0 12.0l5.0 5.0 12.0 -12.0\"/></svg>\n    </div>\n  );\n}\n\nexport default { main: Main }\n"
+    },
+    "06b109aa-d1f9-4bad-8684-42bcc812c200": {
+      "name": "Checkbox",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "8e162216-e354-403e-88e8-08ca4a75e21f"
+      },
+      "functionId": "06b109aa-d1f9-4bad-8684-42bcc812c200",
+      "description": ""
+    },
+    "dd37282c-a580-43eb-b053-93ad70cff488": {
+      "name": "Main.Checkbox",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "dd37282c-a580-43eb-b053-93ad70cff488",
+      "parameters": {
+        "autoFocus": true,
+        "checked": false
+      },
+      "root": "06b109aa-d1f9-4bad-8684-42bcc812c200"
+    },
+    "188bb7b7-aa1a-40bf-993d-9463c7bb300a": {
+      "name": "Main.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "Check": "dd37282c-a580-43eb-b053-93ad70cff488"
+      },
+      "functionId": "188bb7b7-aa1a-40bf-993d-9463c7bb300a",
+      "content": "import React, {useState} from 'react';\n\nfunction Main({Check}) {\n  console.log(4);\n  let [checked, setChecked] = useState(false);\n  return <Check checked={checked} onClick={() => setChecked(s => !s)}/>\n}\n\nexport default { main: Main };\n"
+    },
+    "68d20fa0-9568-47e0-aa01-5135a428c635": {
+      "name": "Main.Modal",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Content": "c69c8887-26db-4aef-838c-6a675a8f3546",
+        "Header": "188bb7b7-aa1a-40bf-993d-9463c7bb300a"
+      },
+      "functionId": "68d20fa0-9568-47e0-aa01-5135a428c635",
+      "parameters": {
+        "header": "Test Header"
+      },
+      "root": "cb6e21f2-a41f-4c04-bf3a-e93082ea025f"
     },
     "9a0068f8-dc33-46f8-97e3-74cb88fa05ff": {
       "name": "Main",
@@ -241,7 +530,7 @@
         "B"
       ],
       "inputs": {
-        "value": "c69c8887-26db-4aef-838c-6a675a8f3546"
+        "value": "68d20fa0-9568-47e0-aa01-5135a428c635"
       },
       "functionId": "9a0068f8-dc33-46f8-97e3-74cb88fa05ff",
       "description": ""

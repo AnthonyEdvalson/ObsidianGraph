@@ -8,7 +8,7 @@ let writeFile = util.promisify(fs.writeFile);
 
 async function loadObn(obnPath, frontFolder, backFolder) {
     let allEntries;
-
+w
     try {
         allEntries = zipUtil.pullAllEntries(obnPath).contents;
     }

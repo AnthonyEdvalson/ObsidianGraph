@@ -1,0 +1,19 @@
+{
+    "graphs": {
+        "graph": {
+            "root": "Main",
+            "nodes": {
+                "backend": {
+                    "type": "code",
+                    "sides": "B",
+                    "inputs": []
+                },
+                "Main": {
+                    "type": "code",
+                    "sides": "F",
+                    "inputs": ["backend"]
+                }
+            }
+        }
+    }
+}

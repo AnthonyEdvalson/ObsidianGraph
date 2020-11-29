@@ -1,0 +1,268 @@
+{
+  "functions": {
+    "71f393cf-af64-410d-8fc1-56180051399b": {
+      "name": "Main.Database Connection",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "71f393cf-af64-410d-8fc1-56180051399b",
+      "parameters": {
+        "databaseName": "database",
+        "userName": "username",
+        "password": "",
+        "dialect": "sqlite",
+        "storage": "trace.db"
+      },
+      "root": "ee4fb122-57ae-4ff9-b58f-a7160355c078"
+    },
+    "9da04691-9b58-4b25-88eb-1f784fa32503": {
+      "name": "Main.Action Table",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Database": "71f393cf-af64-410d-8fc1-56180051399b"
+      },
+      "functionId": "9da04691-9b58-4b25-88eb-1f784fa32503",
+      "parameters": {
+        "name": "action",
+        "columns": [
+          {
+            "name": "name",
+            "type": "TEXT",
+            "defaultValue": "New Action",
+            "allowNull": false,
+            "primaryKey": false,
+            "foreignKey": ""
+          }
+        ],
+        "timestamps": true,
+        "simpleId": true
+      },
+      "root": "09791cc2-ceda-4733-8b3a-e11d17fad58b"
+    },
+    "c97a53be-6ba2-4f25-836e-d5f5aa603cb2": {
+      "name": "Main.Action Controller",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Table": "9da04691-9b58-4b25-88eb-1f784fa32503"
+      },
+      "functionId": "c97a53be-6ba2-4f25-836e-d5f5aa603cb2",
+      "parameters": {
+        "create": true,
+        "read": true,
+        "update": true,
+        "del": true
+      },
+      "root": "cbcc957e-f323-4770-ba0c-7efd03fdebc8"
+    },
+    "61d76810-ff54-42c7-9283-5d1d30f2a44f": {
+      "type": "remote",
+      "functionId": "61d76810-ff54-42c7-9283-5d1d30f2a44f",
+      "name": "Main.Get Actions",
+      "inputs": {
+        "actionController": "c97a53be-6ba2-4f25-836e-d5f5aa603cb2"
+      }
+    },
+    "2783ff94-c4b2-4601-a76d-305e8c331c0a": {
+      "name": "Main.Log Table",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Database": "71f393cf-af64-410d-8fc1-56180051399b"
+      },
+      "functionId": "2783ff94-c4b2-4601-a76d-305e8c331c0a",
+      "parameters": {
+        "name": "log",
+        "columns": [
+          {
+            "name": "action",
+            "type": "INTEGER",
+            "defaultValue": "",
+            "allowNull": false,
+            "primaryKey": false,
+            "foreignKey": "action"
+          }
+        ],
+        "timestamps": true,
+        "simpleId": true
+      },
+      "root": "09791cc2-ceda-4733-8b3a-e11d17fad58b"
+    },
+    "294f1bfa-4dd5-475e-a380-fafe7e89aa60": {
+      "name": "Main.Log Controller",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Table": "2783ff94-c4b2-4601-a76d-305e8c331c0a"
+      },
+      "functionId": "294f1bfa-4dd5-475e-a380-fafe7e89aa60",
+      "parameters": {
+        "create": true,
+        "read": true,
+        "update": false,
+        "del": true
+      },
+      "root": "cbcc957e-f323-4770-ba0c-7efd03fdebc8"
+    },
+    "a2834405-85b6-4697-b6c4-70f3da2d810d": {
+      "type": "remote",
+      "functionId": "a2834405-85b6-4697-b6c4-70f3da2d810d",
+      "name": "Main.Log Endpoint",
+      "inputs": {
+        "logController": "294f1bfa-4dd5-475e-a380-fafe7e89aa60"
+      }
+    },
+    "f42f1746-dca5-4c58-be4e-0f6f69992d01": {
+      "name": "Main.Frontend",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "input": "61d76810-ff54-42c7-9283-5d1d30f2a44f",
+        "label": "a2834405-85b6-4697-b6c4-70f3da2d810d"
+      },
+      "functionId": "f42f1746-dca5-4c58-be4e-0f6f69992d01",
+      "content": "import React from 'react';\n\nfunction Main({input}) {\n\t\n}\n\nexport default { main: Main };\n"
+    },
+    "d413b207-004f-4c56-b1ee-ad4ed360e9ce": {
+      "name": "Main.New Action Modal",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "actions": "c97a53be-6ba2-4f25-836e-d5f5aa603cb2"
+      },
+      "functionId": "d413b207-004f-4c56-b1ee-ad4ed360e9ce",
+      "content": "import React, { useState } from 'react';\n\nfunction Main({actions}, props) {\n  let [action, setAction] = useState({name: \"\"});\n\n  if (!props.open)\n    return null;\n\n  function save() {\n    actions().create(action).then(props.close);\n  }\n\n  function onChange(event) {\n    let v = event.target.value;\n    setAction(prev => ({ ...prev, name: v }));\n  }\n\n  console.log(action);\n  return (\n    <div className=\"NewActionModal\">\n      <input type=\"text\" value={action.name} onChange={onChange} />\n      <button onClick={save}>Save</button>\n      <button onClick={props.close}>Close</button>\n    </div>\n  )\n}\n\nexport default { main: Main };\n"
+    },
+    "7f8a65a0-5e84-440c-a5c8-e6dda8a62baf": {
+      "type": "remote",
+      "functionId": "7f8a65a0-5e84-440c-a5c8-e6dda8a62baf",
+      "name": "Main.Today",
+      "inputs": {
+        "logs": "2783ff94-c4b2-4601-a76d-305e8c331c0a"
+      }
+    },
+    "4660aab6-4808-483d-8ced-a5775a39312c": {
+      "type": "remote",
+      "functionId": "4660aab6-4808-483d-8ced-a5775a39312c",
+      "name": "Main.Allocation",
+      "inputs": {
+        "today": "7f8a65a0-5e84-440c-a5c8-e6dda8a62baf"
+      }
+    },
+    "0d57bb96-e656-4112-82eb-ce8ed3aa77fc": {
+      "name": "DefaultTest.Data",
+      "type": "data",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {},
+      "functionId": "0d57bb96-e656-4112-82eb-ce8ed3aa77fc",
+      "value": "16"
+    },
+    "05282bb6-0822-40f1-aba9-63d86f2498e4": {
+      "name": "DefaultTest.Input",
+      "type": "in",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Default": "0d57bb96-e656-4112-82eb-ce8ed3aa77fc"
+      },
+      "functionId": "05282bb6-0822-40f1-aba9-63d86f2498e4",
+      "label": "Input"
+    },
+    "1ff54db7-17cd-4bb3-a961-6c03b9888e0f": {
+      "name": "DefaultTest.Code",
+      "type": "code",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "input": "05282bb6-0822-40f1-aba9-63d86f2498e4"
+      },
+      "functionId": "1ff54db7-17cd-4bb3-a961-6c03b9888e0f",
+      "content": "function main({input}) {\n    return input() + 1;\n}\n\nexport default { main };\n"
+    },
+    "9786007e-7fc9-4d75-b692-79cd5a3528bd": {
+      "name": "DefaultTest",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "1ff54db7-17cd-4bb3-a961-6c03b9888e0f"
+      },
+      "functionId": "9786007e-7fc9-4d75-b692-79cd5a3528bd",
+      "description": ""
+    },
+    "93e976f2-ca59-4c7a-aab3-8b5c3acb2ee8": {
+      "name": "Main.DefaultTest",
+      "type": "call",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "Input": null
+      },
+      "functionId": "93e976f2-ca59-4c7a-aab3-8b5c3acb2ee8",
+      "parameters": null,
+      "root": "9786007e-7fc9-4d75-b692-79cd5a3528bd"
+    },
+    "5cbb5ace-5aa2-406b-a357-f2ff449e0c89": {
+      "name": "Main.Action UI",
+      "type": "code",
+      "sides": [
+        "F"
+      ],
+      "inputs": {
+        "label": "f42f1746-dca5-4c58-be4e-0f6f69992d01",
+        "NewActionModal": "d413b207-004f-4c56-b1ee-ad4ed360e9ce",
+        "actions": "c97a53be-6ba2-4f25-836e-d5f5aa603cb2",
+        "logs": "294f1bfa-4dd5-475e-a380-fafe7e89aa60",
+        "allocationControl": "4660aab6-4808-483d-8ced-a5775a39312c",
+        "vs": "93e976f2-ca59-4c7a-aab3-8b5c3acb2ee8"
+      },
+      "functionId": "5cbb5ace-5aa2-406b-a357-f2ff449e0c89",
+      "content": "import React, { useState, useEffect } from 'react';\n\nfunction Main({actions, logs, NewActionModal, allocationControl, vs}, props) {\n  let [allActions, setAllActions] = useState([]);\n  let [createNew, setCreateNew] = useState(false);\n  let [allocation, setAllocation] = useState({});\n\n  useEffect(refresh, []); \n\n  function refresh() {\n    actions().readAll().then(setAllActions);\n    allocationControl().then(setAllocation);\n  }\n\n  function close() {\n    setCreateNew(false);\n    refresh();\n  }\n\n  function del(id) {\n    console.log(id);\n    actions().del(id).then(refresh);\n  }\n\n  function log(id) {\n    logs().create({ action: id }).then(refresh);\n  }\n\n  return <span>{vs()}</span>\n  /*(\n    <div className=\"ActionTable\">\n      <button onClick={() => setCreateNew(true)}>New Action</button>\n      <NewActionModal open={createNew} close={close} />\n      {\n        allActions.map(action => (\n          <div className=\"entry\">\n            <span>{action.name}</span>\n            <span>\n              <button onClick={() => del(action.id)}>Delete</button>\n              <button onClick={() => log(action.id)}>Log</button>\n            </span>\n          </div>\n        ))\n      }\n      {JSON.stringify(allocation)}\n    </div>\n  )*/\n}\n\nexport default { main: Main };\n"
+    },
+    "e75465df-340b-4d97-bfe3-877a18f5cf1b": {
+      "name": "Main",
+      "type": "out",
+      "sides": [
+        "F",
+        "B"
+      ],
+      "inputs": {
+        "value": "5cbb5ace-5aa2-406b-a357-f2ff449e0c89"
+      },
+      "functionId": "e75465df-340b-4d97-bfe3-877a18f5cf1b",
+      "description": ""
+    }
+  },
+  "name": "Trace"
+}

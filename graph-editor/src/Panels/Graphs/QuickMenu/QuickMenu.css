@@ -1,0 +1,96 @@
+.QuickMenu {
+    width: 50px;
+    height: 50px;
+    background-color: var(--ui-highlight);
+    border-radius: 100%;
+    transform-origin: center;
+    position: absolute;
+    margin: -25px 0 0 -25px;
+}
+
+.QuickMenu::after {
+    box-shadow: 3px 3px 10px 2px #000;
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 100%;
+    left: -125px;
+    top: -125px;
+    pointer-events: none;
+}
+
+.QuickMenu div {
+    width: 150px;
+    height: 150px;
+    background-color: var(--io-bright);
+    position: absolute;
+    color: #FFF;
+    transform-origin: bottom left;
+
+    clip-path: url(#pieClip); /*polygon(0% 100%, 62.3% 21.82%, 100% 100%);*/
+    bottom: 25px;
+    left: 25px;
+    filter: brightness(90%);
+}
+
+.QuickMenu .click-guard {
+    width: 50px;
+    height: 50px;
+    background-color: #FFF;
+    clip-path: none;
+    border-radius: 100%;
+    z-index: 10;
+    left: 0;
+    bottom: 0;
+    box-shadow: inset 0 0 0 4px #DDD;
+}
+
+.QuickMenu div img {
+    width: 40%;
+    height: 40%;
+    margin: 56% 0 0 38%;
+}
+
+.QuickMenu div:hover:not(.disabled) {
+    filter: brightness(100%);
+}
+
+.QuickMenu div:hover:not(.disabled) img {
+    width: 43%;
+    height: 43%;
+    margin: 50.5% 0 0 43.5%;
+}
+
+
+
+
+.QuickMenu div.back {
+    background-color: var(--back-bright);
+}
+
+.QuickMenu div.front {
+    background-color: var(--front-bright);
+}
+
+.QuickMenu div.agno {
+    background-color: var(--agno-bright);
+}
+
+.QuickMenu div.data {
+    background-color: var(--data-bright);
+}
+
+.QuickMenu div.edit {
+    background-color: var(--edit-bright);
+}
+
+.QuickMenu div.disabled,
+.QuickMenu div.disabled:hover {
+    cursor: default;
+    filter: brightness(80%);
+}
+
+.QuickMenu div.disabled img {
+    opacity: 0.3;
+}

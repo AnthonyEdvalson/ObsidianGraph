@@ -1,5 +1,7 @@
 import projectData from './projectData';
 import { util } from 'obsidian';
+;
+
 
 export default {
     ...projectData,

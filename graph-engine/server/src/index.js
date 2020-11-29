@@ -47,6 +47,16 @@ server.on("back", "eval", async (source, req) => {
   return await server.emit("front", req.target, "eval", req);
 });
 
+server.app.post("/", (req, res, next) => {
+  console.log(req.body);
+  let { event, body } = req.body;
+
+  server.emitAny("back", event, body).then(data => {
+    console.log(data); 
+    res.send(data);
+  }).catch(next);
+});
+
 
 server.on("*", "error", (_, error) => {
   cli.error("server", "ERROR REPORTED", data);

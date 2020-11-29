@@ -6,10 +6,77 @@ body {
   --ui-primary: #F00;
 }
 
+.ui-Column {
+  height: 400px;
+}
+
+/* Graph: Modal */
+
+.Modal, 
+#modal-root {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+
+#modal-root {
+    pointer-events: none;
+}
+
+.Modal {
+    animation: 0.5s forwards modal-show;
+    animation-timing-function: ease-out;
+    background-color: #00000050;
+    /*opacity: 0;*/
+    z-index: 10000;
+    backdrop-filter: blur(6px);
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    color: #fff;
+    pointer-events: all;
+}
+
+.modal-dialog {
+    background-color: #28323e;
+    box-shadow: 0 0 40px #00000070;
+    max-width: 600px;
+    width: 100%;
+    min-height: 200px;
+    max-height: 70vh;
+    border-radius: 3px;
+    pointer-events: all;
+}
+
+.modal-header {
+    border-bottom: 1px solid #00000070;
+    width: 100%;
+    display: block;
+    padding: 5px;
+}
+
+.modal-body {
+    padding: 15px 5px 10px;
+}
+
+@keyframes modal-show {
+    100% {
+        padding-top: 0;
+        opacity: 1;
+    }
+    0% {
+        padding-top: 10px;
+        opacity: 0;
+    }
+}
+
 /* Graph: Column */
 
 .ui-Column {
   display: flex;
+  flex-direction: column;
 }
 
 
@@ -27,10 +94,10 @@ body {
 .ui-Column-justify-center {
   justify-content: center;
 }
-.ui-Column-justify-left {
+.ui-Column-justify-top {
   justify-content: flex-start;
 }
-.ui-Column-justify-right {
+.ui-Column-justify-bottom {
   justify-content: flex-end;
 }
 .ui-Column-justify-between {
@@ -83,86 +150,82 @@ body {
   align-content: space-evenly;
 }
 
-/* Graph: Button */
+/* Graph: Row */
 
-.ui-Button button {
-    background-color: #fff;
-    color: var(--ui-dark-text, #000);
-    border: 1px solid var(--ui-primary, #000);
-    border-radius: 3px;
-    outline: none !important;
-    display: block;
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: 25px;
-    min-width: 25px;
-    margin-left: 5px;
-    padding: 3px 10px;
-    text-transform: uppercase;
-    min-width: 60%;
-    transition: all 0.05s ease-out;
-    cursor: pointer;
+.ui-Row {
+  display: flex;
+  flex-direction: row;
 }
 
-.ui-Button button:hover {
-    background-color: #eee;
+
+/* Wrap */
+
+.ui-Row-wrap {
+    flex-wrap: wrap;
+}
+.ui-Row-wrap-reverse {
+  flex-wrap: wrap-reverse;
 }
 
-.ui-Button {
-    display: flex;
-    justify-content: center;
+/* Justify */
+
+.ui-Row-justify-center {
+  justify-content: center;
+}
+.ui-Row-justify-left {
+  justify-content: flex-start;
+}
+.ui-Row-justify-right {
+  justify-content: flex-end;
+}
+.ui-Row-justify-between {
+  justify-content: space-between;
+}
+.ui-Row-justify-around {
+  justify-content: space-around;
+}
+.ui-Row-justify-evenly {
+  justify-content: space-evenly;
 }
 
-.ui-Button.ui-button-submit button{
-    background-color: var(--ui-primary, #000);
-    color: var(--ui-light-text, #fff);
+
+/* Align Items */
+
+.ui-Row-items-top {
+  align-items: flex-start;
+}
+.ui-Row-items-bottom {
+  align-items: flex-end;
+}
+.ui-Row-items-center {
+  align-items: center;
+}
+.ui-Row-items-baseline {
+  align-items: baseline;
 }
 
-/* Graph: useAutoFocus */
+/* Align Content */
 
-* {
-
+.ui-Row-content-start {
+  align-content: flex-start;
 }
-
-/* Graph: Button */
-
-.ui-Button button {
-    background-color: #fff;
-    color: var(--ui-dark-text, #000);
-    border: 1px solid var(--ui-primary, #000);
-    border-radius: 3px;
-    outline: none !important;
-    display: block;
-    flex-grow: 0;
-    flex-shrink: 0;
-    height: 25px;
-    min-width: 25px;
-    margin-left: 5px;
-    padding: 3px 10px;
-    text-transform: uppercase;
-    min-width: 60%;
-    transition: all 0.05s ease-out;
-    cursor: pointer;
+.ui-Row-content-top {
+  align-content: flex-end;
 }
-
-.ui-Button button:hover {
-    background-color: #eee;
+.ui-Row-content-bottom {
+  align-content: center;
 }
-
-.ui-Button {
-    display: flex;
-    justify-content: center;
+.ui-Row-content-stretch {
+  align-content: stretch;
 }
-
-.ui-Button.ui-button-submit button{
-    background-color: var(--ui-primary, #000);
-    color: var(--ui-light-text, #fff);
+.ui-Row-content-around {
+  align-content: space-around;
 }
-
-/* Graph: useAutoFocus */
-
-* {
-
+.ui-Row-content-between {
+  align-content: space-between;
+}
+.ui-Row-content-evenly {
+  align-content: space-evenly;
 }
 
 /* Graph: Button */
@@ -202,6 +265,536 @@ body {
 
 /* Graph: useAutoFocus */
 
-* {
 
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
 }
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Row */
+
+.ui-Row {
+  display: flex;
+  flex-direction: row;
+}
+
+
+/* Wrap */
+
+.ui-Row-wrap {
+    flex-wrap: wrap;
+}
+.ui-Row-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+/* Justify */
+
+.ui-Row-justify-center {
+  justify-content: center;
+}
+.ui-Row-justify-left {
+  justify-content: flex-start;
+}
+.ui-Row-justify-right {
+  justify-content: flex-end;
+}
+.ui-Row-justify-between {
+  justify-content: space-between;
+}
+.ui-Row-justify-around {
+  justify-content: space-around;
+}
+.ui-Row-justify-evenly {
+  justify-content: space-evenly;
+}
+
+
+/* Align Items */
+
+.ui-Row-items-top {
+  align-items: flex-start;
+}
+.ui-Row-items-bottom {
+  align-items: flex-end;
+}
+.ui-Row-items-center {
+  align-items: center;
+}
+.ui-Row-items-baseline {
+  align-items: baseline;
+}
+
+/* Align Content */
+
+.ui-Row-content-start {
+  align-content: flex-start;
+}
+.ui-Row-content-top {
+  align-content: flex-end;
+}
+.ui-Row-content-bottom {
+  align-content: center;
+}
+.ui-Row-content-stretch {
+  align-content: stretch;
+}
+.ui-Row-content-around {
+  align-content: space-around;
+}
+.ui-Row-content-between {
+  align-content: space-between;
+}
+.ui-Row-content-evenly {
+  align-content: space-evenly;
+}
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Row */
+
+.ui-Row {
+  display: flex;
+  flex-direction: row;
+}
+
+
+/* Wrap */
+
+.ui-Row-wrap {
+    flex-wrap: wrap;
+}
+.ui-Row-wrap-reverse {
+  flex-wrap: wrap-reverse;
+}
+
+/* Justify */
+
+.ui-Row-justify-center {
+  justify-content: center;
+}
+.ui-Row-justify-left {
+  justify-content: flex-start;
+}
+.ui-Row-justify-right {
+  justify-content: flex-end;
+}
+.ui-Row-justify-between {
+  justify-content: space-between;
+}
+.ui-Row-justify-around {
+  justify-content: space-around;
+}
+.ui-Row-justify-evenly {
+  justify-content: space-evenly;
+}
+
+
+/* Align Items */
+
+.ui-Row-items-top {
+  align-items: flex-start;
+}
+.ui-Row-items-bottom {
+  align-items: flex-end;
+}
+.ui-Row-items-center {
+  align-items: center;
+}
+.ui-Row-items-baseline {
+  align-items: baseline;
+}
+
+/* Align Content */
+
+.ui-Row-content-start {
+  align-content: flex-start;
+}
+.ui-Row-content-top {
+  align-content: flex-end;
+}
+.ui-Row-content-bottom {
+  align-content: center;
+}
+.ui-Row-content-stretch {
+  align-content: stretch;
+}
+.ui-Row-content-around {
+  align-content: space-around;
+}
+.ui-Row-content-between {
+  align-content: space-between;
+}
+.ui-Row-content-evenly {
+  align-content: space-evenly;
+}
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Button */
+
+.ui-Button button {
+    background-color: #fff;
+    color: var(--ui-dark-text, #000);
+    border: 1px solid var(--ui-primary, #000);
+    border-radius: 3px;
+    outline: none !important;
+    display: block;
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: 25px;
+    min-width: 25px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    min-width: 60%;
+    transition: all 0.05s ease-out;
+    cursor: pointer;
+}
+
+.ui-Button button:hover {
+    background-color: #eee;
+}
+
+.ui-Button {
+    display: flex;
+    justify-content: center;
+}
+
+.ui-Button.ui-button-submit button{
+    background-color: var(--ui-primary, #000);
+    color: var(--ui-light-text, #fff);
+}
+
+/* Graph: useAutoFocus */
+
+
+
+/* Graph: Checkbox */
+
+.ui-Checkbox {
+    position: relative;
+    display: block;
+    height: 25px;
+}
+
+.ui-Checkbox > input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -o-appearance: none;
+    appearance: none;
+
+    border: 1px solid #000;
+    background-color: #00000000;
+    border-radius: 3px;
+    outline: none;
+    transition-duration: 0.1s;
+    position: relative;
+}
+
+.ui-Checkbox > input,
+.ui-Checkbox > svg {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.ui-Checkbox > input:hover {
+    background-color: #00000010;
+}
+
+.ui-Checkbox > input:active {
+    background-color: #00000030;
+}
+
+.ui-Checkbox svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    stroke-width: 4;
+    stroke: #000;
+    stroke-miterlimit: 10;
+    pointer-events: none;
+}
+
+.ui-Checkbox svg > .ui-check {
+    stroke-dasharray: 35;
+    stroke-dashoffset: 35;
+    transition: stroke-dashoffset 0.2s cubic-bezier(0.3, 0, 0, 1);
+}
+
+.ui-Checkbox > input:checked + svg > .ui-check {
+    stroke-dashoffset: 0;
+}
+
+/* Graph: useAutoFocus */
+
