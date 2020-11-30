@@ -2,6 +2,7 @@
     "graphs": {
         "graph": {
             "root": "Main",
+            "name": "graph",
             "nodes": {
                 "backend": {
                     "type": "code",

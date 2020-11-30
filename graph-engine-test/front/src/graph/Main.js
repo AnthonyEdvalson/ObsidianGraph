@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useEffect, useState } from 'react';
 
 function Main({backend}, props) {
@@ -6,9 +5,10 @@ function Main({backend}, props) {
 
     useEffect(() => {
         backend("Hello, ").then(setMotd);
-    });
+    }, []);
 
     return <span>{motd}</span>
 }
 
-export default { main: Main }
+let node = { main: Main }
+export default node;

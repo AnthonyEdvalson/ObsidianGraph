@@ -1,0 +1,25 @@
+{
+    "ignore": [
+        "./front/src/app",
+        "./back/src/app",
+        "./node_modules",
+        "./front/node_modules",
+        "./back/node_modules"
+    ],
+    "ignoreRoot": [
+        "**/.git/**",
+        "**/.log/**",
+        "**/.nyc_output/**",
+        "**/.sass-cache/**",
+        "**/bower_components/**",
+        "**/coverage/**"
+    ],
+    "watch": [
+        "./",
+        "../node_modules/obsidian/lib"
+    ],
+    "ext": "js,jsx,css,json",
+    "env": {
+      "NODE_ENV": "development"
+    }
+}

@@ -1,5 +1,5 @@
 
-import { StrictMode } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 import engineFactory from './engine';
 
@@ -20,9 +20,9 @@ function EngineUI() {
 }
 
 ReactDOM.render(
-	<StrictMode>
+	<React.StrictMode>
 		<EngineUI />
- 	</StrictMode>,
+ 	</React.StrictMode>,
 	document.getElementById('root')
 );
 

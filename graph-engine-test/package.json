@@ -1,8 +1,8 @@
 {
     "name": "test",
     "version": "0.0.0",
-    "type": "module",
     "scripts": {
-        "start": "nodemon"
+        "start": "nodemon",
+        "wipe": "kill -9 $(lsof -t -i:5000)"
     }
 }

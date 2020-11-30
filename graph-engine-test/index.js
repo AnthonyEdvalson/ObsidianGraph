@@ -1,7 +1,5 @@
-import obsidian from 'obsidian'
-import fs from 'fs'
-
-const { runServer } = obsidian;
+const fs = require('fs');
+const { runServer } = require('obsidian');
 
 let data = {
 	app: JSON.parse(fs.readFileSync("./app.json")),
@@ -9,10 +7,4 @@ let data = {
 	path: __dirname
 }
 
-async function main() {
-	await runServer("server", data);
-	await runServer("back", data);
-	await runServer("front", data);
-}
-
-main();
+runServer(data);

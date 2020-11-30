@@ -1,4 +1,12 @@
 {
     "name": "test-back",
-    "version": "0.0.0"
+    "version": "0.0.0",
+    "target": "node",
+    "scripts": {
+        "start": "babel-node"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.12.9",
+        "@babel/node": "^7.12.6"
+    }
 }

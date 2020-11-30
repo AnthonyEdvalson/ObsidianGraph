@@ -1,8 +1,13 @@
 // GENERATED
-import { Engine } from 'obsidian';
+import { Engine, App } from 'obsidian';
+import aDef from './app.json';
 
-let app = {};
-app.graph = require("./graph/_index");
+let graphs = {
+    graph: require("./graph/_index")
+};
+
+let app = new App(aDef, graphs);
 
 let highPrecisionTime = () => performance.timeOrigin + performance.now();
-export default (debug) => new Engine("front", highPrecisionTime, app, debug);
+let engineFactory = (debug) => new Engine("front", highPrecisionTime, app, debug);
+export default engineFactory;
