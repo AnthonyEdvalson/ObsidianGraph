@@ -1,14 +1,13 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import engineFactory from './engine';
+import app from './app';
 
-const DEBUG = true;
-const engine = engineFactory(DEBUG);
-
+let highPrecisionTime = () => performance.timeOrigin + performance.now();
+app.setEditorProfiler(highPrecisionTime, () => {});
 
 function EngineUI() {
-	let res = engine.evalRoot();
+	let res = app.evalRoot();
 
 	if (res === undefined)
 		throw new Error("The ouptut of the graph 'Main' is undefined")
@@ -16,8 +15,9 @@ function EngineUI() {
 	if (!React.isValidElement(res))
 		return <p>{JSON.stringify(res, null, 2)}</p>
 	
-	return React.cloneElement(res, {}); // TODO don't clone???
+	return React.cloneElement(res, {});
 }
+
 
 ReactDOM.render(
 	<React.StrictMode>

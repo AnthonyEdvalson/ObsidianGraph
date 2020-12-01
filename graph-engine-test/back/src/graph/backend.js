@@ -1,6 +1,6 @@
 
 async function main ({}, greet) {
-    return greet + ", World!";
+    return greet + "World!";
 }
 
 export default { main }

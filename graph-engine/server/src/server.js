@@ -56,7 +56,7 @@ class Server {
         http.createServer(this.app).listen(5001);
     }
 
-    async emit(groupName, socketId, eventName, ...args) {
+    async emit(groupName, socketId, eventName, ...args) { 
         return this.groups[groupName].emit(socketId, eventName, ...args);
     }
 

@@ -4,5 +4,10 @@
     "scripts": {
         "start": "nodemon",
         "wipe": "kill -9 $(lsof -t -i:5000)"
+    },
+    "dependencies": {
+        "concurrently": "^5.3.0",
+        "express": "^4.17.1",
+        "socket.io": "^3.0.3"
     }
 }

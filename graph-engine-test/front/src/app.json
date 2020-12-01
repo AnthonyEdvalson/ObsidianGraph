@@ -7,12 +7,14 @@
                 "backend": {
                     "type": "code",
                     "sides": "B",
-                    "inputs": []
+                    "inputs": {},
+                    "name": "backend"
                 },
                 "Main": {
                     "type": "code",
                     "sides": "F",
-                    "inputs": ["backend"]
+                    "inputs": {"backend": "backend"},
+                    "name": "Main"
                 }
             }
         }
