@@ -31,7 +31,7 @@ class Server {
         this.debug = debug;
         this.app = express();
         this.app.use(express.json());
-        //this.app.use(cors(corsOptions));
+        this.app.use(cors(corsOptions));
 
         this.expressServer = app.listen(port, () => cli.info("server", `Listening on port ${port}`));
         this.socketServer = socketIO(this.expressServer, {

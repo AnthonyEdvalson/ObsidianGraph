@@ -6,19 +6,18 @@
             "nodes": {
                 "backend": {
                     "type": "code",
-                    "sides": "B",
+                    "sides": ["B"],
                     "inputs": {},
                     "name": "backend"
                 },
                 "Main": {
                     "type": "code",
-                    "sides": "F",
+                    "sides": ["F"],
                     "inputs": {"backend": "backend"},
                     "name": "Main"
                 }
             }
         }
     },
-    "name": "app",
     "root": "graph"
 }

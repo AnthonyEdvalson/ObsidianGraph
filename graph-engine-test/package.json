@@ -2,7 +2,7 @@
     "name": "test",
     "version": "0.0.0",
     "scripts": {
-        "start": "nodemon",
+        "start": "nodemon --verbose",
         "wipe": "kill -9 $(lsof -t -i:5000)"
     },
     "dependencies": {

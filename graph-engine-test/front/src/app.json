@@ -1,24 +1,29 @@
 {
-    "graphs": {
-        "graph": {
-            "root": "Main",
-            "name": "graph",
-            "nodes": {
-                "backend": {
-                    "type": "code",
-                    "sides": "B",
-                    "inputs": {},
-                    "name": "backend"
-                },
-                "Main": {
-                    "type": "code",
-                    "sides": "F",
-                    "inputs": {"backend": "backend"},
-                    "name": "Main"
-                }
-            }
+  "graphs": {
+    "graph": {
+      "root": "Main",
+      "name": "graph",
+      "nodes": {
+        "backend": {
+          "type": "code",
+          "sides": [
+            "B"
+          ],
+          "inputs": {},
+          "name": "backend"
+        },
+        "Main": {
+          "type": "code",
+          "sides": [
+            "F"
+          ],
+          "inputs": {
+            "backend": "backend"
+          },
+          "name": "Main"
         }
-    },
-    "name": "app",
-    "root": "graph"
+      }
+    }
+  },
+  "root": "graph"
 }
