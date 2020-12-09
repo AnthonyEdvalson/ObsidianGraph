@@ -42,7 +42,7 @@ let reducers = {
 let mainReducer = combineReducers(reducers);
 
 function rootReducer(state, action) {
-    let showDebug = ["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE", "SET_DRAGGING"].indexOf(action.type) === -1;
+    let showDebug = !["MOVE_SELECTION", "MOVE_GRAPH", "SELECT_RECT", "REGISTER_SELECTABLE", "UNREGISTER_SELECTABLE", "SET_DRAGGING"].includes(action.type);
     if (showDebug)
         console.log(action);
 

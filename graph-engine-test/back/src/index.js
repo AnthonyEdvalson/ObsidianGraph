@@ -1,4 +1,4 @@
-import app from './app';
+import app from './generated/app';
 import { performance } from 'perf_hooks';
 
 let highPrecisionTime = () => performance.timeOrigin + performance.now();

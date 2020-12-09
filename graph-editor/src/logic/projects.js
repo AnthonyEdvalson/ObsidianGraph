@@ -5,7 +5,7 @@ import { util as obsidianUtil } from 'obsidian';
 import version from '../logic/version';
 
 const ncp = window.require("ncp").ncp;
-const fs = window.require("fs");
+const fs = window.require("fs").promise;
 const path = window.require("path");
 const util = window.require("util");
 
@@ -23,7 +23,7 @@ async function readRecents(recentPath) {
     let recents;
 
     try {
-        recents = await util.promisify(fs.readFile)(recentPath, "utf-8");
+        recents = await fs.readFile(recentPath, "utf-8");
     } catch (e) {
         toastErr("Could not load recent projects", e);
         return [];
@@ -32,10 +32,10 @@ async function readRecents(recentPath) {
     return JSON.parse(recents);
 }
 
-async function addRecent(obpPath, recents, recentPath) {
+async function addRecent(appPath, recents, recentPath) {
     let newRecent = {
-        name: path.basename(obpPath, ".obp"), 
-        path: obpPath, 
+        name: path.basename(appPath, "json"), 
+        path: appPath, 
         date: new Date().toLocaleString()
     };
 
@@ -46,7 +46,7 @@ async function addRecent(obpPath, recents, recentPath) {
     }
 
     try {
-        await util.promisify(fs.writeFile)(recentPath, JSON.stringify(newRecents));
+        await fs.writeFile(recentPath, JSON.stringify(newRecents));
     } catch (e) {
         toastErr("Could not add project to recently opened", e);
     }
@@ -56,7 +56,7 @@ async function addRecent(obpPath, recents, recentPath) {
 
 async function newProject(dispatch, directory, name, author, description) {
     let folderPath = path.join(directory, name);
-    let obpPath = path.join(folderPath, name + ".obp");
+    let appPath = path.join(folderPath, name + ".json");
 
     let data = {
         name,
@@ -70,30 +70,31 @@ async function newProject(dispatch, directory, name, author, description) {
     };
 
     await save(data);
-    await openProject(obpPath, dispatch);
+    await openProject(appPath, dispatch);
 }
 
-function serializeObp(data) {
+function serializeApp(data) {
     let {path, ...project} = data;
 
     let newGraphs = {};
     for (let [id, graph] of Object.entries(project.graphs))
         newGraphs[id] = graphs.packForSerialization(graph);
 
-    let obpData = {
+    let appData = {
         ...project,
         graphs: newGraphs
     };
 
-    return JSON.stringify(obpData, null, 2);
+    return JSON.stringify(appData, null, 2);
 }
 
-async function openProject(obpPath, dispatch) {
+async function openProject(projectPath, dispatch) {
     let data = null;
 
     try {
-        let obp = await util.promisify(fs.readFile)(obpPath, "utf-8");
-        data = await deserializeObp(obp, obpPath);
+        let appPath = path.join(projectPath, "app.js");
+        let app = await fs.readFile(appPath, "utf-8");
+        data = await deserializeApp(app, projectPath);
         dispatch({type: "LOAD_PROJECT", data});
         dispatch({type: "SET_FOCUS", focus: { projectId: data.projectId, rootProjectId: data.projectId } });
     } catch (e) {
@@ -107,25 +108,25 @@ async function openProject(obpPath, dispatch) {
     }
 }
 
-async function deserializeObp(obp, obpPath, ingoreOutdated) {
-    let obpData = JSON.parse(obp);
+async function deserializeApp(app, appPath, ingoreOutdated) {
+    let appData = JSON.parse(app);
 
-    if (version.outdated(obpData.v)) {
+    if (version.outdated(appData.v)) {
         if (ingoreOutdated)
             return null;
 
-        // example/project.obp -> example/project_v1_0_2.obn.bak
-        let backupPath = obpPath.replace(/\.[^/.]+$/, "") + "_v" + obpData.v.toString().replace(".", "_") + ".obn.bak";
-        await backup(obpPath, backupPath);
-        toastWarn(path.basename(obpPath) + " is outdated, a backup has been made at " + path.basename(backupPath));
+        // example/project.json -> example/project_v1_0_2.obn.bak
+        let backupPath = appPath.replace(/\.[^/.]+$/, "") + "_v" + appData.v.toString().replace(".", "_") + ".bak.json";
+        await backup(appPath, backupPath);
+        toastWarn(path.basename(appPath) + " is outdated, a backup has been made at " + path.basename(backupPath));
 
-        obpData = version.upgrade(obpData);
+        appData = version.upgrade(appData);
     }
 
-    let project = { path: path.dirname(obpPath), ...obpData };
+    let project = { path: path.dirname(appPath), ...appData };
 
     let newGraphs = {};
-    for (let [id, graph] of Object.entries(obpData.graphs))
+    for (let [id, graph] of Object.entries(appData.graphs))
         newGraphs[id] = graphs.unpackFromSerialization(graph, id);
 
     // Save before return???
@@ -136,10 +137,10 @@ async function deserializeObp(obp, obpPath, ingoreOutdated) {
 }
 
 async function save(project) {
-    let obp = serializeObp(project);
+    let app = serializeApp(project);
 
     let projectPath = project.path;
-    let obpPath = path.join(projectPath, project.name + ".obp");
+    let appPath = path.join(projectPath, project.name + ".json");
 
     let folders = ["", "pack/", "front/", "back/"]
 
@@ -148,7 +149,7 @@ async function save(project) {
 
         if (!fs.existsSync(folderPath)) {
             try {
-                await util.promisify(fs.mkdir)(folderPath, { recursive: true });
+                await fs.mkdir(folderPath, { recursive: true });
             } catch (e) {
                 toastErr("Unable to create folder " + folderPath, e);
                 console.error(e);
@@ -158,9 +159,9 @@ async function save(project) {
     }
 
     try {
-        await backup(obpPath, obpPath + ".bak");
-        await util.promisify(fs.writeFile)(obpPath, obp);
-        toast("Saved " + project.name + ".obp", {type: "success"});
+        await backup(appPath, appPath + ".bak");
+        await fs.writeFile(appPath, app);
+        toast("Saved " + project.name + ".json", {type: "success"});
     } catch (e) {
         toastErr("Unable to save obp file", e);
     }
@@ -168,22 +169,22 @@ async function save(project) {
 
 async function backup(src, dest) {
     if (src && fs.existsSync(src))
-        await util.promisify(fs.copyFile)(src, dest, fs.constants.COPYFILE_FICLONE);
+        await fs.copyFile(src, dest, fs.constants.COPYFILE_FICLONE);
 }
         
 
-async function importPackage(obpPath, targetProjectPath) {
-    let sourceProject = path.dirname(obpPath);
-    let importingName = path.basename(obpPath, ".obp");
+async function importPackage(appPath, targetProjectPath) {
+    let sourceProject = path.dirname(appPath);
+    let importingName = path.basename(appPath, ".json");
     let targetDirectory = path.join(targetProjectPath, "pack")
     let targetProject = path.join(targetDirectory, importingName);
     
     try {
         if (!fs.existsSync(targetDirectory))
-            await util.promisify(fs.mkdir)(targetDirectory);
+            await fs.mkdir(targetDirectory);
 
         if (!fs.existsSync(targetProject))
-            await util.promisify(fs.mkdir)(targetProject);
+            await fs.mkdir(targetProject);
 
         await util.promisify(ncp)(sourceProject, targetProject);
         toast("Imported " + importingName, {type: "success"});
@@ -203,16 +204,16 @@ async function importPackage(obpPath, targetProjectPath) {
 
 async function getPackages(projectPath) {
     let packFolder = path.join(projectPath, "pack");
-    let packNames = await util.promisify(fs.readdir)(packFolder);
+    let packNames = await fs.readdir(packFolder);
 
     let packs = {}
     for (let packName of packNames) {
         if (packName[0] === ".")
             continue;
 
-        let obpPath = path.join(packFolder, packName, packName + ".obp");
-        let obp = await util.promisify(fs.readFile)(obpPath, "utf-8");
-        let data = await deserializeObp(obp, obpPath);
+        let appPath = path.join(packFolder, packName, packName + ".json");
+        let app = await fs.readFile(appPath, "utf-8");
+        let data = await deserializeApp(app, appPath);
 
         packs[packName] = data;
     }
@@ -229,8 +230,8 @@ export default {
     openProject,
     newProject,
     save,
-    serializeObp,
-    deserializeObp,
+    serializeApp,
+    deserializeApp,
     importPackage,
     getPackages,
     build

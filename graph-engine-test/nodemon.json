@@ -1,9 +1,6 @@
 {
     "ignore": [
-        "front/src/app.js",
-        "back/src/app.js",
-        "front/src/app.json",
-        "back/src/app.json",
+        "**/generated/**",
         "./node_modules",
         "./front/node_modules",
         "./back/node_modules"

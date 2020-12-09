@@ -2,9 +2,11 @@
 // THIS FILE IS GENERATED
 // ANY EDITS WILL BE LOST
 
-import { App } from 'obsidian';
+import { App, appFS } from 'obsidian';
 import aDef from './app.json';
-import _backend from './graph/backend';
+import _backend from './graphs/graph/backend';
+
+let aDef = appFS.assembleFragment('TODO!!!!');
 
 aDef.graphs.graph.nodes.backend.module = _backend;
 

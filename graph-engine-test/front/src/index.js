@@ -1,10 +1,12 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import app from './app';
+import app from './generated/app';
+
 
 let highPrecisionTime = () => performance.timeOrigin + performance.now();
 app.setEditorProfiler(highPrecisionTime, () => {});
+
 
 function EngineUI() {
 	let res = app.evalRoot();

@@ -17,9 +17,9 @@ function OpenProject({ open, defaultDirectory, handleClose }) {
         projects.readRecents(recentPath).then(setRecents);
     }, [setRecents]);
 
-    function handleOpen(file) {
-        projects.openProject(file, dispatch).then(async () => {
-            setRecents(await projects.addRecent(file, recents, recentPath));
+    function handleOpen(projectPath) {
+        projects.openProject(projectPath, dispatch).then(async () => {
+            setRecents(await projects.addRecent(projectPath, recents, recentPath));
         });
 
         handleClose();
@@ -27,14 +27,12 @@ function OpenProject({ open, defaultDirectory, handleClose }) {
 
     function handleOpenFile() {
         dialog.showOpenDialog({
+            title: "Open Obsidian Project",
             defaultPath: defaultDirectory,
-            filters: [{name: "Obsidian Project File", extensions: ["obp", "bak"]}],
-            properties: ["openFile"]
+            properties: ["openDirectory"]
         }).then(result => {
-            if (result.canceled || !result.filePaths)
-                return;
-
-            handleOpen(result.filePaths[0]);
+            if (!result.canceled && result.filePaths)
+                handleOpen(result.filePaths[0]);
         });
     }
 
