@@ -1,0 +1,23 @@
+{
+    "ignore": [
+        "**/generated/**",
+        "./node_modules",
+        "./front/node_modules",
+        "./back/node_modules"
+    ],
+    "ignoreRoot": [
+        "**/.git/**",
+        "**/.log/**",
+        "**/.nyc_output/**",
+        "**/.sass-cache/**",
+        "**/bower_components/**",
+        "**/coverage/**"
+    ],
+    "watch": [
+        "./"
+    ],
+    "ext": "js,jsx,css,json",
+    "env": {
+      "NODE_ENV": "development"
+    }
+}

@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import ReactDOM from 'react-dom';
 import oPack from './generated/opackx';
@@ -6,7 +5,6 @@ import oPack from './generated/opackx';
 
 let highPrecisionTime = () => performance.timeOrigin + performance.now();
 oPack.setEditorProfiler(highPrecisionTime, () => {});
-
 
 function EngineUI() {
 	let res = oPack.evalRoot();
@@ -19,7 +17,6 @@ function EngineUI() {
 	
 	return React.cloneElement(res, {});
 }
-
 
 ReactDOM.render(
 	<React.StrictMode>

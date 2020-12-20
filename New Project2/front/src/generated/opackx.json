@@ -1,0 +1,87 @@
+{
+  "name": "New Project",
+  "author": "",
+  "description": "",
+  "tags": "",
+  "hideInLibrary": false,
+  "projectId": "9aefeafa-5451-4b4e-aa0b-08e43f50b542",
+  "graphs": {
+    "hello": {
+      "nodes": {
+        "Backend": {
+          "output": "31e84a34-7484-4eaf-82bc-c34bba02ffae",
+          "content": "function main({input}, location) {\n\treturn \"Hello, \" + location;\n}\n\nexport default { main };\n",
+          "type": "code",
+          "sides": [
+            "B"
+          ],
+          "inputs": [
+            null
+          ]
+        },
+        "Output": {
+          "output": null,
+          "type": "remote",
+          "sides": [
+            "F",
+            "B"
+          ],
+          "inputs": [
+            "Backend"
+          ]
+        }
+      },
+      "css": ".null {\n\n}",
+      "name": "hello",
+      "description": "",
+      "tags": "",
+      "hideInLibrary": false
+    },
+    "test": {
+      "nodes": {
+        "hello": {
+          "output": "d0f67ce9-9b37-426c-b6b6-209f9accf8c9",
+          "location": {
+            "projectId": "9aefeafa-5451-4b4e-aa0b-08e43f50b542",
+            "graphId": "0c115091-bcda-4e0c-9893-79f033deaba4"
+          },
+          "schema": null,
+          "parameters": null,
+          "type": "remote",
+          "sides": [
+            "F",
+            "B"
+          ],
+          "inputs": []
+        },
+        "Frontend": {
+          "output": "cb0825a3-bd70-427c-bf74-eaabc0216e69",
+          "content": "import React, {useState, useEffect} from 'react';\n\nfunction Main({input}) {\n\tlet [msg, setMsg] = useState(\"...\");\n\n  useEffect(() => {\n    input(\"World!\").then(setMsg);\n  }, []);\n\n  return <span>{msg}</span>\n}\n\nexport default { main: Main };\n",
+          "type": "remote",
+          "sides": [
+            "F"
+          ],
+          "inputs": [
+            "hello"
+          ]
+        },
+        "Output": {
+          "output": null,
+          "type": "remote",
+          "sides": [
+            "F",
+            "B"
+          ],
+          "inputs": [
+            "Frontend"
+          ]
+        }
+      },
+      "css": ".null {\n\n}",
+      "name": "test",
+      "description": "",
+      "tags": "",
+      "hideInLibrary": false
+    }
+  }
+}

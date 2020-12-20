@@ -7,7 +7,7 @@ function Node(props) {
     return (
         <UI.Foldout label="Code Properties">
             <UI.PortsEditor k="inputs" nodeKey={props.nodeKey} typeOptions={["back", "data"]} />
-            <NodeTest { ...props }></NodeTest>
+            {/*<NodeTest { ...props }></NodeTest>*/}
         </UI.Foldout>
     );
 }

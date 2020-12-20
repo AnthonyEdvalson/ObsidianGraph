@@ -1,0 +1,32 @@
+{
+  "root": "graph",
+  "name": "test",
+  "graphs": {
+    "graph": {
+      "root": "Main",
+      "name": "graph",
+      "nodes": {
+        "backend": {
+          "type": "remote",
+          "sides": [
+            "B"
+          ],
+          "inputs": {},
+          "name": "backend",
+          "resource": "\nasync function main ({}, greet) {\n    return greet + \"World!\";\n}\n\nexport default { main }\n"
+        },
+        "Main": {
+          "type": "code",
+          "sides": [
+            "F"
+          ],
+          "inputs": {
+            "backend": "backend"
+          },
+          "name": "Main",
+          "resource": "import { useEffect, useState } from 'react';\n\n\nfunction Main({backend}, props) {\n    console.log(123);\n    let [motd, setMotd] = useState(\"...\");\n\n    useEffect(() => {\n        backend(\"Hello, \").then((v) => {\n            console.log(v);\n            setMotd(v);\n        });\n    }, []);\n\n    console.log(motd)\n    return <span>{motd}</span>\n}\n\n\nlet node = { main: Main };\nexport default node;\n"
+        }
+      }
+    }
+  }
+}

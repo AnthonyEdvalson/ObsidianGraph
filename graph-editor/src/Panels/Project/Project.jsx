@@ -21,14 +21,14 @@ function Project({ setMenu }) {
     let dispatch = useDispatch();
     let tree = useProjectTree(rootProject, dispatch);
     let loadedProjects = useSelector(state => state.projects);
-    let courier = engine.useCourier();
+    /*let courier = engine.useCourier();
 
     let pushProject = useCallback((loadedProjects, projectId) => {
         let [zip, name] = projects.build(loadedProjects, projectId);
         let data = zip.admZip.toBuffer().toString("base64");
         
         courier.loadObn(data, name);
-    }, [courier]);
+    }, [courier]);*/
 
     useEffect(() => {
         const menu = [
@@ -41,10 +41,10 @@ function Project({ setMenu }) {
                 projects.save(project);
                 exportProject(loadedProjects, project.projectId);
             }},
-            { name: "Push", shortcut: "Mod+E", action: () => {
+            /*{ name: "Push", shortcut: "Mod+E", action: () => {
                 projects.save(project);
                 pushProject(loadedProjects, project.projectId);
-            }},
+            }},*/
             null,
             { name: "Calculate Entropy", shortcut: "Mod+P", action: () => toast(entropy.projectEntropy(loadedProjects, project.projectId).join(", ")) },
             { name: "Show In Folder", action: () => { throw new Error("NOT IMPLEMENTED")}},
@@ -52,7 +52,7 @@ function Project({ setMenu }) {
         ];
 
         setMenu("Project", menu);
-    }, [setMenu, project, loadedProjects, pushProject]);
+    }, [setMenu, project, loadedProjects]);
 
     useFSLink();
     
@@ -79,11 +79,11 @@ function useProjectTree(project, dispatch) {
     let importGraph = graphs.useImportGraph(0, 0);
     let [packs, setPacks] = useState([]);
     let path = project && project.path;
-    
-    useEffect(() => {
+
+    /*useEffect(() => {
         if (path)
             projects.getPackages(path).then(setPacks)
-    }, [path, setPacks]);
+    }, [path, setPacks]);*/
 
     if (!project)
         return;

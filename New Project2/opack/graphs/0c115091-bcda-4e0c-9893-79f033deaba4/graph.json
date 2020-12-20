@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "name": "hello",
+    "description": "",
+    "tags": "",
+    "hideInLibrary": false
+  },
+  "nodes": {
+    "b226b998-532f-42ae-a1ca-c7d0e1ca2e66": {
+      "type": "back",
+      "name": "Backend",
+      "x": 1000,
+      "y": 600,
+      "output": "31e84a34-7484-4eaf-82bc-c34bba02ffae",
+      "inputs": [
+        "9e24277b-15db-4985-8935-e8ad20df02be"
+      ],
+      "content": "function main({input}, location) {\n\treturn \"Hello, \" + location;\n}\n\nexport default { main };\n"
+    },
+    "a3525ee3-b711-4dec-9faf-3229a5ae5f58": {
+      "type": "out",
+      "name": "Output",
+      "x": 1600,
+      "y": 600,
+      "output": null,
+      "inputs": [
+        "70add126-b4c6-4aa3-9910-6a644f59be25"
+      ]
+    }
+  },
+  "ports": {
+    "9e24277b-15db-4985-8935-e8ad20df02be": {
+      "label": "input",
+      "node": "b226b998-532f-42ae-a1ca-c7d0e1ca2e66",
+      "valueType": "value",
+      "pin": "4b609c16-350b-4692-8426-9eb684c2d9da"
+    },
+    "31e84a34-7484-4eaf-82bc-c34bba02ffae": {
+      "label": "out",
+      "node": "b226b998-532f-42ae-a1ca-c7d0e1ca2e66",
+      "valueType": "value",
+      "pin": "ff00c38e-bd87-486c-b1f7-3c43443b8c0b"
+    },
+    "70add126-b4c6-4aa3-9910-6a644f59be25": {
+      "label": "value",
+      "node": "a3525ee3-b711-4dec-9faf-3229a5ae5f58",
+      "valueType": "value",
+      "pin": "eb4ab971-9cf5-4824-9bc9-21efb214d9d3"
+    }
+  },
+  "links": {
+    "eb4ab971-9cf5-4824-9bc9-21efb214d9d3": "ff00c38e-bd87-486c-b1f7-3c43443b8c0b"
+  },
+  "pins": {
+    "4b609c16-350b-4692-8426-9eb684c2d9da": {
+      "node": "b226b998-532f-42ae-a1ca-c7d0e1ca2e66",
+      "port": "9e24277b-15db-4985-8935-e8ad20df02be"
+    },
+    "ff00c38e-bd87-486c-b1f7-3c43443b8c0b": {
+      "node": "b226b998-532f-42ae-a1ca-c7d0e1ca2e66",
+      "port": "31e84a34-7484-4eaf-82bc-c34bba02ffae"
+    },
+    "eb4ab971-9cf5-4824-9bc9-21efb214d9d3": {
+      "node": "a3525ee3-b711-4dec-9faf-3229a5ae5f58",
+      "port": "70add126-b4c6-4aa3-9910-6a644f59be25"
+    }
+  },
+  "css": ".null {\n\n}"
+}

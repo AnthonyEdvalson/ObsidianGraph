@@ -1,0 +1,94 @@
+{
+  "meta": {
+    "name": "Main",
+    "description": "",
+    "tags": "",
+    "hideInLibrary": false
+  },
+  "nodes": {
+    "fc6a1d09-9670-4315-91e7-65a3fd641b65": {
+      "type": "graph",
+      "name": "hello",
+      "x": 0,
+      "y": 0,
+      "output": "d0f67ce9-9b37-426c-b6b6-209f9accf8c9",
+      "inputs": [],
+      "location": {
+        "projectId": "9aefeafa-5451-4b4e-aa0b-08e43f50b542",
+        "graphId": "0c115091-bcda-4e0c-9893-79f033deaba4"
+      },
+      "schema": null,
+      "parameters": null
+    },
+    "9a898b29-f7fd-4762-a36c-89369190dd6b": {
+      "type": "front",
+      "name": "Frontend",
+      "x": 600,
+      "y": 0,
+      "output": "cb0825a3-bd70-427c-bf74-eaabc0216e69",
+      "inputs": [
+        "23e2124d-8bc7-4f93-94ad-755be60d3f6c"
+      ],
+      "content": "import React, {useState, useEffect} from 'react';\n\nfunction Main({input}) {\n\tlet [msg, setMsg] = useState(\"...\");\n\n  useEffect(() => {\n    input(\"World!\").then(setMsg);\n  }, []);\n\n  return <span>{msg}</span>\n}\n\nexport default { main: Main };\n"
+    },
+    "3c9a22dd-94db-4b86-b576-741e45f71e65": {
+      "type": "out",
+      "name": "Output",
+      "x": 1250,
+      "y": -50,
+      "output": null,
+      "inputs": [
+        "cb62a27d-cca3-401a-8ba3-509b4710bc39"
+      ]
+    }
+  },
+  "ports": {
+    "d0f67ce9-9b37-426c-b6b6-209f9accf8c9": {
+      "label": "Output",
+      "node": "fc6a1d09-9670-4315-91e7-65a3fd641b65",
+      "valueType": "value",
+      "pin": "fe0f10a2-9d00-412b-8810-c0990d9b338f"
+    },
+    "23e2124d-8bc7-4f93-94ad-755be60d3f6c": {
+      "label": "input",
+      "node": "9a898b29-f7fd-4762-a36c-89369190dd6b",
+      "valueType": "value",
+      "pin": "eaecdbba-5dd2-4c72-8849-9b2c5ff15efc"
+    },
+    "cb0825a3-bd70-427c-bf74-eaabc0216e69": {
+      "label": "out",
+      "node": "9a898b29-f7fd-4762-a36c-89369190dd6b",
+      "valueType": "value",
+      "pin": "d27786e6-7a8b-4e38-87e7-e165bba72444"
+    },
+    "cb62a27d-cca3-401a-8ba3-509b4710bc39": {
+      "label": "value",
+      "node": "3c9a22dd-94db-4b86-b576-741e45f71e65",
+      "valueType": "value",
+      "pin": "6e8327d6-3fa8-4915-86ec-9ad6bf12cd8e"
+    }
+  },
+  "links": {
+    "eaecdbba-5dd2-4c72-8849-9b2c5ff15efc": "fe0f10a2-9d00-412b-8810-c0990d9b338f",
+    "6e8327d6-3fa8-4915-86ec-9ad6bf12cd8e": "d27786e6-7a8b-4e38-87e7-e165bba72444"
+  },
+  "pins": {
+    "fe0f10a2-9d00-412b-8810-c0990d9b338f": {
+      "node": "fc6a1d09-9670-4315-91e7-65a3fd641b65",
+      "port": "d0f67ce9-9b37-426c-b6b6-209f9accf8c9"
+    },
+    "eaecdbba-5dd2-4c72-8849-9b2c5ff15efc": {
+      "node": "9a898b29-f7fd-4762-a36c-89369190dd6b",
+      "port": "23e2124d-8bc7-4f93-94ad-755be60d3f6c"
+    },
+    "d27786e6-7a8b-4e38-87e7-e165bba72444": {
+      "node": "9a898b29-f7fd-4762-a36c-89369190dd6b",
+      "port": "cb0825a3-bd70-427c-bf74-eaabc0216e69"
+    },
+    "6e8327d6-3fa8-4915-86ec-9ad6bf12cd8e": {
+      "node": "3c9a22dd-94db-4b86-b576-741e45f71e65",
+      "port": "cb62a27d-cca3-401a-8ba3-509b4710bc39"
+    }
+  },
+  "css": ".null {\n\n}"
+}
